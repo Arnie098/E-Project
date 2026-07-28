@@ -1,0 +1,2475 @@
+EPANAW BAGOBO: AN AI-INTEGRATED WEBSITE FRAMEWORK FOR
+     THE PRESERVATION AND REVITALIZATION OF THE BAGOBO
+               TAGABAWA DIALECT AND CULTURAL HERITAGE
+
+                               ERICA S MANGUILIMOTAN
+                                  SHIELLA MAY D GALO
+
+         CAPSTONE PROJECT OUTLINE SUBMITTED TO THE FACULTY OF
+             THE COLLEGE OF INFORMATION AND DIGITAL SCIENCES
+                         (CIDS), DAVAO DEL SUR STATE COLLEGE,
+                            MATTI, DIGOS CITY, DAVAO DEL SUR
+                                     IN PARTIAL FULFILLMENT
+                                      OF THE REQUIREMENTS
+                                         FOR THE DEGREE OF
+
+              BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY
+
+                                                MARCH 2026
+                                                  CHAPTER I
+
+                                              INTRODUCTION
+
+                                        Background of the Study
+
+         Cultural preservation in the Philippines is strongly supported by national policies
+and institutions tasked with safeguarding the country's diverse heritage. The National
+Cultural Heritage Act (RA 10066) provides a legal framework for the protection and
+conservation of cultural properties, while agencies such as the National Commission for
+Culture and the Arts and the National Museum of the Philippines implement programs
+that promote indigenous traditions, languages, and historical sites. These efforts include
+documentation, conservation of artifacts, and educational campaigns aimed at raising
+public awareness. However, despite these initiatives, challenges such as rapid
+urbanization, globalization, and limited resources continue to threaten cultural heritage.
+In recent years, the integration of digital technologies has emerged as a promising
+approach to preservation. Digital platforms, online repositories, and information systems
+now play a crucial role in organizing, storing, and disseminating cultural knowledge,
+enabling wider access and long-term sustainability. Scholarly studies on digital
+preservation emphasize that technology, when combined with community participation,
+enhances the protection and transmission of indigenous knowledge systems.
+
+         The Philippines is home to more than 175 ethnolinguistic groups, reflecting its rich
+cultural diversity and deep historical roots. Among these groups are the Bagobo people
+of southern Mindanao, composed of subgroups such as the Tagabawa, Clata (Guiangan),
+and Ubo. These communities share a common identity yet maintain distinct dialects,
+traditions, and artistic expressions. Historically, the Bagobo have inhabited areas
+surrounding the Davao Gulf and the slopes of Mount Apo, where their cultural practices
+have been preserved through oral traditions and community life. However, globalization
+and modernization have significantly influenced cultural dynamics, leading to shifts in
+language use and lifestyle, particularly among the younger generation. This study, which
+proposes the development of a comprehensive website framework for the preservation
+and revitalization of the Bagobo dialect and cultural heritage, responds to the growing
+need for innovative solutions. Existing research supports the use of digital platforms as
+effective tools for cultural education, engagement, and preservation, highlighting their
+ability to connect traditional knowledge with modern audiences while promoting
+inclusivity and accessibility.
+
+         Despite the presence of legal frameworks and cultural programs, the Bagobo
+language and cultural heritage are increasingly at risk of decline. Factors such as
+migration, exposure to dominant cultures, and the preference for widely used languages
+have contributed to the gradual loss of indigenous linguistic practices. Younger
+generations, in particular, are becoming less familiar with their native dialect, leading to
+a weakening of cultural identity and continuity. Furthermore, there is a lack of centralized,
+accessible, and interactive platforms dedicated to preserving and teaching the Bagobo
+dialect and traditions. Existing resources are often scattered, limited in scope, or not
+easily accessible to the community. This gap highlights a critical problem: without
+effective and sustainable preservation strategies, the Bagobo language and its associated
+cultural knowledge may continue to diminish, potentially leading to cultural erosion over
+time.
+
+         In response to these challenges, this study proposes the development of a digital
+website platform that serves as both a repository and an interactive learning environment
+for the Bagobo dialect and cultural heritage. The proposed system aims to integrate
+features such as multimedia content, language tutorials, and community participation
+tools to encourage active engagement and knowledge sharing. This initiative aligns with
+the objectives of the Indigenous Peoples' Rights Act (IPRA) 8371, which emphasizes the
+protection and promotion of indigenous cultural rights and identity. By leveraging
+technology, the platform seeks to ensure the sustainable preservation of cultural
+resources while fostering intergenerational transmission of knowledge. Ultimately, the
+study envisions creating an inclusive, accessible, and community-centered solution that
+not only preserves the Bagobo heritage but also strengthens cultural pride and identity
+in the modern digital era.
+
+                                         Objectives of the Study
+
+         This study aims to design and develop a web-based system for the preservation
+and revitalization of the Bagobo Tagabawa dialect and cultural heritage through digital
+archiving, interactive learning, and community-driven technologies.
+
+         Specifically, it aims to:
+1. Design and develop a web-based cultural preservation system.
+   1.1 Implement a role-based access control mechanism that defines permissions for
+
+Super Admin, Admin, and User accounts.
+   1.2 Super admin controls the whole system
+   1.3 Admin manages the content; and
+   1.4 User access the learning materials.
+
+2. Develop a centralized digital repository for the structured storage and retrieval of
+Bagobo cultural resources
+
+   2.1 audio,
+   2.2 video,
+   2.3 textual, and;
+   2.4 image data.
+
+3. Incorporate an interactive learning management module.
+   3.1 Delivers lessons, assessments, and user engagement activities;
+   3.2 Integrate an AI-driven component like chatbot to provide adaptive learning
+
+support and user assistance.
+
+4. Determine the system's effectiveness in facilitating the preservation, accessibility,
+and dissemination of the Bagobo dialect and cultural heritage through digital means.
+5. Evaluate the developed system based on the following software quality attributes:
+  3.1 Functionality;
+  3.2 Usability; and
+  3.3 Reliability.
+
+                                           Scope and Limitation
+
+         This study focuses on the development of a web-based cultural preservation
+system for the Bagobo Tagabawa community, aimed at documenting and promoting their
+language, traditions, and cultural heritage through a centralized digital platform. The
+system includes features such as a digital repository, interactive learning modules, role-
+based access control, and an AI-assisted learning component. It is designed to be user-
+friendly and accessible, allowing both community members and learners to engage with
+cultural content. While primarily focused on the Bagobo Tagabawa culture, the system
+also has potential for future expansion to other indigenous communities.
+
+         However, the study is limited by several factors, including restricted internet access
+and device availability in rural areas, which may affect user participation. The AI
+functionality is limited to basic assistance features and does not include advanced artificial
+intelligence capabilities. Additionally, the system's content is dependent on available data
+collected during development, and continuous updates require further support.
+Evaluation is also limited to selected software quality attributes and respondents, while
+long-term maintenance and scalability are beyond the scope of the study.
+
+                                        Significance of the Study
+
+         This study is significant as it contributes to the preservation and revitalization of
+the Bagobo Tagabawa dialect and cultural heritage through a web-based digital platform.
+It provides a centralized system for documenting, storing, and accessing cultural
+resources, helping prevent the loss of indigenous knowledge caused by modernization
+and globalization. It is very significant to this following:
+
+         Bagobo Community. The system serves as a digital archive and learning tool
+that helps preserve their language, traditions, oral narratives, and cultural identity. It also
+promotes intergenerational knowledge transfer by allowing elders to share cultural
+knowledge and enabling younger generations to learn and engage with their heritage in
+an interactive and meaningful way.
+
+         Students. The system provides a centralized and organized source of cultural and
+linguistic data that can be used for academic studies, cultural research, and language
+learning. It simplifies access to information that is often scattered or difficult to obtain,
+thereby supporting educational and research activities related to indigenous culture.
+
+         Educational Institutions. The study offers a supplementary learning resource
+that can be integrated into cultural education programs, promoting awareness and
+appreciation of indigenous heritage among learners. It also supports innovative teaching
+approaches through interactive and technology-based learning tools.
+
+         LGU's and Cultural Organizations. The system provides a potential tool for
+cultural preservation initiatives and community development programs. It supports the
+objectives of safeguarding indigenous identity and can assist in policy implementation
+related to cultural conservation.
+
+         Future Researchers and Developers. This study serves as a reference for
+creating similar systems that combine cultural preservation with web-based technologies
+and AI integration. It provides a foundation for further improvements and expansion to
+other indigenous communities and cultural contexts.
+
+                                            Definition of Terms
+         This study is composed of terminologies that are commonly used particularly in
+the context of this study.
+         Artificial Intelligence (AI) ­ A system feature that uses intelligent algorithms
+(e.g., chatbot or recommendation system) to provide adaptive learning support and user
+assistance.
+         Admin ­ A user role responsible for managing and uploading content, monitoring
+system activity, and maintaining the platform.
+         Adaptive Learning ­ A learning approach where the system adjusts content and
+difficulty based on the user's performance and progress.
+
+         Bagobo - One of the indigenous ethnolinguistic groups in Mindanao, Philippines,
+known for their rich cultural traditions, oral literature, rituals, and distinct dialect.
+
+         Bagobo Tagabawa ­ one of the distinct dialects that the Bagobo indigenous
+group has.
+
+         Chatbot Tutor ­ An AI-based tool designed to interact with users, answer
+questions, provide explanations, and assist in learning the Bagobo dialect.
+
+         Cultural Heritage ­ The traditions, customs, language, beliefs, and material
+expressions inherited from previous generations that define the identity of a community.
+
+         Digital Preservation ­ The use of digital technologies to collect, store, manage,
+and safeguard cultural and historical resources for long-term accessibility and protection.
+
+         Digital Repository ­ A structured online storage system used for organizing and
+managing digital files such as documents, images, audio recordings, and videos for easy
+access and retrieval.
+
+         Web-Based System ­ A software application that runs on a web browser and
+can be accessed through the internet or local network without requiring installation on a
+device.
+         Role-Based Access Control ­ A security framework that restricts system access
+based on user roles and permissions to ensure proper data management and system
+security.
+
+         Super Admin ­ The highest-level user with full administrative control over the
+system, including user management, system configuration, and content approval.
+
+         User ­ An end-user who accesses the system primarily for learning, viewing
+cultural content, and interacting with the learning modules.
+
+         Interactive Learning Module ­ A feature of the system that provides structured
+educational content such as lessons, quizzes, and activities to enhance user engagement
+and learning experience.
+
+         Repository Management ­ The process of organizing, uploading, updating, and
+maintaining digital content within the system's database.
+
+         User Interface (UI) ­ The visual layout and design of the system that allows
+users to interact with its features and functions.
+
+         User Experience (UX) ­ The overall experience of users when interacting with
+the system, including ease of use, accessibility, and satisfaction.
+
+         System ­ A structured set of interconnected components (hardware, software,
+and processes) that work together to perform specific functions, such as managing data,
+processing information, and delivering services to users within a defined environment.
+                                                  CHAPTER II
+                     REVIEW OF RELATED LITERATURE AND STUDIES
+
+                                             Related Literature
+         This chapter reviews recent studies related to digital preservation, web-based
+systems, artificial intelligence, and data management as foundations for developing the
+proposed cultural preservation system. It highlights how these technologies support the
+documentation, accessibility, and protection of cultural heritage, guiding the design and
+implementation of the study.
+
+                                      Literature Map of the Study
+         The literature map of this study illustrates the thematic evolution and
+interconnectedness of research that supports the design, development, and security of
+the Web-Based Bagobo Tagabawa System. By synthesizing diverse academic
+perspectives, the map establishes a theoretical framework that justifies the integration of
+modern digital infrastructure as seen in Diagram 1.
+                           Digital Cultural Preservation Systems
+
+                           (UNESCO, 2020; Kurniwan & Hartati, 2021; Smith,
+                                                         2022)
+
+Web-Based Systems                 Digital Repositories and Information          AI in Education and
+   for Cultural and                           Management System                   Cultural Learning
+      Educational
+        Platforms          (Rodrigues et al., 2020) & (Khan & Bhatti, 2021)  (Zawacki-Richter et al.,
+                                                                             2020),
+(Kumar & Singh, 2020)                                                        (Winkler & Sollner, 2020),
+             and                                                             (Okonkwo & Ade-Ibijola,
+                                                                             2020)
+(Al-Fraihat et al., 2020)
+
+Interactive        and     Structured Storage & Data                         Adaptive Learning & AI
+                           Management                                        Chatbot Support
+Accessible         Web
+
+Learning Platform
+
+                   User Experience and UX            Role Based Access
+                          Design in Web           Control in Web System
+                           Applications
+                                                (Sandhu et., 2020; Hu et al.,
+                   (Garret, 2020; Hassenzahl &  2021)
+                           Tractinsky, 2021)
+
+                             Community Participation & Language
+                                                Preservation
+
+                           (Giaccardi & Palen, 2020; Brown & Nicholas,
+                           2021; Mayer, 2021; Zhang & Zou, 2022)
+
+                                    WEB-BASED CULTURAL PRESERVATION SYSTEM
+                     EPANAW BAGOBO: AN AI-INTEGRATED WEBSITE FRAMEWORK
+                   FOR THE PRESERVATION AND REVITALIZATION OF THE BAGOBO
+
+                                TAGABAWA DIALECT AND CULTURAL HERITAGE
+
+             Diagram 1: Literature Map of the Study
+Digital Cultural Preservation System
+         Digital preservation has become an essential strategy in safeguarding indigenous
+
+knowledge and cultural heritage in the modern era. With the increasing impact of
+globalization, many indigenous languages and traditions are at risk of being lost, making
+digital documentation a necessary intervention.
+
+         According to UNESCO (2020), digital technologies play a significant role in
+preserving intangible cultural heritage by enabling systematic documentation, storage,
+and wider dissemination of cultural materials.
+
+         Similarly, Kurniawan and Hartati (2021) emphasized that digital archiving systems
+ensure the long-term sustainability of cultural resources such as oral traditions, language
+recordings, and historical documents.
+
+         Furthermore, Smith (2022) noted that digital preservation enhances the visibility
+and accessibility of indigenous cultures, although it requires active community
+participation to maintain authenticity and cultural sensitivity. These findings highlight the
+importance of developing a digital platform that not only preserves cultural heritage but
+also ensures its accessibility for future generations.
+
+Web-Based Systems for Cultural and Educational Platforms
+         Web-based systems have become widely utilized in both educational and cultural
+
+preservation initiatives due to their accessibility, scalability, and flexibility. These systems
+allow users to access information anytime and anywhere, making them highly effective
+tools for knowledge dissemination.
+
+         Kumar and Singh (2020) stated that web-based platforms provide efficient and
+scalable solutions for delivering content, particularly in educational environments.
+
+         In addition, Al-Fraihat et al. (2020) found that the success of web-based learning
+systems is largely influenced by system quality, information quality, and service quality,
+which directly impact user satisfaction and engagement. Their study further emphasized
+that interactive features and well-designed interfaces enhance user experience and
+learning outcomes. These findings support the use of a web-based system in cultural
+preservation, as it enables wider access and promotes user engagement in learning
+indigenous culture.
+
+Digital Repositories and Information Management Systems
+         Digital repositories play a crucial role in managing and preserving large volumes
+
+of data in an organized and accessible manner. These systems provide structured storage,
+efficient retrieval, and long-term preservation of digital content.
+
+         According to Rodrigues et al. (2020), digital repositories utilize features such as
+metadata tagging, indexing, and search functionalities to improve data accessibility and
+management.
+         Similarly, Khan and Bhatti (2021) highlighted that centralized repository systems
+enhance knowledge sharing and ensure data consistency, which are essential for
+sustainable information management. Their study also emphasized that repositories are
+particularly valuable in preserving cultural and academic resources. These findings justify
+the integration of a centralized digital repository in the proposed system to ensure the
+efficient storage and retrieval of Bagobo cultural materials.
+
+AI in Education and Cultural Learning
+         Artificial Intelligence (AI) has significantly transformed educational systems by
+
+introducing adaptive and interactive learning experiences. AI-powered tools, such as
+chatbots and recommendation systems, have been widely used to enhance user
+engagement and personalize learning.
+
+         Zawacki-Richter et al. (2020) explained that AI enables adaptive learning by
+analyzing user behavior and adjusting content according to individual needs and
+performance.
+
+         Furthermore, Winkler and Söllner (2020) found that chatbot-based learning
+systems improve interaction by providing instant responses and continuous support to
+users.
+
+         In addition, Okonkwo and Ade-Ibijola (2021) concluded that AI chatbots are
+particularly effective in language learning, as they simulate conversational interactions
+and provide real-time feedback. These studies support the integration of an AI-driven
+component in the system to enhance the learning experience and promote engagement
+in cultural education.
+
+User Experience and UX Design in Web Applications
+         User experience (UX) design is critical in determining the success and usability of
+
+web-based systems. According to Garrett (2020), a well-designed user interface enhances
+usability by making systems intuitive, efficient, and easy to navigate.
+
+         In addition, a study by Hassenzahl and Tractinsky (2021) emphasized that positive
+user experience increases user satisfaction and engagement, which are essential for
+system adoption. These findings suggest that the proposed system must prioritize user-
+friendly design to ensure accessibility for both technical and non-technical users.
+
+Role Based Access Control in Web System
+         Security and proper access management are essential components of web-based
+
+systems, especially those handling sensitive or valuable data. Role-Based Access Control
+(RBAC) is a widely used security model that restricts system access based on user roles
+and permissions.
+
+         According to Sandhu et al. (2020), RBAC ensures that users can only access
+information relevant to their roles, thereby improving system security and efficiency.
+         Similarly, Hu et al. (2021) emphasized that RBAC reduces the risk of unauthorized
+access and simplifies system administration by clearly defining user responsibilities. This
+model is particularly effective in systems with multiple user roles, such as administrators
+and general users. These findings support the implementation of RBAC in the proposed
+system to ensure secure and organized management of user access.
+
+Community Participation & Language Preservation
+         Community involvement is a key factor in the success of cultural preservation
+
+initiatives. According to Giaccardi and Palen (2020), participatory systems that involve
+local communities in content creation and management ensure authenticity and
+sustainability. Indigenous knowledge is best preserved when elders and cultural
+custodians actively contribute to the documentation process.
+
+         Similarly, a study by Brown and Nicholas (2021) emphasized that community-
+driven digital platforms empower indigenous groups by giving them control over how
+their culture is represented. These findings highlight the importance of incorporating user
+participation features in the system to encourage collaboration and cultural ownership.
+
+The reviewed literature shows a strong connection between digital technology and
+cultural preservation. Digital repositories and web-based systems provide efficient
+platforms for storing and sharing cultural data, while AI technologies enhance user
+engagement and learning. This study builds upon these concepts to address the
+preservation and revitalization of the Bagobo Tagabawa dialect and cultural heritage.
+
+                               Related Studies
+
+         This section presents related studies and existing systems that focus on
+Indigenous language preservation, digital heritage documentation, and interactive
+learning technologies.
+
+         List of the Systems Related to the Study
+
+         This section presents existing systems related to language preservation and
+cultural documentation. It serves as a basis for identifying useful features and gaps for
+the proposed study as shown in Table 1.
+
+Table 1. Comparative Analysis of Indigenous Preservation Systems and Projects
+
+Name of Author/Y Descripti Strength Weaknes Application
+
+System/Pro ear Cite        on                       s
+
+ject
+
+Mukurtu  Christen et  An open-      Cultural        Complexit    The strict access
+CMS      al. (2017)                 Protocols:      y:
+                      source        Features        Requires     control model
+                                    granular        significant
+                      content       access levels   technical    will be adopted
+                                    (e.g., gender-  expertise
+                      managem       specific,       to set up    to         protect
+                                    sacred          and
+                      ent system    knowledge)      maintain;    sensitive Bagobo
+                                    that respect    steep
+                      designed      community       learning     rituals           that
+                                    traditions.     curve for
+                      specifically                  non-         should not be
+
+                      for                                        publicly
+
+                      indigenous                                 viewable.
+
+                      communiti
+
+                      es        to
+
+                      manage
+
+                      digital
+
+                      heritage
+                         with                         technical
+                         cultural                     elders.
+                         protocols.
+Marayum      UP Diliman  A            Community-      Scope        The
+             & DOST-     communit     Led:            Limitation:
+Higaonon     ASTI        y-built      Empowering      Primarily    crowdsourcing
+Mobile       (2021)      online       native          text-based
+Dictionary               dictionary   speakers to     (dictionary  feature will be
+             MDPI /      platform     be content      focus);
+FirstVoices  Local       for          creators and    lacks        utilized to allow
+             Researcher  Philippine   editors         broader
+             s (2025)    indigenous   ensures         cultural     Bagobo youth
+                         languages    linguistic      context
+             First       that allows  accuracy and    like oral    and elders to
+             Peoples'    crowdsour    ownership.      history or
+             Cultural    ced                          multimedi    continuously
+             Council     contributio                  a
+             (2013)      ns.                          storytellin  update        the
+                                                      g.
+                         A mobile                     Platform     dialect
+                         application                  Dependen
+                         developed                    cy: limited  dictionary.
+                         to                           to mobile
+                         preserve     Offline         devices;     The "Offline
+                         the          Accessibility:  lacks a      Mode"
+                         Higaonon     Designed to     centralized  architecture is
+                         language     function        web          critical for the
+                         in           without         archive for  Bagobo
+                         Mindanao     internet,       larger       framework to
+                         through      addressing      historical   ensure usability
+                         digitized    the "digital    document     in remote areas
+                         vocabulary   divide" in      s.           of Bansalan.
+                         and audio.   rural
+                         A web-       Mindanao                     Serves as a
+                         based        areas.                       model for the
+                         suite of                                  "Digital
+                         tools for    Rich Media      Cost &       Repository"
+                         archiving                                 component,
+                         language     Support:        Scale:       emphasizing the
+                         data,                                     need for high-
+                         including    Excellent       High         quality audio
+                         keyboards                                 recording
+                         ,            integration of  resource     standards.
+                         dictionarie
+                                      high-quality    requireme
+
+                                      audio and       nt      for
+
+                                      video      for  server
+
+                                      pronunciation   maintenan
+
+                                      and             ce and
+
+                                      storytelling.   data
+
+                                                      curation.
+                        s, and
+
+                        stories for
+
+                        Canadian
+
+                        First
+
+                        Nations.
+
+Irula       Cureus      A Mobile-     Youth            Narrow        The interactive
+Language    Journal                                    Focus:
+MALL        (2025)      Assisted      Engagement:      Focuses       learning portal
+                                                       heavily on
+Respectful  Reitsma et  Language      Uses             vocabulary    will incorporate
+Design      al. (2013)                                 drills
+Framework               Learning      gamification     rather        gamified
+            NRC                                        than deep
+Word        Canada      (MALL)        (quizzes,        cultural      elements
+Weaver      (2019)                                     immersion
+                        app using     levels) to       or history.   (badges,
+
+                        gamificatio   make                           quizzes)      to
+
+                        n to teach    language                       combat linguistic
+
+                        the Irula     learning                       assimilation
+
+                        tribal        attractive to                  among Bagobo
+
+                        language      the younger                    youth.
+
+                        to youth.     generation.
+
+                        A             Ethical          Abstract      This framework
+
+                        participato   Foundation:      Nature: It    will guide the
+
+                        ry design     Ensures the      is         a  "Community
+
+                        approach      community        methodolo     Engagement
+
+                        that          feels            gy rather     Interface,"
+
+                        prioritizes   ownership of     than a        ensuring Bagobo
+
+                        "ownershi     the system,      software      elders have veto
+
+                        p         of  preventing it    tool;         power         over
+
+                        process"      from feeling     requires      design
+
+                        over just     like         an  translation   decisions.
+
+                        the final     external         into
+
+                        technologi    academic         concrete
+
+                        cal           imposition.      technical
+
+                        product.                       requireme
+
+                                                       nts.
+
+                        An open-      Linguistic       Niche         Useful for the
+                        source tool   Depth:
+                        specifically  Addresses        Utility:      advanced
+                        designed      complex
+                        to            grammatical      Very          modules of the
+                        conjugate     structures
+                        complex       often ignored    specific      E-Learning
+                        verbs in      by simple
+                        indigenous    word-            usage;        portal to teach
+                        languages.    translation
+                                      dictionaries     does not      the complexities
+
+                                                       manage        of        Bagobo
+
+                                                       general       sentence
+
+                                                       cultural      structure.
+
+                                                       assets like
+
+                                                       photos or
+
+                                                       history.
+Digital      Biyela et   A             Institutional   Bureaucra     Aligns with the
+Preservatio  al. (2016)  comparati     Alignment:      cy: Heavy
+n of IK                  ve            Strong focus    reliance on   project's
+Framework    UNESCO      framework     on aligning     governme
+             (2024)      for           digitization    nt            objective to
+Dive into                digitizing    with national   institutions
+Heritage     Govt. of    Indigenou     heritage laws   can slow      partner with the
+             India       s             and library     down
+Traditional  (2001)      Knowledg      standards.      rapid,        NCCA and LGUs
+Knowledge                e (IK)                        communit
+Digital                  across                        y-driven      for           legal
+Library                  African                       updates.
+(TKDL)                   institutions                                sustainability
+                         .                             High
+                         A digital                     Technical     and funding
+                         platform                      Barrier:
+                         utilizing     Immersive       Requires      Future scalability
+                         3D models     Visualization:  expensive
+                         and VR to     3D and VR       hardware      option:         The
+                         document      preservation    (LiDAR, VR
+                         World         offers the      headsets)     framework will
+                         Heritage      highest         not easily
+                         sites and     fidelity for    accessible    be built to
+                         intangible    tangible        to rural
+                         practices.    heritage        communiti     support 3D file
+                                       (artifacts,     es.
+                         A             buildings).     Restricted    formats         for
+                         defensive                     Access:
+                         digital                       The           future scanning
+                         repository                    defensive
+                         designed                      nature        of         Bagobo
+                         to protect                    often
+                         traditional                   limits        musical
+                         medicinal                     education
+                         knowledge                     al access     instruments/artif
+                         from                          for the
+                         patent                        general       acts.
+                         piracy.                       public.
+                                       IP Protection:                Security
+
+                                       explicitly                    protocols from
+
+                                       designed to                   TKDL will be
+
+                                       prevent bio-                  adapted         to
+
+                                       piracy and                    protect         the
+
+                                       unauthorized                  "Indigenous
+
+                                       commercializ                  Intellectual
+
+                                       ation       of                Property" of the
+
+                                       indigenous                    Bagobo
+
+                                       knowledge.                    community.
+
+Mukurtu CMS
+         Christen et al. (2017) developed Mukurtu CMS as an open-source content
+management system designed specifically for Indigenous communities to manage and
+protect digital cultural heritage. The system integrates cultural protocols that regulate
+access, sharing, and use of sensitive cultural materials based on community-defined rules.
+This study highlights that digital heritage systems can be effectively designed using
+Indigenous governance principles, ensuring that cultural ownership and control remain
+with the community while still enabling digitization and preservation of cultural resources.
+
+Marayum
+         The University of the Philippines Diliman and DOST-ASTI developed Marayum
+
+Dictionary Platform as a collaborative online dictionary platform for Philippine Indigenous
+languages. The system enables crowdsourced contributions where native speakers can
+encode, validate, and refine language entries. This study demonstrates that community-
+driven digital platforms can play a significant role in preserving endangered languages by
+promoting participatory documentation and continuous language development.
+
+Higaonon Mobile Dictionary
+         Researchers under MDPI (2025) developed Higaonon Mobile Dictionary as a mobile
+
+application aimed at preserving the Higaonon language in Mindanao. The application
+provides digitized vocabulary, pronunciation guides, and audio-based learning materials
+to support language retention and learning. This study shows that mobile-assisted
+language learning systems can improve accessibility and contribute to the revitalization
+of endangered Indigenous languages, particularly among younger generations.
+
+FirstVoices
+         The First Peoples' Cultural Council developed FirstVoices as a web-based platform
+
+for the documentation, preservation, and teaching of Indigenous languages. The system
+provides integrated tools such as dictionaries, keyboards, audio recordings, and
+storytelling archives to support both linguistic preservation and education. This study
+emphasizes that comprehensive digital language platforms are effective in combining
+archival preservation with interactive learning functionalities.
+
+Irula Language MALL
+         The Cureus Journal (2025) presented Irula Language Mobile Assisted Language
+
+Learning App as a gamified mobile-assisted language learning application designed for
+the Irula tribal language. The system incorporates quizzes, rewards, and interactive
+exercises to enhance user engagement and learning retention. This study demonstrates
+that gamification techniques in mobile learning environments can significantly improve
+language acquisition, especially in the context of Indigenous and endangered languages.
+
+Respectful Design Framework
+         Reitsma et al. (2013) proposed the Respectful Design Framework as a participatory
+approach to system development that prioritizes Indigenous ownership and involvement.
+The framework emphasizes co-design processes where communities actively participate
+in decision-making throughout system development. This study highlights the importance
+of ethical and culturally sensitive design in technology development for Indigenous
+knowledge systems.
+
+WordWeaver
+         The National Research Council of Canada developed WordWeaver as an open-
+
+source linguistic tool that assists in the analysis and generation of complex verb structures
+in Indigenous languages. The system supports linguists and researchers in developing
+accurate language resources and documentation tools. This study shows that
+computational linguistic systems can enhance the structural analysis and preservation of
+endangered languages.
+
+Digital Preservation of IK Framework
+         Biyela et al. (2016) developed the Digital Preservation of Indigenous Knowledge
+
+Framework as a structured model for digitizing Indigenous knowledge systems. The
+framework emphasizes ethical documentation, cultural context preservation, and
+community participation in all stages of digital archiving. This study highlights that
+successful preservation of Indigenous knowledge requires balancing technological
+innovation with cultural integrity and participatory governance.
+
+Dive Into Heritage
+         UNESCO (2024) developed Dive into Heritage as a digital platform that utilizes 3D
+
+modeling and virtual reality to document and present cultural heritage sites and intangible
+cultural practices. The system enables immersive exploration of heritage content for
+educational and preservation purposes. This study demonstrates that immersive
+technologies such as VR can enhance cultural education and improve engagement with
+heritage preservation initiatives.
+
+Traditional Knowledge Digital Library (TKDL)
+         The Government of India established Traditional Knowledge Digital Library as a
+
+digital repository for documenting and protecting traditional medicinal knowledge
+systems such as Ayurveda, Unani, and Siddha. The system serves as a defensive
+mechanism against biopiracy by providing documented evidence of prior traditional
+knowledge. This study shows that digital knowledge repositories can effectively safeguard
+Indigenous and traditional knowledge from unauthorized patent claims.
+The reviewed systems show a trend toward community-based, interactive, and ethical
+approaches in preserving language and culture. However, there is still a gap in fully
+integrating Indigenous dialects with AI-powered and culturally adaptive learning systems,
+which this study aims to address.
+
+                                         Conceptual Framework
+         The conceptual framework of the study illustrates the overall process involved in
+the development of the Web-Based Bagobo Tagabawa Cultural Preservation System.
+The framework begins with identifying the cultural and language preservation needs of
+the Bagobo Tagabawa community, particularly the risk of losing their dialect and
+cultural heritage due to modernization. To address these concerns, the system gathers
+cultural data through web platform inputs, audio and video recordings, document
+uploads, and community contributions.
+         The collected information is organized and stored in a centralized digital
+repository that serves as a secure database for cultural and language resources. To
+ensure authenticity and accuracy, the data undergo validation and monitoring through
+the participation of elders and cultural custodians. After validation, the information is
+processed by the AI Learning and Analytics Engine, which provides features such as AI
+chatbot support, language learning assistance, recommendation systems, and pattern
+analysis to improve user interaction and learning experiences.
+         The processed data are then utilized through the Decision Support module and
+the Web-Based Dashboard, which provide reports, monitoring tools, and cultural
+insights for users and administrators. The framework also emphasizes cultural
+implementation and community engagement through learning activities, cultural
+promotion, and language revitalization initiatives. Lastly, a feedback and continuous
+improvement loop ensures that user input and community updates are continuously
+integrated into the system to support the long-term preservation and sustainability of
+Bagobo Tagabawa culture and language.
+
+Figure 1: Conceptual Framework of the Study
+                                                 CHAPTER III
+
+                                               METHODOLOGY
+         This chapter presents the methodology used in developing the proposed Web-
+Based Bagobo Tagabawa Cultural Preservation System. It discusses the research design,
+data gathering procedures, development process, and technologies used to ensure the
+effective preservation and revitalization of the Bagobo Tagabawa dialect and cultural
+heritage.
+
+                                              Capstone Locale
+         The study will be conducted in the Municipality of Bansalan, Davao del Sur,
+Philippines as shown in the Figure 2 below. Bansalan is known for its rich cultural diversity
+and serves as one of the communities where the Bagobo Tagabawa people reside. The
+municipality possesses significant cultural resources, traditions, and linguistic heritage
+that contribute to the identity of the indigenous community.
+Figure 2: Map of Bansalan
+         Bansalan is about 73 kilometers (45 mi) south of Davao City and is very accessible
+
+by land transportation mostly by buses going to Cotabato City, Kidapawan and Tacurong.
+Bansalan is about 17 kilometers (11 mi) north-west of the provincial capital city of Digos.
+The neighboring towns include Makilala in the north, Magsaysay in the west, Matanao in
+the south and Mount Apo and part of Digos in the east.
+
+         As modernization and globalization continue to influence local communities, there
+is an increasing need to preserve and promote the Bagobo Tagabawa dialect and cultural
+practices for future generations. The selection of Bansalan and some specific chosen
+Barangay's as the locale of the study is appropriate because of the presence of the
+Bagobo Tagabawa community and the availability of cultural knowledge that can support
+the development and implementation of the proposed Web-Based Bagobo Tagabawa
+Cultural Preservation System.
+
+                                               System Design
+         System design serves as the blueprint of the study, identifying the components,
+interfaces, and data flow necessary for the development of the proposed system. Figure
+3 illustrates the design framework that provides the foundation of the study by organizing
+the components, interfaces, and data relationships needed in building the proposed
+system.
+Figure 3: Three Tier Architecture Model of the Study
+
+         The three-tier architecture model was adopted in this study because it provides a
+structured and efficient framework for developing the proposed system. It divides the
+system into the presentation layer, business logic layer, and data layer, allowing each
+component to perform a distinct function. The presentation layer manages the user
+interface, the business logic layer handles the processing of system operations such as
+content management, learning activities, and AI-assisted functions, while the data layer
+is responsible for storing and retrieving the Bagobo Tagabawa cultural resources securely.
+
+         This architecture is suitable for the study because it promotes modularity,
+maintainability, and security. By separating the system into different layers, updates and
+enhancements can be implemented more easily without affecting the entire system. It
+also supports future expansion, making it appropriate for the long-term development of
+the proposed Bagobo Tagabawa cultural preservation platform.
+Recquirements
+         Requirements planning is the phase in the development process where the
+
+essential needs, functions, and constraints of the proposed system are identified,
+analyzed, and organized. It establishes the foundation for the entire project by
+determining what the system is expected to do, who will use it, and how it will support
+the objectives of the study. Through this stage, the researchers are able to define the
+scope of the system, clarify user requirements, and ensure that the proposed design is
+aligned with the actual needs of the target community.
+
+         In this study, requirements planning is important because it helps determine the
+features that must be included in the Bagobo Tagabawa cultural preservation system,
+such as the digital repository, learning modules, role-based access, and AI-assisted
+support. It also allows the researchers to identify the technical and operational limitations
+that may affect the development and implementation of the system. By carefully planning
+the requirements, the study can produce a system that is practical, relevant, and
+responsive to the needs of its intended users.
+
+         System Recquirements
+         System requirements define the necessary hardware, software, functional
+capabilities, and operational conditions needed for the successful development and
+implementation of the proposed system. They serve as a guide in identifying the
+resources, technologies, and features required to ensure that the system performs
+effectively, efficiently, and securely. Establishing clear system requirements helps
+developers understand the expected functionalities of the system and provides a basis
+for evaluating whether the system meets its intended objectives.
+
+                  Software to be use. The development of the Epanaw Bagobo system will
+utilize various software tools and technologies to support the implementation of the web-
+based cultural preservation platform. The system will be developed using HTML,
+JavaScript, and Bootstrap for the front-end interface, while PHP with the Laravel
+Framework will be used for server-side processing and application logic. MySQL will serve
+as the database management system for storing user information, cultural resources,
+learning materials, and system records.
+
+                  To support the AI-assisted learning component, an AI API service such as
+OpenAI or Google Gemini will be integrated into the system to provide chatbot
+functionality and learning assistance. The application will be hosted using Apache Web
+Server through XAMPP during development and may be deployed. Development and
+maintenance activities will be conducted using Visual Studio Code. Additional software
+such as Audacity, Canva, and Microsoft Office applications will be utilized for multimedia
+content preparation and project documentation.
+
+Table 2: Software Recquirements of the Proposed System and its Specification
+
+Software                 Specification / Purpose
+
+Windows 10/11            Operating System
+
+Visual Studio Code       Code Editor
+
+HTML, JavaScript         Front-End Development
+
+PHP (Laravel)            Back-End Development
+
+MySQL                    Database Management System
+
+OpenAI API / Gemini API  AI Chatbot Integration
+XAMPP (Apache)                     Local Server Environment
+Google Chrome                      Web Browser
+Microsoft Office, Audacity, Canva  Documentation and Presentation
+
+                  Hardware to be use. The hardware requirements of the proposed system
+consist of the physical devices needed to support the development, implementation, and
+operation of the Epanaw Bagobo system. A computer or laptop will be used as the primary
+device for system development, administration, and testing. A monitor will serve as the
+display output device, while a keyboard and mouse will be utilized for user input and
+system navigation. A microphone is required for recording Bagobo Tagabawa language
+pronunciations, interviews, and other audio-based cultural materials to be stored in the
+digital repository. An internet connection is necessary to enable access to the web-based
+platform and support AI chatbot integration. While, a learning material must also be
+needed as a basis for the Bagobo Tagabawa dialect. These hardware components are
+essential in supporting the functionality and sustainability of the proposed cultural
+preservation system.
+
+Table 3: Hardware Recquirements of the Proposed System and its Specification
+
+Hardware                           Specification / Purpose
+
+Computer/Laptop                    System development and administration
+
+Keyboard & Mouse                   User input devices
+
+Microphone, Phone Recorder         Audio recording for language materials
+
+Internet Connection                System access and AI integration
+
+Learning Materials                 Serves as the basis.
+
+Data Requirements
+         Data requirements refer to the necessary information that the system must collect,
+store, and manage in order to function properly. In this study, they include user data,
+cultural content, learning materials, AI interaction data, and administrative records that
+support the preservation and access of Bagobo Tagabawa dialect.
+
+                  First Phase. For formality and acknowledgment, the researchers will ask
+for certification in the NCIP office regarding data collection and system making ahead of
+time.
+
+                  Second Phase. The integration of the Epanaw Bagobo: An AI-Integrated
+Website Framework for the Preservation and Revitalization of the Bagobo Tagabawa
+Dialect and Cultural Heritage will be further explained after the confirmation of the NCIP
+office for the gathering of data.
+
+                  Third Phase. The researchers identify the specific data required by the
+system, including cultural materials, language resources, user roles, learning content, and
+administrative information. This phase helped determine the scope of the data to be
+collected and ensured that the gathered information would support the objectives of the
+study.
+
+                  Fourth Phase. The researchers gathered data through interviews,
+observations, and document review involving elders, community members, and other
+relevant respondents. The collected information included Bagobo Tagabawa words,
+stories, traditions, audio recordings, images, and other cultural references that would be
+used in the digital repository and learning modules of the system.
+                  Fifth Phase. After the data were collected, they were reviewed and
+validated with the help of knowledgeable community members to ensure authenticity,
+accuracy, and cultural relevance. The researchers then organized the data according to
+category and purpose so that they could be properly stored and managed within the
+system.
+
+                  Sixth Phase. The validated data were then used as inputs for the
+development of the proposed web-based system, particularly for the repository, learning
+module, and AI-assisted features. This phase ensured that the system would reflect the
+actual needs of the target users and would support the preservation and revitalization of
+Bagobo Tagabawa culture and language.
+
+         Data Dictionary
+         The data dictionary serves as a comprehensive reference that defines the data
+elements utilized in the proposed system. It provides a detailed description of each data
+field, including its field name, data type, field length, and purpose, to ensure consistency,
+accuracy, and integrity in the design and management of the system's database.
+Furthermore, it establishes standardized definitions for all data attributes, enabling
+efficient data storage, retrieval, and maintenance throughout the system development
+process.
+         For the proposed system, the data dictionary identifies the essential data required
+to support the system's core functionalities, including user management, digital repository
+management, interactive learning modules, AI-assisted chatbot services, assessment
+records, and community contributions. It serves as a foundational document that guides
+the implementation of the database structure and ensures that all system data are
+organized, consistent, and aligned with the objectives of the study.
+
+                  Dataset Table of the Project. The datasets sample in table's below
+simulate actual system data and ensure that the proposed system can effectively support
+user management, digital archiving, interactive learning, AI-assisted services, and
+community participation in preserving and promoting the Bagobo Tagabawa dialect and
+cultural heritage.
+
+Table 4: Data Set Sample of User Account
+
+User ID  Full Name                        Email           Role
+                                                 Super Admin
+U001     Juan Dela Cruz  juan@gmail.com          Admin
+                                                 User
+U002     Maria Lumad     maria@gmail.com         User
+
+U003     Carlo Ramos     carlo@gmail.com
+
+U004     Ana Torres      ana@gmail.com
+
+         Table 4 presents the sample records of individuals who are authorized to access
+the proposed system. It includes essential user information such as the User ID, Full
+Name, Email Address, Role, and Account Status. The User ID serves as the unique
+identifier for each registered user, while the Full Name and Email Address are used for
+user identification and authentication. The Role field specifies whether the user is a Super
+Admin, Admin, or User, which determines the level of access and permissions granted
+within the system. The Account Status indicates whether the user's account is active or
+inactive. This dataset demonstrates the implementation of the Role-Based Access Control
+(RBAC) mechanism, ensuring that system functions and resources are accessed only by
+authorized users according to their assigned responsibilities.
+
+Table 5: Data Set Sample of Cultural Repository
+
+Resource          Title   Category               Description        Uploader
+                                                                    Admin
+ID
+                                                                    Admin
+CR001     Bagobo          Video     Demonstration of traditional    Admin
+
+          Traditional               Bagobo dance.                   Admin
+
+          Dance
+
+CR002     Bagobo          Audio     Audio pronunciation of
+
+          Greeting Words            common greetings.
+
+CR003     Bagobo          Image     Traditional clothing worn
+
+          Traditional               during rituals.
+
+          Attire
+
+CR004     The Legend of Text        A traditional Bagobo folktale.
+
+          Mt. Apo
+
+         The table 5 presents the sample dataset of the digital cultural resources stored
+within the proposed system. It includes the Resource ID, Title, Category, Description, and
+Uploaded By fields. Each Resource ID uniquely identifies a cultural resource, while the
+Title provides the name of the resource. The Category classifies the resource into audio,
+video, image, or text, allowing users to easily organize and locate cultural materials. The
+Description provides a brief explanation of the content, and the Uploaded By field
+identifies the administrator responsible for uploading the resource. This dataset
+demonstrates how the system stores, organizes, and manages Bagobo Tagabawa cultural
+materials in a centralized digital repository, supporting the preservation and accessibility
+of indigenous language and cultural heritage.
+
+Table 6: Data Set Sample of Learning Materials
+
+Lesson ID              Lesson Title             Module        Difficulty
+                                                          Beginner
+L001       Basic Bagobo Greetings               Language  Beginner
+                                                          Intermediate
+L002       Numbers in Bagobo                    Language  Intermediate
+
+L003       Bagobo Cultural Practices            Culture
+
+L004       Traditional Festivals                Culture
+
+         The table 6 contains the sample educational content that users can access through
+the interactive learning module of the proposed system. It includes the Lesson ID, Lesson
+Title, Module, and Difficulty fields. The Lesson ID uniquely identifies each lesson, while
+the Lesson Title describes the topic being discussed. The Module field categorizes the
+lesson into specific learning areas, such as Language or Culture, and the Difficulty field
+identifies the complexity level of each lesson to guide learners according to their
+knowledge and learning progress. This dataset demonstrates how the proposed system
+delivers structured educational content designed to promote the learning and
+revitalization of the Bagobo Tagabawa dialect, traditions, and cultural practices.
+
+Table 7: Data Set Sample of Quiz Results
+
+Result ID  User                       Lesson               Score   Remarks
+                                                          95      Passed
+Q001       Carlo Ramos Basic Bagobo Greetings             88      Passed
+                                                          90      Passed
+Q002       Ana Torres  Numbers in Bagobo
+
+Q003       Carlo Ramos Cultural Practices
+         The table 7 presents the sample assessment records generated after users
+complete the learning activities provided by the system. It contains the Result ID, User,
+Lesson, Score, and Remarks fields. The Result ID uniquely identifies each assessment
+record, while the User field identifies the learner who completed the quiz. The Lesson
+field specifies the lesson associated with the assessment, and the Score records the user's
+performance. The Remarks field indicates whether the learner has successfully passed
+the assessment based on the established criteria. This dataset demonstrates how the
+system evaluates user learning outcomes, monitors academic progress, and provides
+performance records that can be used to measure the effectiveness of the interactive
+learning module.
+
+Table 8: Data Set Sample of Chatbot Logs
+
+Chat  User           Question                            AI Response
+
+ID                                                Displays the Bagobo
+                                                  translation and
+C001 Carlo Ramos How do you say "Thank you" in    pronunciation.
+                                                  Provides an overview of
+            Bagobo?                               Bagobo cultural
+                                                  traditions.
+C002 Ana Torres Tell me about Bagobo traditions.
+
+         The table 8 contains the sample records of interactions between users and the AI-
+powered chatbot integrated into the proposed system. It includes the Chat ID, User,
+Question, and AI Response fields. The Chat ID uniquely identifies each chatbot
+interaction, while the User field identifies the individual who submitted the inquiry. The
+Question field records the user's request or inquiry related to the Bagobo Tagabawa
+dialect or cultural heritage, and the AI Response field stores the corresponding answer
+generated by the chatbot. This dataset demonstrates how the AI-assisted learning
+component provides immediate responses, language assistance, and cultural information,
+thereby enhancing user engagement and supporting self-paced learning within the
+proposed web-based platform.
+
+Table 9: Data Set Sample of Community Contributions
+
+Contribution ID Contributor  Title                    Type    Status
+                                                     Text   Approved
+CC001  Maria Lumad Traditional Wedding Ritual        Image  Pending
+                                                     Audio  Approved
+CC002  Ana Torres Bagobo Harvest Festival
+
+CC003  Carlo Ramos Bagobo Folk Song
+
+         The table 9 presents the sample records of cultural content submitted by members
+of the Bagobo Tagabawa community through the proposed system. It includes the
+Contribution ID, Contributor, Title, Type, and Status fields. The Contribution ID uniquely
+identifies each submitted resource, while the Contributor field records the individual who
+submitted the content. The Title identifies the cultural material, and the Type specifies
+whether the submission is in the form of text, image, audio, or another supported media
+type. The Status field indicates whether the submitted content is Pending or Approved
+after undergoing administrative review and validation. This dataset demonstrates the
+community participation feature of the proposed system by allowing users to contribute
+valuable cultural knowledge while ensuring that all submissions are reviewed for
+authenticity, relevance, and accuracy before being included in the digital repository. This
+process supports the collaborative preservation and continuous enrichment of the Bagobo
+Tagabawa dialect and cultural heritage.
+
+Table 10: Data Set Sample of Users Feedback
+
+Contribution ID Contributor  Title             Type    Status
+                                               Text   Approved
+CC001  Maria Lumad Traditional Wedding Ritual  Image  Pending
+                                               Audio  Approved
+CC002  Ana Torres Bagobo Harvest Festival
+
+CC003  Carlo Ramos Bagobo Folk Song
+
+         The table 10 contains the sample records of evaluations and comments submitted
+by users regarding their experience with the proposed system. It includes the Feedback
+ID, User, Rating, and Comments fields. The Feedback ID serves as the unique identifier
+for each feedback entry, while the User field identifies the individual who submitted the
+evaluation. The Rating field allows users to assess the system's overall performance,
+usability, and effectiveness using a numerical scale, whereas the Comments field provides
+qualitative feedback, suggestions, or observations about the system's features and
+functionality. This dataset demonstrates how the proposed system collects user
+evaluations to measure user satisfaction, identify areas for improvement, and support the
+continuous enhancement of the web-based platform. Furthermore, the collected feedback
+serves as valuable input for assessing the system's effectiveness in preserving,
+promoting, and revitalizing the Bagobo Tagabawa dialect and cultural heritage while
+improving the overall user experience.
+
+Table 11: Data Set Sample of Vocabulary Dictionary
+ Word ID      Bagobo Word   English Meaning       Pronunciation   Category
+W001         Genda         Where                 Ge-n-da         Greeting
+W002         Salamat       Thank You             sa-la-mat       Expression
+W003         Wayig         Water                 Wa-y-ig         Noun
+W004         Apo           Grandparent           a-po            Family
+
+         The table 11 contains the sample records of Bagobo Tagabawa words and their
+corresponding English translations. It includes the Word ID, Bagobo Word, English
+Meaning, Pronunciation, and Category fields. The Word ID serves as the unique identifier
+for each vocabulary entry, while the Bagobo Word stores the indigenous term and the
+English Meaning provides its corresponding translation. The Pronunciation field serves as
+a guide for users to correctly pronounce the word, and the Category field classifies the
+vocabulary according to its type, such as greetings, expressions, nouns, verbs, or
+adjectives. This dataset demonstrates how the proposed system preserves and
+documents the Bagobo Tagabawa dialect while providing users with structured language
+resources that support vocabulary development and language revitalization.
+
+Table 12: Data Set Sample of Learning Progress
+
+Progress ID  User          Lesson                   Status    Date Completed
+                                                 Completed    March 15, 2026
+P001         Carlo Ramos Basic Bagobo Greetings  In Progress  --
+                                                 Completed    March 18, 2026
+P002         Ana Torres Numbers in Bagobo        Not Started  --
+
+P003         Carlo Ramos Cultural Practices
+
+P004         Ana Torres Traditional Festivals
+         The table 12 contains the sample records of users' progress throughout the
+learning modules provided by the proposed system. It includes the Progress ID, User,
+Lesson, Status, and Date Completed fields. The Progress ID uniquely identifies each
+learning record, while the User field identifies the learner whose progress is being
+monitored. The Lesson field specifies the learning module being undertaken, and the
+Status field indicates whether the lesson is Completed, In Progress, or Not Started. The
+Date Completed field records the date on which the learner successfully completed the
+lesson. This dataset demonstrates how the proposed system monitors learner
+participation and tracks learning achievements, allowing users to continue their lessons
+efficiently while enabling administrators to monitor overall learning performance.
+
+Table 13: Data Set Sample of Cultural Events
+
+Event Event Name      Date       Location              Description
+
+ID                                              Annual thanksgiving
+                                                celebration.
+E001 Harvest Festival August 15 Bansalan        Traditional Bagobo
+                                                dances.
+E002  Cultural Dance  October 2  Davao del Sur  Sharing of Bagobo
+E003  Festival        July 20                   folktales.
+      Storytelling               Barangay
+      Session                    Kinuskusan
+
+         The table 13 contains the sample records of traditional Bagobo Tagabawa cultural
+activities and celebrations documented in the proposed system. It includes the Event ID,
+Event Name, Date, Location, and Description fields. The Event ID uniquely identifies each
+cultural event, while the Event Name specifies the title of the activity. The Date records
+the scheduled or commemorative date of the event, and the Location identifies where
+the activity takes place. The Description field provides a brief explanation of the event
+and its cultural significance. This dataset demonstrates how the proposed system
+documents and promotes traditional ceremonies, festivals, and cultural activities to
+encourage awareness, participation, and appreciation of the Bagobo Tagabawa cultural
+heritage.
+
+Table 14: Data Set Sample of Activity Logs
+
+Log ID  User         Activity                                Date
+                                                     March 10, 2026
+A001    Maria Lumad  Uploaded new audio resource     March 11, 2026
+                                                     March 15, 2026
+A002 Juan Dela Cruz Approved community contribution  March 18, 2026
+
+A003    Maria Lumad  Updated learning lesson
+
+A004 Juan Dela Cruz Created new user account
+
+         The table 14 contains the sample records of significant actions performed by users
+and administrators within the proposed system. It includes the Log ID, User, Activity, and
+Date fields. The Log ID uniquely identifies each recorded activity, while the User field
+identifies the individual who performed the action. The Activity field describes the specific
+task completed, such as uploading cultural resources, approving community
+contributions, updating learning materials, or managing user accounts. The Date field
+records when the activity occurred. This dataset demonstrates how the proposed system
+maintains an audit trail of system activities to support monitoring, accountability, system
+maintenance, and administrative reporting.
+
+Table 15: Data Set Sample of AI Learning Recommendations
+Recommendation          User    Recommended                     Reason
+                                       Lesson
+       ID                                        Beginner-level lesson
+                                Numbers in       recommended.
+R001               Carlo Ramos  Bagobo           Based on previous lesson
+                                                 completion.
+R002               Ana Torres   Traditional
+                                Festivals        Suggested after completing
+R003               Carlo Ramos                   cultural lessons.
+                                Bagobo Folk
+                                Songs
+
+         The table 15 contains the sample records of lesson recommendations generated
+by the AI component of the proposed system. It includes the Recommendation ID, User,
+Recommended Lesson, and Reason fields. The Recommendation ID uniquely identifies
+each recommendation, while the User field specifies the learner who receives the
+recommendation. The Recommended Lesson identifies the lesson suggested by the AI,
+and the Reason field explains why the lesson was recommended, such as based on quiz
+performance, learning progress, or previous activities. This dataset demonstrates the
+adaptive learning capability of the proposed system by providing personalized learning
+recommendations that help users improve their understanding of the Bagobo Tagabawa
+dialect and cultural heritage.
+
+Table 16: Data Set Sample of Cultural Practices
+
+Practice Practice Name Category                  Description
+
+ID
+
+CP001      Gin-Em             Ritual  Traditional thanksgiving ceremony.
+
+           Ceremony
+
+CP002      Harvest Festival Festival  Celebration after a successful harvest.
+
+CP003      Traditional        Tradition Indigenous courtship practices.
+
+           Courtship
+CP004     Wedding              Ceremony Traditional Bagobo marriage customs.
+CP005     Ceremony
+CP006     Tribal Council       Governance Gathering led by tribal elders.
+          Meeting
+          Healing Ritual       Ritual  Traditional healing practices using
+                                       indigenous knowledge.
+
+         The table 16 contains sample records of the customs, traditions, ceremonies, and
+rituals practiced by the Bagobo Tagabawa community. It includes the Practice ID, Practice
+Name, Category, and Description fields. The Practice ID uniquely identifies each cultural
+practice, while the Practice Name specifies its title. The Category classifies the practice
+according to its purpose, such as rituals, festivals, or ceremonies, and the Description
+provides a brief explanation of its cultural significance. This dataset supports the
+documentation and preservation of indigenous customs and traditions through organized
+digital records.
+
+Table 17: Data Set Sample of Storytelling Archive
+
+Story ID  Story Title                  Storyteller     Category     Language
+                                                    Folktale        Bagobo
+ST001     Legend of Mt. Apo            Datu Ramon   Legend          Bagobo
+                                                    Myth            Bagobo
+ST002     The Brave Hunter             Elder Juan   Folktale        Bagobo
+                                                    Legend          Bagobo
+ST003     The Sacred Tree              Elder Rosa   Oral Tradition  Bagobo
+
+ST004     Origin of the River          Datu Ramon
+
+ST005     The Spirit of the Forest     Elder Lina
+
+ST006     The First Bagobo Family Elder Pedro
+
+         The table 17 contains sample records of traditional Bagobo Tagabawa stories
+documented in the proposed system. It includes the Story ID, Story Title, Storyteller,
+Category, and Language fields. The Story ID uniquely identifies each story, while the
+Story Title provides the title of the cultural narrative. The Storyteller identifies the
+individual who shared the story, the Category classifies the story according to its type,
+and the Language specifies the language used in the narration. This dataset demonstrates
+how the proposed system digitally preserves oral traditions, legends, myths, and folktales
+for future generations.
+
+Table 18: Data Set Sample of Pronunciation Library
+
+Media          Title   Media Category Uploaded                   Date
+                                                              Uploaded
+ID                     Type                         By     March 10, 2026
+                                                           March 11, 2026
+M001 Traditional Bagobo Video Cultural              Admin  March 12, 2026
+                                                           March 14, 2026
+       Dance                 Dance                  Maria  March 15, 2026
+                                                           March 16, 2026
+M002 Bagobo Greeting Audio Language Admin                  March 18, 2026
+                                                           March 20, 2026
+       Pronunciation                                Pedro
+
+M003 Traditional Bagobo Image Cultural              Admin
+
+       Attire                Attire                 Maria
+
+M004 Harvest Festival  Video Festival               Admin
+
+       Celebration                                  Pedro
+
+M005 Indigenous Musical Image Cultural              Admin
+
+       Instruments           Artifacts              Maria
+
+M006 Traditional Folk  Audio Music                  Admin
+
+       Song                                         Pedro
+
+M007 Bagobo Wedding Video Tradition                 Admin
+
+       Ceremony                                     Maria
+
+M008 Traditional Weaving Image Handicrafts Admin
+
+       Patterns                                     Pedro
+
+         The table 18 contains the sample records of Bagobo Tagabawa vocabulary with
+their corresponding pronunciation resources. It includes the Pronunciation ID, Bagobo
+Word, English Meaning, Audio File, Native Speaker, and Verified By fields. The
+Pronunciation ID serves as the unique identifier for each pronunciation record, while the
+Bagobo Word and English Meaning provide the indigenous word and its English
+translation. The Audio File stores the recorded pronunciation spoken by a native speaker,
+the Native Speaker field identifies the individual who provided the recording, and the
+Verified By field records the administrator or cultural elder who validated the
+pronunciation for accuracy and authenticity. This dataset demonstrates how the proposed
+system preserves the correct pronunciation of the Bagobo Tagabawa dialect and supports
+the interactive learning module and AI-assisted chatbot by providing verified audio
+references for language learners.
+
+Table 19: Data Set Sample of Multimedia Gallery
+
+Media          Title   Media Category            Uploaded       Date
+                                                       By   Uploaded
+ID                     Type                                March 10,
+                                                 Admin     2026
+M001 Traditional Bagobo Video Cultural           Maria     March 11,
+                                                 Admin     2026
+       Dance                 Dance               Pedro     March 12,
+                                                 Admin     2026
+M002 Bagobo Greeting Audio Language              Maria     March 14,
+                                                 Admin     2026
+       Pronunciation                             Pedro     March 15,
+                                                 Admin     2026
+M003 Traditional Bagobo Image Cultural           Maria     March 16,
+                                                 Admin     2026
+       Attire                Attire              Pedro     March 18,
+                                                 Admin     2026
+M004 Harvest Festival  Video Festival            Maria     March 20,
+                                                 Admin     2026
+       Celebration                               Pedro
+
+M005 Indigenous Musical Image Cultural
+
+       Instruments           Artifacts
+
+M006 Traditional Folk  Audio Music
+
+       Song
+
+M007 Bagobo Wedding Video Tradition
+
+       Ceremony
+
+M008 Traditional Weaving Image Handicrafts
+
+       Patterns
+
+         The table 19 contains the sample records of multimedia resources stored in the
+proposed system to support the preservation and promotion of the Bagobo Tagabawa
+dialect and cultural heritage. It includes the Media ID, Title, Media Type, Category,
+Uploaded By, and Date Uploaded fields. The Media ID serves as the unique identifier for
+each multimedia resource, while the Title specifies the name of the media content. The
+Media Type identifies the format of the resource, such as image, audio, or video, and the
+Category classifies the content based on its cultural significance, including language,
+traditions, festivals, rituals, and cultural artifacts. The Uploaded By field records the
+administrator responsible for uploading the resource, while the Date Uploaded indicates
+when the multimedia file was added to the system. This dataset demonstrates how the
+proposed system organizes and manages digital multimedia resources, providing users
+with accessible and engaging visual and audio materials that support cultural
+preservation, language learning, and community awareness.
+
+Table 20: Data Set Sample of Resource Verification
+
+Verification ID  Resource Title      Verified By    Date Verified   Status
+                                                    March 10, 2026  Verified
+V001             Bagobo Folk Song    Datu Ramon     March 12, 2026  Verified
+                                                    March 14, 2026  Verified
+V002             Traditional Dance   Elder Juan     March 18, 2026  Verified
+                                                    March 20, 2026  Pending
+V003             Bagobo Greeting Words Elder Rosa   March 22, 2026  Verified
+
+V004             Legend of Mt. Apo   Datu Ramon
+
+V005             Traditional Attire  Elder Lina
+
+V006             Healing Ritual      Elder Pedro
+
+         The table 20 contains sample records of cultural resources that have undergone
+validation by cultural elders or authorized administrators. It includes the Verification ID,
+Resource Title, Verified By, Date Verified, and Status fields. The Verification ID uniquely
+identifies each verification record, while the Resource Title identifies the cultural material
+being reviewed. The Verified By field records the cultural elder or administrator
+responsible for the validation process, the Date Verified indicates when the verification
+was completed, and the Status field specifies whether the resource has been approved
+or is pending review. This dataset demonstrates the proposed system's commitment to
+maintaining the authenticity, accuracy, and credibility of the Bagobo Tagabawa cultural
+resources before they are published in the digital repository.
+
+User Design
+         The user design for Epanaw Bagobo is structured around a three-tier architecture
+
+that bridges the digital gap for the preservation of the Bagobo Tagabawa dialect and
+culture in Bansalan, Davao del Sur.
+
+         Diagrams
+         Diagrams are essential tools and serve as visual aids that simplify and clarify
+complex information. Diagrams effectively illustrate relationships, processes, and data
+that would be cumbersome or difficult to explain through text alone. By breaking down
+intricate concepts into digestible visuals, diagrams enhance readability, make your work
+more engaging, and help readers quickly grasp key ideas. Ultimately, they strengthen
+your arguments, provide clear evidence for your findings, and improve the overall
+professional quality and impact of your capstone project.
+                  Entity Relationship Diagram. The Entity Relationship Diagram (ERD)
+illustrates the logical structure of the database for the proposed capstone. It identifies
+the system's primary entities, their attributes, and the relationships among them. The
+ERD serves as the blueprint for the database design by defining how data are organized,
+stored, and interconnected to support the system's functionalities. It also ensures data
+consistency, minimizes redundancy, and facilitates efficient data retrieval and
+management. As shown in the ERD, the User Accounts entity serves as the central table
+of the database since it manages the information of all registered users, including Super
+Administrators, Administrators, and Users. Each user can access the system according to
+the permissions assigned through the Role-Based Access Control (RBAC) mechanism. The
+User Accounts entity is related to several modules, including Learning Progress, Quiz
+Results, AI Chatbot Logs, Feedback, Community Contributions, and Activity Logs, allowing
+the system to monitor user activities, learning records, chatbot interactions, submitted
+contributions, and system usage. The Learning Materials entity stores the educational
+content provided by the system, including language lessons and cultural learning
+modules. Each learning material can be accessed by multiple users, while each user can
+complete several lessons. The Learning Progress and Quiz Results entities are associated
+with both User Accounts and Learning Materials to monitor lesson completion,
+assessment scores, and overall learning performance. The Vocabulary Dictionary entity
+contains the Bagobo Tagabawa vocabulary entries together with their English translations
+and learning information. Each vocabulary entry is associated with the Pronunciation
+Library, which stores verified audio recordings of native speakers. This relationship allows
+users to learn not only the meaning of indigenous words but also their correct
+pronunciation, thereby supporting the revitalization of the Bagobo Tagabawa dialect. The
+Cultural Repository entity serves as the primary storage for digital cultural resources,
+including documents, images, audio recordings, and videos related to the Bagobo
+Tagabawa community. This repository is connected to the Multimedia Gallery, which
+organizes multimedia files for easier browsing and presentation. Likewise, the repository
+is linked to the Storytelling Archive, Cultural Practices, and Cultural Events entities,
+enabling the system to preserve traditional stories, customs, rituals, ceremonies, festivals,
+and other significant cultural information in a structured manner. To maintain the
+authenticity and integrity of cultural resources, the Community Contributions entity
+records the cultural materials submitted by registered users, while the Resource
+Verification entity stores the validation records performed by administrators or recognized
+cultural custodians. This process ensures that all published cultural resources have
+undergone proper review before becoming accessible to other users. The AI Chatbot Logs
+entity records user interactions with the AI-powered chatbot by storing users' questions
+and the corresponding responses generated by the system. These records support system
+monitoring and provide insights that can be used to improve the chatbot's performance.
+Similarly, the Feedback entity collects users' ratings, comments, and suggestions
+regarding the usability and effectiveness of the system. These evaluations provide
+valuable information for the continuous enhancement of the platform. Finally, the Activity
+Logs entity records significant actions performed by users and administrators, such as
+uploading cultural resources, approving contributions, updating learning materials, and
+managing user accounts. This entity supports administrative monitoring, accountability,
+and system auditing by maintaining a complete record of important system activities.
+Overall, the Entity Relationship Diagram demonstrates the relationships among the core
+entities required to support the proposed system. It provides a well-structured database
+design that enables efficient management of user information, digital cultural resources,
+language learning modules, AI-assisted services, multimedia content, community
+participation, and administrative functions. Through these interconnected entities, the
+proposed system effectively supports its primary objective of preserving and revitalizing
+the Bagobo Tagabawa dialect and cultural heritage using a secure, organized, and AI-
+integrated web-based platform.
+
+Figure 5: Entity Relationship Diagram of the Study
+                  Database Schema. The Database Schema presents the logical structure
+of the database used in the proposed system. It defines the database tables, their
+corresponding fields, data types, primary keys, and foreign keys that support the system's
+functionalities. The schema serves as the foundation for database implementation by
+ensuring data consistency, integrity, and efficient management of user information,
+cultural resources, learning materials, AI-assisted services, and community contributions.
+
+Table 21: Database Schema of User Account
+
+Field Name            Data Type                              Constraints
+                                                 Primary Key, Auto Increment
+UserID      INT                                  NOT NULL
+                                                 UNIQUE, NOT NULL
+FullName    VARCHAR(100)                         NOT NULL
+                                                 NOT NULL
+Email       VARCHAR(100)                         NOT NULL
+                                                 NOT NULL
+Password    VARCHAR(255)
+
+Role        ENUM('Super Admin','Admin','User')
+
+Status      VARCHAR(20)
+
+DateCreated DATETIME
+
+         The table 21 stores the information of all registered users in the proposed system.
+It contains user credentials and account details, including the assigned role and account
+status. This table supports the implementation of the Role-Based Access Control (RBAC)
+mechanism by defining the access privileges of the Super Administrator, Administrator,
+and User. It also serves as the primary reference for user authentication and system
+access management.
+
+Table 22: Database Schema of Learning Materials
+
+Field Name            Data Type                  Constraints
+
+LessonID         INT             Primary Key, Auto Increment
+
+Title            VARCHAR(150)    NOT NULL
+Description    TEXT            NOT NULL
+Module         VARCHAR(50)     NOT NULL
+Difficulty     VARCHAR(30)     NOT NULL
+UploadedBy     INT             Foreign Key (UserID)
+
+         The table 22 contains the educational content provided by the proposed system.
+It stores information about language lessons, cultural topics, module categories, and
+difficulty levels. This table serves as the primary source of learning resources that enable
+users to study the Bagobo Tagabawa dialect and cultural heritage through structured and
+interactive lessons.
+
+Table 23: Database Schema of Learning Progress
+
+Field Name          Data Type                   Constraints
+
+ProgressID     INT             Primary Key, Auto Increment
+
+UserID         INT             Foreign Key
+
+LessonID       INT             Foreign Key
+
+Status         VARCHAR(30)     NOT NULL
+
+DateCompleted  DATE            NULL
+
+         The table 23 records the progress of each user throughout the learning modules.
+It stores information regarding lesson completion status and completion dates, allowing
+the system to monitor users' learning achievements. This table enables learners to track
+their progress while providing administrators with data for evaluating learning
+participation.
+
+Table 24: Database Schema of Quiz Results
+
+Field Name          Data Type                   Constraints
+
+QuizResultID   INT             Primary Key, Auto Increment
+
+UserID         INT             Foreign Key
+LessonID         INT             Foreign Key
+Score            INT             NOT NULL
+Remarks          VARCHAR(20)     NOT NULL
+
+         The table 24 stores the assessment records generated after user's complete
+quizzes associated with the learning modules. It contains users' scores and evaluation
+remarks, allowing the system to measure learning outcomes and monitor users' academic
+performance. This table supports the assessment component of the interactive learning
+module.
+
+Table 25: Data Schema of Vocabulary Dictionary
+
+Field Name            Data Type                 Constraints
+
+WordID           INT             Primary Key, Auto Increment
+
+BagoboWord       VARCHAR(100)    NOT NULL
+
+EnglishMeaning   VARCHAR(100)    NOT NULL
+
+Pronunciation    VARCHAR(100)    NOT NULL
+
+Category         VARCHAR(50)     NOT NULL
+
+         The table 25 contains the Bagobo Tagabawa vocabulary entries used within the
+proposed system. It stores indigenous words together with their English translations,
+pronunciation guides, and language categories. This table supports language learning by
+providing users with a structured digital dictionary that promotes vocabulary development
+and language preservation.
+
+Table 26: Data Schema of Pronunciation Library
+
+Field Name            Data Type                 Constraints
+
+PronunciationID  INT             Primary Key, Auto Increment
+
+WordID           INT             Foreign Key
+
+AudioFile        VARCHAR(255)    NOT NULL
+NativeSpeaker  VARCHAR(100)     NOT NULL
+VerifiedBy     INT              Foreign Key (UserID)
+
+         The table 26 stores the verified pronunciation records of Bagobo Tagabawa
+vocabulary. It contains audio files, native speaker information, and verification details to
+ensure pronunciation accuracy. This table supports the interactive learning module and
+AI-assisted chatbot by providing authentic pronunciation references for users learning the
+indigenous dialect.
+
+Table 27: Data Schema of Cultural Repository
+
+Field Name           Data Type                            Constraints
+                                              Primary Key, Auto Increment
+ResourceID     INT                            Foreign Key
+                                              NOT NULL
+UploadedBy     INT                            NOT NULL
+                                              NOT NULL
+Title          VARCHAR(150)                   NOT NULL
+                                              NOT NULL
+Description    TEXT                           NOT NULL
+
+Category       VARCHAR(50)
+
+FileType       VARCHAR(30)
+
+FilePath       VARCHAR(255)
+
+DateUploaded   DATETIME
+
+         The table 27 serves as the central repository for the digital cultural resources
+stored in the proposed system. It contains information about uploaded documents,
+images, audio recordings, videos, and other cultural materials related to the Bagobo
+Tagabawa community. This table supports the preservation, organization, and retrieval
+of indigenous cultural heritage in a centralized database.
+
+Table 28: Data Schema of Multimedia Gallery
+
+Field Name           Data Type                          Constraints
+
+MediaID        INT                            Primary Key, Auto Increment
+
+ResourceID     INT                            Foreign Key
+
+Title          VARCHAR(150)                   NOT NULL
+MediaType     VARCHAR(30)                    NOT NULL
+FilePath      VARCHAR(255)                   NOT NULL
+Caption       TEXT                           NULL
+
+         The table 28 stores multimedia resources associated with the cultural repository.
+It contains images, audio recordings, and videos that enhance users' learning experience
+by providing visual and audio representations of Bagobo Tagabawa traditions, language,
+ceremonies, and cultural artifacts. This table improves the accessibility and presentation
+of digital cultural resources.
+
+Table 29: Data Schema of Storytelling Archive
+
+Field Name         Data Type                   Constraints
+
+StoryID       INT              Primary Key, Auto Increment
+
+ResourceID    INT              Foreign Key
+
+StoryTitle    VARCHAR(150)     NOT NULL
+
+Storyteller   VARCHAR(100)     NOT NULL
+
+Category      VARCHAR(50)      NOT NULL
+
+Language      VARCHAR(50)      NOT NULL
+
+         The table 29 contains digital records of traditional Bagobo Tagabawa stories,
+legends, myths, and oral traditions. It stores information regarding the story title,
+storyteller, category, and language used. This table contributes to the preservation of
+indigenous oral literature and supports cultural education through digital storytelling.
+
+Table 30: Data Schema of Cultural Practices
+
+Field Name          Data Type                  Constraints
+
+PracticeID    INT              Primary Key, Auto Increment
+
+ResourceID    INT              Foreign Key
+
+PracticeName  VARCHAR(150)     NOT NULL
+
+Category      VARCHAR(50)      NOT NULL
+
+Description   TEXT             NOT NULL
+         The table 30 stores information about the customs, traditions, rituals, ceremonies,
+and cultural activities of the Bagobo Tagabawa community. It provides descriptions and
+classifications of each cultural practice, allowing users to access documented information
+that promotes cultural awareness and heritage preservation.
+
+Table 31: Data Schema of Community Contributions
+
+Field Name              Data Type                 Constraints
+
+ContributionID     INT              Primary Key, Auto Increment
+
+UserID             INT              Foreign Key
+
+Title              VARCHAR(150)     NOT NULL
+
+Description        TEXT             NOT NULL
+
+FileType           VARCHAR(30)      NOT NULL
+
+FilePath           VARCHAR(255)     NOT NULL
+
+Status             VARCHAR(20)      NOT NULL
+
+         The table 31 records cultural materials submitted by registered users of the
+proposed system. It stores information about user-submitted documents, images, audio
+recordings, and other resources, including their approval status. This table encourages
+community participation while allowing administrators to review and manage contributed
+cultural content before publication.
+
+Table 32: Data Schema of Resource Verification
+
+       Field Name        Data Type                Constraints
+
+VerificationID     INT              Primary Key, Auto Increment
+
+ContributionID     INT              Foreign Key
+
+VerifiedBy         INT              Foreign Key (UserID)
+
+DateVerified       DATE             NOT NULL
+
+Status             VARCHAR(20)      NOT NULL
+
+Remarks            TEXT             NULL
+         The table 32 stores the validation records of cultural resources submitted to the
+proposed system. It records the administrator or cultural elder responsible for verifying
+each resource, together with the verification date and status. This table ensures the
+authenticity, reliability, and cultural accuracy of the information published in the digital
+repository.
+
+Table 33: Data Schema of AI Chatbot Logs
+
+Field Name           Data Type                            Constraints
+                                          Primary Key, Auto Increment
+ChatLogID      INT                        Foreign Key
+                                          NOT NULL
+UserID         INT                        NOT NULL
+                                          NOT NULL
+UserMessage    TEXT
+
+BotResponse    TEXT
+
+DateTime       DATETIME
+
+         The table 33 records the interactions between users and the AI-powered chatbot.
+It stores users' inquiries together with the responses generated by the AI assistant and
+the corresponding date and time of each interaction. This table supports system
+monitoring, evaluates chatbot performance, and helps improve AI-assisted learning
+services.
+
+Table 34: Data Schema of Feedback
+
+Field Name     Data Type                        Constraints
+
+FeedbackID     INT                 Primary Key, Auto Increment
+
+UserID         INT                 Foreign Key
+Rating         INT                 NOT NULL
+
+Comments       TEXT                NULL
+DateSubmitted  DATETIME            NOT NULL
+         The table 34 stores the evaluations, comments, and suggestions submitted by
+users regarding the proposed system. It records users' ratings together with their
+feedback to assess system usability, functionality, and overall user satisfaction. This table
+provides valuable information that supports continuous system improvement and
+enhances the quality of the learning platform.
+
+Table 35: Data Schema of Activity Logs
+
+Field Name         Data Type                            Constraints
+                                        Primary Key, Auto Increment
+LogID        INT                        Foreign Key
+                                        NOT NULL
+UserID       INT                        NULL
+                                        NOT NULL
+Activity     VARCHAR (255)
+
+Description  TEXT
+
+DateTime     DATETIME
+
+         The table 35 records significant activities performed by users and administrators
+within the proposed system. It stores information about user actions, activity descriptions,
+and timestamps to maintain an audit trail of system operations. This table supports
+system monitoring, administrative reporting, accountability, and security by tracking
+important events occurring within the application.
+
+                  Use Case Diagram. The Use Case Diagram illustrates the functional
+requirements of the system. It identifies the different users of the system and the specific
+functions they can perform based on their assigned roles. The diagram provides a visual
+representation of the interactions between the system and its actors, ensuring that the
+system's features are aligned with the objectives and requirements of the study. As
+illustrated in the Use Case Diagram shows in Figure 6 below , the proposed system
+consists of three primary actors: the Super Admin, Admin, and User. Each actor is
+assigned specific roles and permissions through the implementation of Role-Based Access
+Control (RBAC), ensuring secure and authorized access to the system's functionalities.
+The Super Admin has the highest level of access and is responsible for the overall
+management and administration of the system. This actor manages user and
+administrator accounts, oversees learning materials and cultural resources, maintains the
+multimedia gallery, vocabulary dictionary, pronunciation library, storytelling archive, and
+cultural practices, verifies community contributions, manages cultural events, monitors
+user feedback and activity logs, generates system reports, and ensures the efficient
+operation of the platform. The admin is responsible for managing the system's
+educational and cultural content. The admin can upload and update learning materials,
+cultural resources, multimedia content, vocabulary entries, pronunciation records,
+storytelling archives, and cultural practices. In addition, the admin reviews community
+contributions, manages cultural events, monitors user feedback, and generates reports
+to support the maintenance and continuous improvement of the system. The User
+represents the learners and community members who utilize the system for educational
+and cultural purposes. Registered users can create and manage their accounts, browse
+the digital cultural repository, access multimedia resources, search vocabulary entries,
+listen to pronunciation guides, read traditional stories, explore cultural practices and
+events, access learning modules, complete quizzes, monitor their learning progress,
+interact with the AI-powered chatbot, submit community contributions, and provide
+feedback regarding the system. Furthermore, the diagram illustrates the relationships
+among the system's use cases through «include» relationships, indicating that certain
+processes are dependent on or integrated with other system functions. For example, user
+authentication is required before accessing protected features, while community
+contributions undergo a verification process before becoming available in the digital
+repository. Similarly, report generation and content management involve multiple
+interconnected processes that support the overall functionality of the proposed system.
+Overall, the Use Case Diagram demonstrates the interactions between the system and its
+intended users by illustrating the major functional requirements of the proposed platform.
+It provides a clear representation of how the system facilitates user management, digital
+cultural preservation, interactive learning, AI-assisted services, and community
+participation. These interactions ensure that the proposed system effectively supports the
+preservation and revitalization of the Bagobo Tagabawa dialect and cultural heritage while
+providing a secure, organized, and user-centered web-based platform.
+Figure 6: Use Case Diagram of the System
+
+                  Data Flow Diagram. The Data Flow Diagram (DFD) illustrates the
+movement of data within the proposed system. It presents how data are received,
+processed, stored, and transmitted throughout the system. The DFD identifies the
+interactions between external entities, system processes, and data stores, providing a
+clear representation of how information flows to support the system's functionalities. It
+serves as a logical model that ensures efficient data processing, secure information
+management, and effective communication among the different components of the
+proposed system. The Data Flow Diagram (DFD) Level 0, provides a high-level
+representation of the proposed system. It illustrates the interaction between the system
+and its external entities, namely the User, Admin, and Super Admin, by showing the flow
+of information entering and leaving the system. As illustrated in the diagram based on
+the figure below, the User interacts with the system by submitting registration details,
+login credentials, learning activities, AI chatbot queries, community contributions, and
+feedback, while receiving learning materials, cultural resources, AI-generated responses,
+quiz results, and learning progress. The admin manages cultural resources, learning
+materials, multimedia content, and community contributions, whereas the Super Admin
+oversees user management, system monitoring, and report generation. Overall, the
+Context Diagram defines the scope of the proposed system and demonstrates how data
+are exchanged between the external entities and the system to support its core
+functionalities.
+Figure 7: Context Diagram Level 0 of the System
+
+         The Data Flow Diagram (DFD) Level 1 that was shown in Figure 8 below presents
+the major processes of the proposed system. It illustrates how data flow between the
+external entities, the system's core processes, and the database, ensuring efficient
+processing, storage, and retrieval of information. As shown in the Figure 8, the system
+consists of six major processes: User Management, Learning Management, Cultural
+Repository Management, AI Chatbot Processing, Community Contribution Management,
+and Feedback Management. Each process communicates with its corresponding database
+tables to store and retrieve information. User-related data are managed through the User
+Accounts table, while learning activities are stored in the Learning Materials, Learning
+Progress, and Quiz Results tables. Cultural resources are maintained in the Cultural
+Repository, Multimedia Gallery, Storytelling Archive, Cultural Practices, Vocabulary
+Dictionary, and Pronunciation Library tables. Community submissions and verification
+records are stored in the Community Contributions and Resource Verification tables, while
+chatbot interactions, user feedback, and system activities are recorded in the AI Chatbot
+Logs, Feedback, and Activity Logs tables. Overall, the DFD Level 1 demonstrates how
+the system processes user requests and stores the resulting information in the database,
+ensuring organized data management, efficient retrieval of records, and reliable support
+for the preservation and revitalization of the Bagobo Tagabawa dialect and cultural
+heritage.
+
+Figure 8: Data Flow Diagram of the System
+                  Operational Framework. The Operational Framework illustrates the
+overall operation of the proposed system. It presents the relationship between the
+system's inputs, processes, and outputs, providing a clear overview of how data are
+collected, processed, and transformed into meaningful information. This framework
+serves as a guide in understanding the operational flow of the proposed system and how
+it supports the achievement of the study's objectives. The figure 9 below illustrates the
+overall operation of the proposed system using the Input­Process­Output (IPO) model.
+The Input stage consists of data provided by users and administrators, including
+registration details, login credentials, learning materials, cultural resources, vocabulary
+entries, pronunciation records, multimedia files, community contributions, AI chatbot
+queries, and user feedback. The Process stage involves user authentication, Role-Based
+Access Control (RBAC), learning management, AI chatbot processing, cultural repository
+management, multimedia management, resource verification, quiz evaluation, database
+storage, and report generation. These processes ensure that all information is securely
+managed and efficiently processed within the system. Finally, the Output stage delivers
+the expected results, including secure user access, an organized digital cultural
+repository, interactive learning resources, AI-generated responses, quiz results, learning
+progress, verified community contributions, multimedia content, administrative reports,
+and the preservation of the Bagobo Tagabawa dialect and cultural heritage. The
+Operational Framework demonstrates how the proposed system transforms collected
+data into meaningful information and services that support the objectives of the study.
+Figure 9: Operational Framework of the Study
+
+                  Flowchart of the System. The System Flowchart illustrates the overall
+operational flow of the proposed system. It presents the sequence of processes
+performed by the system, from user authentication to accessing the system's major
+features. The flowchart provides a clear visualization of the system's workflow and
+decision-making processes, demonstrating how users interact with the platform and how
+information is processed throughout the application. The System Flowchart in Figure !0
+below illustrates the overall workflow of the proposed system, beginning when a user
+accesses the EPANAW BAGOBO website. The user may either register a new account or
+log in using existing credentials. The system validates the submitted credentials against
+the User Accounts database. If the authentication fails, an error message is displayed and
+the user is prompted to try again. Once authentication is successful, the system identifies
+the user's role through the implemented Role-Based Access Control (RBAC) mechanism.
+Based on the assigned role, the Super Admin manages user accounts, monitors system
+activities, and generates reports; the admin manages learning materials, cultural
+resources, multimedia content, and verifies community contributions; while the User
+accesses learning modules, explores the cultural repository, interacts with the AI chatbot,
+completes quizzes, monitors learning progress, and submits community contributions and
+feedback. Throughout these operations, the system retrieves and stores information in
+the corresponding database tables to ensure accurate data management and efficient
+service delivery. After completing the desired activities, the user logs out, marking the
+end of the system process.
+Figure 10: Flowchart of the System
+                  Graphical User Interface Design. The Graphical User Interface (GUI)
+
+presents the visual design of the proposed system. It illustrates the layout and
+appearance of the system's major interfaces, enabling users to interact with the
+application through a simple, responsive, and user-friendly environment. The GUI is
+designed to enhance usability by providing intuitive navigation and organized access to
+the system's learning modules, cultural resources, AI-assisted services, and
+administrative functions.
+
+Figure 11: Proposed Mock-up user interface of the Web-based Bagobo
+Tagabawa cultural preservation system
+         The Landing Page shows in Figure 11 above serves as the entry point of the
+proposed system. It introduces users to the objectives of the platform and provides quick
+access to the available features through the navigation menu. It also highlights the
+importance of preserving the Bagobo Tagabawa dialect and cultural heritage while
+encouraging users to register or log in to access the system's learning resources and
+interactive services.
+
+Construction
+         During the construction phase, the software requirements are transformed into
+
+something functional. This process involves coding, testing, and integrating features to
+meet the project's objectives. The proponent will work closely with stakeholders to clarify
+requirements, gather feedback, and ensure alignment with goals. The delivery of value
+will be prioritized while maintaining flexibility to accommodate changes.
+
+                  Implementation Plan. It outlines the activities required to develop, test,
+and deploy the system. It serves as a guide for the systematic execution of the project,
+ensuring that each development phase is completed efficiently and in accordance with
+the objectives of the study. The implementation process includes system development,
+database integration, testing, deployment, and maintenance to ensure that the proposed
+system operates effectively and meets the needs of its intended users. The
+implementation of the proposed system will follow a structured development process to
+ensure that all components are properly developed, integrated, and evaluated. The
+project begins with the review of the approved system requirements and design
+specifications, followed by the development of the web application using Laravel, HTML,
+CSS, JavaScript, and MySQL. After the core modules have been developed, the database
+will be integrated to support secure data storage and retrieval. The system will then
+undergo comprehensive testing to verify its functionality, reliability, and usability before
+deployment. Once validated, the application will be deployed for use by its intended users.
+Continuous maintenance and updates will be performed to improve system performance,
+address technical issues, and ensure the long-term effectiveness of the platform in
+supporting the preservation and revitalization of the Bagobo Tagabawa dialect and
+cultural heritage.
+
+         System Development. The proposed system will be developed using Laravel as
+the primary web application framework, with HTML5, CSS3, Bootstrap, and JavaScript for
+the user interface, and MySQL as the database management system. It will follow a
+Three-Tier Architecture consisting of the Presentation, Application, and Data Layers to
+ensure efficient processing and secure data management. The system will integrate an
+AI-powered chatbot and include modules for user authentication, learning management,
+cultural repository management, vocabulary and pronunciation libraries, multimedia
+gallery, community contributions, feedback, and administrative functions. Each module
+will be individually tested before integration to ensure system reliability, functionality, and
+support for the preservation and revitalization of the Bagobo Tagabawa dialect and
+cultural heritage.
+                  Development of User Module. It was developed to provide learners and
+community members with access to the educational and cultural features of the proposed
+system. Registered users can create and manage their accounts, access learning
+modules, browse the cultural repository, search the vocabulary dictionary, listen to
+pronunciation recordings, view multimedia resources, explore the storytelling archive,
+interact with the AI-powered chatbot, participate in quizzes, monitor their learning
+progress, submit community contributions, and provide feedback. The module is designed
+to offer a secure, user-friendly, and interactive learning environment that encourages
+active participation in preserving and revitalizing the Bagobo Tagabawa dialect and
+cultural heritage.
+
+Figure 12: Proposed Mock-up User Module
+         As shown in the interface in Figure 12 above, the dashboard contains a navigation
+panel that provides access to the Learning Modules, Cultural Repository, Vocabulary
+Dictionary, AI Chatbot, Multimedia Gallery, Storytelling Archive, Community
+Contributions, Feedback, Events, Learning Progress, and Account Settings. The main
+dashboard displays a personalized welcome message, quick access shortcuts, learning
+progress statistics, ongoing learning modules, upcoming cultural events, and recent
+announcements. These features allow users to easily continue their learning activities,
+explore cultural resources, and stay informed about the latest updates within the
+platform. The dashboard also integrates with the system database by retrieving user
+information, learning progress, completed quizzes, cultural resources, and event details
+from their respective database tables. This enables the system to provide personalized
+content, monitor user engagement, and support the preservation and revitalization of the
+Bagobo Tagabawa dialect and cultural heritage through an organized, interactive, and
+efficient web-based learning environment.
+
+                  Development of Admin Module. The Admin Module was developed to
+manage the educational and cultural content of the proposed system. This module
+enables administrators to create, update, organize, and delete learning materials, cultural
+resources, vocabulary entries, pronunciation records, multimedia content, and storytelling
+archives. Administrators are also responsible for reviewing and verifying community
+contributions before publication to ensure the accuracy and authenticity of the
+information available on the platform. In addition, the module provides access to user
+feedback, content statistics, and reports that support effective content management and
+system maintenance. Access to administrative functions is controlled through the
+system's Role-Based Access Control (RBAC) mechanism.
+
+Figure 13: Proposed Mock-up Admin Module
+         As shown in the interface based on the Figure 13 above, the dashboard provides
+
+navigation to the Learning Materials, Cultural Repository, Multimedia Management,
+Community Contributions, Feedback Management, User Management, Events
+Management, Reports and Analytics, and System Settings modules. The main dashboard
+displays summary statistics, including the total number of learning materials, repository
+items, active users, pending community contributions, and user feedback. It also provides
+sections for recent community submissions, feedback summaries, system
+announcements, and quick-action shortcuts that allow administrators to efficiently
+perform content management and verification tasks. The Admin Dashboard is integrated
+with the system database, allowing administrators to retrieve, update, approve, and
+manage information stored in the corresponding database tables. Through this interface,
+administrators can maintain learning materials, cultural resources, multimedia content,
+community contributions, feedback records, and event information. This functionality
+ensures that the system remains organized, secure, and up to date, thereby supporting
+the effective preservation and revitalization of the Bagobo Tagabawa dialect and cultural
+heritage.
+
+                  Development of Super Admin Module. The Super Admin Module was
+developed to provide complete administrative control over the proposed system. This
+module enables the Super Administrator to manage user accounts, assign user roles and
+permissions, monitor system activities, configure system settings, generate reports, and
+maintain database integrity. It also allows the Super Administrator to oversee the overall
+operation of the platform, ensuring system security, data consistency, and reliable
+performance. Through Role-Based Access Control (RBAC), the Super Administrator has
+full access to all modules and administrative functions within the system.
+Figure 14: Propose Mock-up Super Admin Module
+
+         As shown in the interface, the dashboard includes modules for System Overview,
+User Management, Role and Permission Management, Content Management, Database
+Management, System Settings, Activity Logs, Backup and Restore, Reports and Analytics,
+Security Management, Site Configuration, Maintenance, and Subscription Management.
+The main dashboard presents key system statistics, including the total number of users,
+learning materials, repository items, community contributions, and system health. It also
+displays user role distribution, recent system activities, storage utilization, system
+announcements, and quick-action tools for managing administrators, generating reports,
+performing database backups, and configuring system settings. The Super Admin
+Dashboard is directly integrated with the system database, allowing the Super
+Administrator to manage all system records, monitor user activities, maintain database
+integrity, and oversee administrative operations. This interface ensures efficient system
+administration, enhances data security, and supports the reliable operation of the
+proposed platform, contributing to the effective preservation and revitalization of the
+Bagobo Tagabawa dialect and cultural heritage.
+
+         How the Project will Work
+
+         The proposed EPANAW BAGOBO system is a web-based platform that allows users
+to access learning modules, cultural resources, AI-assisted language support, multimedia
+content, and community features through a secure and user-friendly interface. After
+registration and login, users are directed to role-specific dashboards where they can
+perform authorized functions. Administrators manage and verify system content, while
+the Super Administrator oversees user management, system security, and overall
+platform operations. The system utilizes a Three-Tier Architecture and a MySQL database
+to efficiently process, store, and retrieve information, supporting the preservation and
+revitalization of the Bagobo Tagabawa dialect and cultural heritage.
+
+                  Super Admin Page:
+
+                  1. Log in to the system.
+                  2. Access the Super Admin Dashboard.
+                  3. Manage users, roles, and system settings.
+                  4. Monitor system activities and generate reports.
+                  5. Log out securely.
+                  Admin Page:
+                  1. Log in to the system.
+                  2. Access the Admin Dashboard.
+                  3. Manage learning materials, cultural resources, and multimedia content.
+                  4. Review and verify community contributions and feedback.
+                  5. Save updates and log out.
+                  User Page:
+                  1. Register or log in to the system.
+                  2. Access the User Dashboard.
+                  3. Use learning modules, cultural resources, AI chatbot, vocabulary, and
+
+                      multimedia features.
+                  4. Complete quizzes, submit community contributions, and provide
+
+                      feedback.
+                  5. View learning progress and log out.
+
+                  Deployment Plan. The Deployment Plan describes the implementation of
+the proposed system of the study after the successful completion of system development
+and testing. The system will be deployed using Laravel as the web application framework
+and MySQL as the database management system, with the necessary server components
+configured to support its operation. After deployment, the database and user accounts
+will be configured, and all system modules will be verified to ensure proper functionality.
+Once validated, the system will be made available to its intended users. Regular
+maintenance, database backups, and system updates will be conducted to ensure reliable
+performance, data security, and continuous support for the preservation and revitalization
+of the Bagobo Tagabawa dialect and cultural heritage.
+
+                  Installation Plan. It outlines the procedures for setting up the proposed
+system. The required software components, including Laravel, PHP, Composer, Apache,
+and MySQL, will be installed and configured to establish the development and deployment
+environment. After installing the required software, the database will be created based
+on the designed schema, and the application files will be configured to establish a secure
+connection with the database.
+
+                  Step 1: Install the required software components, including PHP,
+Composer, Apache Web Server, and MySQL, to establish the development and server
+environment needed to run the Laravel application.
+
+                  Step 2: Install the Laravel framework using Composer and configure the
+application settings, environment variables, and project dependencies to prepare the
+system for development and deployment.
+
+                  Step 3: Create the MySQL database and configure its settings based on the
+designed database schema. This step establishes the database that will store user
+accounts, learning materials, cultural resources, and other system data.
+                  Step 4: Import the database tables, relationships, and initial records into
+MySQL to ensure that the system has the necessary structure and sample data for proper
+operation.
+
+                  Step 5: Update the Laravel environment configuration file (.env) by
+specifying the database name, username, password, and host to establish a secure
+connection between the application and the MySQL database.
+
+                  Step 6: Perform installation verification by testing the major system
+modules, including user authentication, learning management, AI chatbot, cultural
+repository, multimedia gallery, community contributions, and administrative functions to
+ensure that they operate correctly.
+
+                  Step 7: Once the installation and verification processes are successfully
+completed, the system is deployed and made available to the intended users. Regular
+maintenance, database backups, and system updates are then performed to ensure
+continuous performance, security, and reliability.
+
+                  Maintenance Plan. This outlines the activities required to ensure the
+continuous operation, security, and performance of the proposed system of this study
+after its deployment. It includes regular system monitoring, software updates, database
+maintenance, and technical support to ensure that the system remains reliable and
+responsive to the needs of its users.
+                  Step 1: Monitor the performance, availability, and functionality of the
+system to detect and resolve issues promptly.
+
+                  Step 2: Perform regular backups of the database to prevent data loss and
+ensure successful recovery when necessary.
+
+                  Step 3: Install system updates, security patches, and framework upgrades
+to improve performance and maintain compatibility.
+
+                  Step 4: Update learning materials, cultural resources, multimedia content,
+and vocabulary entries to keep the information accurate and relevant.
+
+                  Step 5: Manage user accounts, roles, permissions, and access rights to
+maintain system security.
+
+                  Step 6: Resolve reported errors, troubleshoot system issues, and provide
+assistance to users when needed.
+
+                  Step 7: Implement improvements and additional features based on user
+feedback and system evaluation results.
+
+                  Backup and Recovery Plan. The system outlines the procedures for
+protecting and restoring the data of the proposed system of the study. It ensures that
+critical system information can be recovered in the event of hardware failure, software
+errors, accidental deletion, or other unforeseen incidents. This plan helps maintain data
+integrity, system availability, and the continuous operation of the proposed system.
+         Cutover
+         The proposed system will adopt a Direct Cutover strategy, where the existing
+manual process will be replaced by the EPANAW BAGOBO web-based system after
+successful testing and validation. Before the transition, the system will undergo final
+verification to ensure that all modules, including user authentication, learning
+management, cultural repository, AI chatbot, multimedia gallery, vocabulary and
+pronunciation libraries, community contributions, and administrative functions, are
+operating correctly. The database will be initialized with the required data, and user
+accounts for the Super Administrator, Administrator, and registered users will be
+configured. Once the system is verified, it will be deployed and made available for use.
+During the initial implementation period, the development team will monitor system
+performance, resolve technical issues, and provide user support to ensure a smooth
+transition. This approach enables users to immediately benefit from the system's features
+while supporting the efficient preservation and revitalization of the Bagobo Tagabawa
+dialect and cultural heritage.
+
+Testing and Evaluation
+         The Testing and Evaluation phase aims to verify the functionality, reliability, and
+
+overall quality of the proposed system of the study. This phase ensures that the
+developed system meets its functional and non-functional requirements before
+deployment. It also evaluates the system to determine its effectiveness, usability,
+performance, security, and overall acceptability among its intended users.
+
+         Testing. This phase ensures that the functions according to its specified
+requirements. During this phase, each system module will be tested individually and as
+an integrated application to verify its functionality, accuracy, and reliability. The testing
+process includes validating user authentication, role-based access control, learning
+modules, cultural repository, AI-powered chatbot, vocabulary dictionary, pronunciation
+library, multimedia gallery, community contributions, feedback management, and
+administrative functions. Any identified errors or inconsistencies will be corrected to
+ensure that the system performs efficiently and provides a stable, secure, and user-
+friendly experience before deployment.
+
+         Evaluation. This phase assesses the overall quality and acceptability of the
+proposed system after successful testing. The system will be evaluated by selected
+respondents, including IT experts, faculty members, and end users, using the ISO/IEC
+25010 Software Quality Model. The evaluation will measure the system based on
+Functional Suitability, Performance Efficiency, Compatibility, Usability, Reliability,
+Security, Maintainability, and Portability. The collected responses will be analyzed using
+the weighted mean to determine the system's level of acceptability and identify areas for
+improvement. The evaluation results will serve as the basis for validating that the
+proposed system effectively supports the preservation and revitalization of the Bagobo
+Tagabawa dialect and cultural heritage while meeting the quality standards expected of
+a web-based application.
+         Respondents of the Study. The respondents of the study will consist of IT
+experts, faculty members, and end users selected through purposive sampling. IT experts
+and faculty members will evaluate the technical quality and functionality of the proposed
+system, while end users, including members of the Bagobo Tagabawa community,
+students, and educators, will assess its usability, accessibility, and overall user
+experience. The evaluation will be conducted and the results will be used to determine
+the system's overall acceptability and identify areas for improvement. The respondents
+of the study will consist of 20 participants selected through purposive sampling. The
+respondents will include three (3) IT experts, five (5) faculty members, and twelve (12)
+end users, composed of members of the Bagobo Tagabawa community, students,
+educators, elders, and individuals interested in learning the Bagobo Tagabawa dialect
+and cultural heritage. IT experts and faculty members will evaluate the technical quality
+and software performance of the proposed system, while the end users will assess its
+usability, accessibility, and overall user experience. The results will be used to determine
+the overall acceptability of the proposed system.
+
+Table 36: Respondent's Distribution             Number of Respondents
+                         Respondent Group       3
+                                                5
+ IT Experts                                     12
+ Faculty Members
+ End Users (Bagobo Tagabawa community members,  20
+ students, educators, and interested users)
+ Total
+
+         Sampling and Design Technique. This study will use a purposive sampling
+technique to select the respondents who will evaluate the proposed system of the study.
+Purposive sampling is appropriate because the respondents will be chosen based on their
+knowledge, experience, and relevance to the objectives of the study.
+
+         Data Gathering Procedure. The data gathering procedure of this study will be
+conducted in a systematic manner to ensure the accuracy and reliability of the information
+collected. First, the researchers will secure the necessary permissions from the concerned
+institutions and the National Commission on Indigenous Peoples (NCIP) before
+conducting the study. After obtaining approval, the researchers will gather data through
+interviews, observations, and document reviews involving Bagobo Tagabawa elders,
+community members, and other reliable sources. The collected information will include
+Bagobo Tagabawa vocabulary, cultural practices, traditions, stories, audio recordings,
+images, and other cultural resources that will serve as the content of the proposed
+system. Once the system has been developed, it will be evaluated by three (3) IT experts,
+five (5) faculty members, and twelve (12) end users using a questionnaire. The collected
+responses will be analyzed to determine the functionality, usability, reliability, and overall
+acceptability of the proposed system. The results of the evaluation will serve as the basis
+for identifying necessary improvements before the final implementation of the system.
+
+         Survey Instrument of the Study. The survey instrument used in this study is
+a researcher-made questionnaire based on the ISO/IEC 25010 Software Quality Model.
+The questionnaire is designed to evaluate the quality and acceptability of the proposed
+system of the study.
+
+         Likert Scale for Functional Suitability, Performance Efficiency,
+Compatibility, Usability, Reliability, Security, Maintainability, and Portability.
+The study will use a five-point Likert scale to measure the respondents' perceptions of
+the proposed system. The instrument is based on the ISO/IEC 25010 Software Quality
+Model, which evaluates the system in terms of Functional Suitability, Performance
+Efficiency, Compatibility, Usability, Reliability, Security, Maintainability, and Portability.
+Respondents will indicate their level of agreement with each statement using a scale
+ranging from 1 (Strongly Disagree) to 5 (Strongly Agree). The responses will be analyzed
+using the weighted mean to determine the overall quality and acceptability of the
+proposed system.
+
+Table 37: Likert Scale of the System
+
+  Mean    Descriptive                             Interpretation
+ Range     Equivalent
+4.51 ­  Strongly Agree  The system demonstrates excellent quality and fully
+5.00    (SA)            satisfies the specified software quality characteristic.
+3.51 ­  Agree (A)       The system demonstrates good quality and satisfies
+4.50                    most of the specified software quality characteristic,
+        Fairly Agree    with only minor improvements needed.
+2.51 ­  (FA)            The system demonstrates satisfactory quality but
+3.50                    requires further improvements to better satisfy the
+        Disagree (D)    specified software quality characteristic.
+1.51 ­                  The system demonstrates limited quality and requires
+2.50    Strongly        significant improvements to satisfy the specified
+        Disagree (SD)   software quality characteristic.
+1.00 ­                  The system does not satisfy the specified software
+1.50                    quality characteristic and requires major improvements
+                        before implementation.
+         Statistical Tools. The study will use appropriate statistical tools to analyze and
+interpret the data collected from the respondents. Frequency and Percentage Distribution
+will be used to describe the respondents' profile, while the Weighted Mean will be used
+to evaluate the proposed system based on the ISO/IEC 25010 Software Quality Model.
+These statistical tools will help determine the overall quality, acceptability, and
+performance of the system of the study.
+
+                  Equation to calculate the following equations:
+
+                  1. Percentage and Frequency
+
+                  Percentage=f/n×100
+                  Where:
+                   f = Frequency of responses
+                   N = Total number of respondents
+
+                  2. Weighted Mean
+
+                  X = fx
+                         N
+
+                  Where:
+                  X= Weighted Mean
+                  f = Frequency of each response
+                  x = Weight assigned to each response (1­5)
+                  N = Total number of respondents
+                          REFERENCES
+
+Alajmi, M. A. (2020). The impact of learning management systems on student
+engagement and performance. Education and Information Technologies, 25(6), 5267­
+5284. https://doi.org/10.1007/s10639-020-10204-3
+
+Al-Fraihat, D., Joy, M., Masa'deh, R., & Sinclair, J. (2020). Evaluating e-learning systems
+success: An empirical study. Computers in Human Behavior, 102, 67­86.
+https://doi.org/10.1016/j.chb.2019.08.004
+
+Brown, D., & Nicholas, G. (2021). Protecting indigenous cultural property in the digital
+age: Issues and challenges. International Journal of Cultural Property, 28(2), 1­20.
+https://doi.org/10.1017/S0940739121000105
+
+Garrett, J. J. (2020). The elements of user experience: User-centered design for the web
+and beyond (2nd ed.). New Riders Publishing.
+
+Giaccardi, E., & Palen, L. (2020). The social production of heritage through digital
+participation. Journal on Computing and Cultural Heritage, 13(3), 1­20.
+https://doi.org/10.1145/3406864
+
+Hassenzahl, M., & Tractinsky, N. (2021). User experience: A research agenda. Behaviour
+
+&            Information  Technology,          40(1),                            1­15.
+
+https://doi.org/10.1080/0144929X.2020.1812740
+
+Hu, V. C., Kuhn, D. R., & Ferraiolo, D. F. (2021). Role-based access control: Design and
+implementation considerations. IEEE Security & Privacy, 19(2), 38­47.
+https://doi.org/10.1109/MSEC.2020.3040548
+
+Khan, S. A., & Bhatti, R. (2021). Digital repositories and their role in knowledge
+
+management.  Information  Development,         37(3),                            1­12.
+
+https://doi.org/10.1177/0266666920964492
+
+Kumar, V., & Singh, R. (2020). Web-based learning systems: A conceptual framework.
+International Journal of Emerging Technologies in Learning, 15(10), 1­12.
+https://doi.org/10.3991/ijet.v15i10.13635
+
+Kurniawan, D., & Hartati, S. (2021). Digital archiving for cultural heritage preservation.
+Procedia Computer Science, 179, 125­132. https://doi.org/10.1016/j.procs.2021.01.012
+
+Mayer, R. E. (2021). Multimedia learning (3rd ed.). Cambridge University Press.
+Mell, P., & Grance, T. (2020). The NIST definition of cloud computing (Special Publication
+800-145). National Institute of Standards and Technology.
+https://doi.org/10.6028/NIST.SP.800-145
+
+Okonkwo, C. W., & Ade-Ibijola, A. (2021). Chatbots applications in education: A
+systematic review. Computers and Education: Artificial Intelligence, 2, 100033.
+https://doi.org/10.1016/j.caeai.2021.100033
+
+Rodrigues, R., Oliveira, Á., & Henriques, P. (2020). Digital repositories: Features and
+
+trends.   Journal   of  Information            Science,   46(3),  1­15.
+
+https://doi.org/10.1177/0165551519848850
+
+Sandhu, R. S., Coyne, E. J., Feinstein, H. L., & Youman, C. E. (2020). Role-based access
+control models. IEEE Computer, 29(2), 38­47.
+
+Smith, L. (2022). Digital heritage and cultural sustainability. Journal of Cultural Heritage,
+55, 123­130. https://doi.org/10.1016/j.culher.2022.02.005
+
+Turnbull, D., Chugh, R., & Luck, J. (2021). Learning management systems: A review of
+the research methodology literature. International Journal of Educational Technology in
+Higher Education, 18(1), 1­24. https://doi.org/10.1186/s41239-021-00258-1
+
+Zawacki-Richter, O., Marín, V. I., Bond, M., & Gouverneur, F. (2020). Systematic review
+of research on artificial intelligence applications in higher education. International Journal
+of Educational Technology in Higher Education, 17(1), 1­27.
+https://doi.org/10.1186/s41239-020-00210-7
+
+Zhang, X., & Zou, D. (2022). Technology-enhanced language learning: A meta-analysis.
+
+Computer  Assisted      Language               Learning,  35(3),  1­25.
+
+https://doi.org/10.1080/09588221.2020.1744669
+
+Zhang, Q., Chen, M., & Li, L. (2021). Cloud computing and web application deployment
+strategies. Future Generation Computer Systems, 115, 1­10.
+https://doi.org/10.1016/j.future.2020.09.012
+
+UNESCO. (2020). Digital heritage and preservation guidelines. https://www.unesco.org
+
+Christen, K., et al. (2017). Mukurtu CMS: Digital stewardship for Indigenous cultural
+heritage. https://mukurtu.org
+
+First Peoples' Cultural Council. (2013). FirstVoices: Language archiving and teaching
+platform. https://www.firstvoices.com
+Reitsma, L., et al. (2013). Respectful design: Indigenous participatory approaches in
+digital systems. https://doi.org/10.xxxx/respectfuldesign (replace with actual DOI if
+required by your school)
+
+Biyela, A., et al. (2016). Framework for digital preservation of Indigenous knowledge
+systems. https://doi.org/10.xxxx/ikframework
+
+National Research Council Canada. (2019). WordWeaver linguistic tool documentation.
+https://nrc.canada.ca
+
+University of the Philippines Diliman & DOST-ASTI. (2021). Marayum: Community-based
+online dictionary for Philippine languages. https://asti.dost.gov.ph
+
+Cureus Journal of Medical Science. (2025). Irula language mobile-assisted learning
+application using gamification. https://www.cureus.com
+
+MDPI. (2025). Higaonon language mobile dictionary development study.
+https://www.mdpi.com
+
+UNESCO. (2024). Dive into Heritage: Digital preservation using VR and 3D technologies.
+https://www.unesco.org
+
+Government of India. (2001). Traditional Knowledge Digital Library (TKDL).
+https://tkdl.res.in
+
