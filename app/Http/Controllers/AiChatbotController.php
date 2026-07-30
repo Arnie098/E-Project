@@ -3,13 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ChatLog;
-use App\Models\Event;
-use App\Models\LearningModule;
-use App\Models\MediaItem;
-use App\Models\RepositoryItem;
-use App\Models\Story;
-use App\Models\VocabularyWord;
-use Illuminate\Database\Eloquent\Builder;
+use App\Services\PlatformKnowledgeBase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -77,6 +71,10 @@ class AiChatbotController extends Controller
         'traditional', 'elder', 'community', 'platform', 'app', 'system', 'dashboard',
     ];
 
+    public function __construct(private readonly PlatformKnowledgeBase $knowledgeBase)
+    {
+    }
+
     public function index(Request $request): Response
     {
         $history = $request->user()->chatLogs()->latest()->take(50)->get()
@@ -126,7 +124,7 @@ class AiChatbotController extends Controller
             ], 503);
         }
 
-        $databaseContext = $this->databaseContext($lastUserMessage);
+        $databaseContext = $this->knowledgeBase->context($lastUserMessage);
         $messages = $this->withDatabaseContext($validated['messages'], $databaseContext);
 
         try {
@@ -163,106 +161,6 @@ class AiChatbotController extends Controller
         $normalized = str($message)->lower()->toString();
 
         return collect(self::SCOPE_KEYWORDS)->contains(fn (string $keyword) => str_contains($normalized, $keyword));
-    }
-
-    private function databaseContext(string $message): string
-    {
-        $terms = $this->searchTerms($message);
-        $sections = [];
-
-        $vocabulary = VocabularyWord::query()
-            ->with('pronunciationRecord')
-            ->where(fn (Builder $query) => $this->whereLikeAny($query, ['word', 'meaning', 'pronunciation', 'category', 'example'], $terms))
-            ->limit(8)
-            ->get();
-
-        if ($vocabulary->isNotEmpty()) {
-            $sections[] = "Vocabulary Dictionary:\n".$vocabulary->map(function (VocabularyWord $word) {
-                $record = $word->pronunciationRecord;
-
-                return '- '.$word->word.' | Meaning: '.$word->meaning.' | Pronunciation: '.($word->pronunciation ?: 'not listed').' | Category: '.($word->category ?: 'not listed').' | Example: '.($word->example ?: 'not listed').' | Native speaker: '.($record?->native_speaker ?: 'not listed').' | Verified at: '.($record?->verified_at?->toDateString() ?: 'not listed');
-            })->implode("\n");
-        }
-
-        $repository = RepositoryItem::query()
-            ->where(fn (Builder $query) => $this->whereLikeAny($query, ['title', 'category', 'type', 'description'], $terms))
-            ->limit(6)
-            ->get();
-
-        if ($repository->isNotEmpty()) {
-            $sections[] = "Cultural Repository:\n".$repository->map(fn (RepositoryItem $item) => '- '.$item->title.' | Category: '.($item->category ?: 'not listed').' | Type: '.($item->type ?: 'not listed').' | Description: '.($item->description ?: 'not listed'))->implode("\n");
-        }
-
-        $stories = Story::query()
-            ->where(fn (Builder $query) => $this->whereLikeAny($query, ['title', 'story_type', 'author', 'summary'], $terms))
-            ->limit(6)
-            ->get();
-
-        if ($stories->isNotEmpty()) {
-            $sections[] = "Storytelling Archive:\n".$stories->map(fn (Story $story) => '- '.$story->title.' | Type: '.($story->story_type ?: 'not listed').' | Author: '.($story->author ?: 'not listed').' | Summary: '.($story->summary ?: 'not listed').' | Categories: '.(is_array($story->categories) ? implode(', ', $story->categories) : 'not listed'))->implode("\n");
-        }
-
-        $modules = LearningModule::query()
-            ->where(fn (Builder $query) => $this->whereLikeAny($query, ['title', 'description', 'category', 'module', 'difficulty', 'content'], $terms))
-            ->limit(5)
-            ->get();
-
-        if ($modules->isNotEmpty()) {
-            $sections[] = "Learning Modules:\n".$modules->map(fn (LearningModule $module) => '- '.$module->title.' | Category: '.($module->category ?: 'not listed').' | Module: '.($module->module ?: 'not listed').' | Difficulty: '.($module->difficulty ?: 'not listed').' | Description: '.($module->description ?: 'not listed'))->implode("\n");
-        }
-
-        $media = MediaItem::query()
-            ->where(fn (Builder $query) => $this->whereLikeAny($query, ['title', 'category', 'media_type', 'duration'], $terms))
-            ->limit(5)
-            ->get();
-
-        if ($media->isNotEmpty()) {
-            $sections[] = "Multimedia Gallery:\n".$media->map(fn (MediaItem $item) => '- '.$item->title.' | Category: '.($item->category ?: 'not listed').' | Type: '.($item->media_type ?: 'not listed').' | Published: '.($item->published_at?->toDateString() ?: 'not listed').' | Duration: '.($item->duration ?: 'not listed'))->implode("\n");
-        }
-
-        $events = Event::query()
-            ->where(fn (Builder $query) => $this->whereLikeAny($query, ['title', 'location'], $terms))
-            ->orWhere('starts_at', '>=', now())
-            ->orderBy('starts_at')
-            ->limit(5)
-            ->get();
-
-        if ($events->isNotEmpty()) {
-            $sections[] = "Events:\n".$events->map(fn (Event $event) => '- '.$event->title.' | Starts: '.($event->starts_at?->toDayDateTimeString() ?: 'not listed').' | Location: '.($event->location ?: 'not listed'))->implode("\n");
-        }
-
-        if (empty($sections)) {
-            return "No matching verified platform records were found for this question.";
-        }
-
-        return implode("\n\n", $sections);
-    }
-
-    private function searchTerms(string $message): array
-    {
-        $terms = str($message)
-            ->lower()
-            ->replaceMatches('/[^\pL\pN\s-]+/u', ' ')
-            ->explode(' ')
-            ->map(fn (string $term) => trim($term))
-            ->filter(fn (string $term) => mb_strlen($term) >= 3)
-            ->reject(fn (string $term) => in_array($term, ['what', 'where', 'when', 'which', 'about', 'tell', 'give', 'show', 'start', 'learn', 'learning', 'epanaw', 'bagobo', 'tagabawa'], true))
-            ->take(8)
-            ->values()
-            ->all();
-
-        return empty($terms) ? ['bagobo', 'tagabawa'] : $terms;
-    }
-
-    private function whereLikeAny(Builder $query, array $columns, array $terms): Builder
-    {
-        foreach ($terms as $term) {
-            foreach ($columns as $column) {
-                $query->orWhere($column, 'like', '%'.$term.'%');
-            }
-        }
-
-        return $query;
     }
 
     private function withDatabaseContext(array $messages, string $databaseContext): array
