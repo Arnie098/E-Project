@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react';
 import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
-import { AlertTriangle, ArrowUp, Sparkles } from 'lucide-react';
+import { AlertTriangle, ArrowUp, Plus, Sparkles } from 'lucide-react';
+import { ChatMarkdown } from '@/components/chat-markdown';
 import UserShell from '@/layouts/user-shell';
 import { cn } from '@/lib/utils';
 
@@ -16,7 +17,7 @@ interface Props {
 }
 
 const GREETING =
-    'Kumusta! I’m Epanaw, your guide to the Bagobo Tagabawa language and heritage. Ask me anything — or start with one of these:';
+    'Kumusta! I\u2019m Epanaw, your guide to the Bagobo Tagabawa language and heritage. Ask me anything \u2014 or start with one of these:';
 
 function readCookie(name: string): string | null {
     const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
@@ -35,6 +36,13 @@ export default function AiChatbot({ configured, suggestions, history }: Props) {
     useEffect(() => {
         scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
     }, [messages, sending]);
+
+    function newChat() {
+        setMessages([]);
+        setError(null);
+        setInput('');
+        inputRef.current?.focus();
+    }
 
     async function send(text: string) {
         const trimmed = text.trim();
@@ -89,7 +97,7 @@ export default function AiChatbot({ configured, suggestions, history }: Props) {
 
     return (
         <UserShell>
-            <Head title="AI Chatbot — EPANAW BAGOBO" />
+            <Head title="AI Chatbot \u2014 EPANAW BAGOBO" />
 
             <div className="mx-auto flex h-[calc(100vh-10rem)] max-w-3xl flex-col">
                 {/* Header */}
@@ -97,10 +105,19 @@ export default function AiChatbot({ configured, suggestions, history }: Props) {
                     <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary text-primary-foreground">
                         <Sparkles className="h-5 w-5" />
                     </div>
-                    <div>
-                        <h1 className="text-lg font-bold text-foreground">Epanaw — AI Guide</h1>
+                    <div className="min-w-0 flex-1">
+                        <h1 className="text-lg font-bold text-foreground">Epanaw \u2014 AI Guide</h1>
                         <p className="text-xs text-muted-foreground">Ask about the Bagobo Tagabawa language, culture, and stories.</p>
                     </div>
+                    <button
+                        type="button"
+                        onClick={newChat}
+                        disabled={sending || empty}
+                        className="flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2 text-xs font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                        <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+                        New chat
+                    </button>
                 </div>
 
                 {!configured && (
@@ -161,7 +178,7 @@ export default function AiChatbot({ configured, suggestions, history }: Props) {
                             onKeyDown={onKeyDown}
                             rows={1}
                             disabled={!configured}
-                            placeholder={configured ? 'Message Epanaw…' : 'Assistant not configured'}
+                            placeholder={configured ? 'Message Epanaw\u2026' : 'Assistant not configured'}
                             className="max-h-40 flex-1 resize-none bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed"
                         />
                         <button
@@ -174,7 +191,7 @@ export default function AiChatbot({ configured, suggestions, history }: Props) {
                         </button>
                     </div>
                     <p className="mt-1.5 px-1 text-[11px] text-muted-foreground">
-                        Epanaw can be wrong about specific dialect details — confirm important facts with an elder or the Vocabulary Dictionary.
+                        Epanaw can be wrong about specific dialect details \u2014 confirm important facts with an elder or the Vocabulary Dictionary.
                     </p>
                 </form>
             </div>
@@ -193,11 +210,11 @@ function Bubble({ message }: { message: Message }) {
             )}
             <div
                 className={cn(
-                    'max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed',
-                    isUser ? 'bg-primary text-primary-foreground' : 'bg-secondary text-foreground',
+                    'max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed',
+                    isUser ? 'whitespace-pre-wrap bg-primary text-primary-foreground' : 'bg-secondary text-foreground',
                 )}
             >
-                {message.content}
+                {isUser ? message.content : <ChatMarkdown content={message.content} />}
             </div>
         </div>
     );
@@ -205,18 +222,21 @@ function Bubble({ message }: { message: Message }) {
 
 function TypingBubble() {
     return (
-        <div className="flex gap-3">
-            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
+        <div className="flex gap-3" aria-label="Epanaw is thinking">
+            <div className="relative grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
                 <Sparkles className="h-4 w-4" />
+                <span className="absolute inset-0 animate-ping rounded-lg bg-primary/40" aria-hidden="true" />
             </div>
-            <div className="flex items-center gap-1 rounded-2xl bg-secondary px-4 py-3">
+            <div className="flex items-center gap-1.5 rounded-2xl bg-secondary px-4 py-3">
                 {[0, 150, 300].map((delay) => (
                     <span
                         key={delay}
-                        className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/60"
+                        className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/60"
                         style={{ animationDelay: `${delay}ms` }}
+                        aria-hidden="true"
                     />
                 ))}
+                <span className="ml-1 text-xs text-muted-foreground">Epanaw is thinking\u2026</span>
             </div>
         </div>
     );
