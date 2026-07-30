@@ -44,6 +44,15 @@ return [
         'reasoning_effort' => env('AI_REASONING_EFFORT'),
         'disable_response_storage' => env('AI_DISABLE_RESPONSE_STORAGE', false),
         'auth_method' => env('AI_AUTH_METHOD', env('AI_PREFERRED_AUTH_METHOD', 'x-api-key')),
+
+        // Optional semantic retrieval layer. When disabled, the chatbot uses
+        // lexical full-text ranking only. When enabled, query and record
+        // embeddings are blended into the relevance score.
+        'embeddings' => [
+            'enabled' => env('AI_EMBEDDINGS_ENABLED', false),
+            'model' => env('AI_EMBEDDINGS_MODEL'),
+            'base_url' => env('AI_EMBEDDINGS_BASE_URL'),
+        ],
     ],
 
     'anthropic' => [
