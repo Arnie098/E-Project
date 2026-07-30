@@ -54,7 +54,7 @@ class AiChatbotController extends Controller
             ]);
 
         return Inertia::render('user/ai-chatbot', [
-            'configured' => filled(config('services.anthropic.key')),
+            'configured' => filled(config('services.ai.key')),
             'history' => $history->values(),
             'suggestions' => [
                 'What is the Bagobo Tagabawa culture known for?',
@@ -73,47 +73,30 @@ class AiChatbotController extends Controller
             'messages.*.content' => ['required', 'string', 'max:4000'],
         ]);
 
-        $key = config('services.anthropic.key');
+        $key = config('services.ai.key');
         if (blank($key)) {
             return response()->json([
-                'error' => 'The AI assistant is not configured yet. Add an ANTHROPIC_API_KEY to your .env file to enable it.',
+                'error' => 'The AI assistant is not configured yet. Add an AI_API_KEY to your .env file to enable it.',
             ], 503);
         }
 
         try {
-            $response = Http::withHeaders([
-                'x-api-key' => $key,
-                'anthropic-version' => '2023-06-01',
-                'content-type' => 'application/json',
-            ])->timeout(60)->post('https://api.anthropic.com/v1/messages', [
-                'model' => config('services.anthropic.model', 'claude-opus-4-8'),
-                'max_tokens' => 1500,
-                'system' => self::SYSTEM_PROMPT,
-                'messages' => $validated['messages'],
-            ]);
+            $data = $this->sendAiRequest($validated['messages'], $key);
         } catch (\Throwable $e) {
-            Log::warning('Anthropic request failed', ['message' => $e->getMessage()]);
+            Log::warning('AI request failed', ['message' => $e->getMessage()]);
 
             return response()->json(['error' => 'Could not reach the assistant. Check your connection and try again.'], 502);
         }
 
-        if ($response->failed()) {
-            Log::warning('Anthropic API error', ['status' => $response->status(), 'body' => $response->body()]);
+        $reply = $this->extractReply($data);
 
-            return response()->json(['error' => 'The assistant ran into a problem. Please try again in a moment.'], 502);
-        }
-
-        $data = $response->json();
-
-        // Safety classifiers can decline with a 200 + stop_reason "refusal" and empty content.
         if (($data['stop_reason'] ?? null) === 'refusal') {
             return response()->json(['reply' => "I'm sorry, I can't help with that. Try asking me about Bagobo Tagabawa language or culture."]);
         }
 
-        $textBlock = collect($data['content'] ?? [])->firstWhere('type', 'text');
-        $reply = $textBlock['text'] ?? null;
-
         if (blank($reply)) {
+            Log::warning('AI provider returned an empty response', ['provider' => config('services.ai.provider'), 'body' => $data]);
+
             return response()->json(['error' => 'The assistant returned an empty response. Please try again.'], 502);
         }
 
@@ -128,5 +111,118 @@ class AiChatbotController extends Controller
         ]);
 
         return response()->json(['reply' => $reply]);
+    }
+
+    /**
+     * Send the chat request to the configured AI provider.
+     */
+    private function sendAiRequest(array $messages, string $key): array
+    {
+        $wireApi = config('services.ai.wire_api', 'messages');
+        $baseUrl = rtrim((string) config('services.ai.base_url', 'https://api.anthropic.com'), '/');
+        $endpoint = $wireApi === 'responses' ? '/v1/responses' : '/v1/messages';
+
+        $request = Http::withHeaders($this->aiHeaders($key))->timeout(60);
+        $payload = $wireApi === 'responses'
+            ? $this->responsesPayload($messages)
+            : $this->messagesPayload($messages);
+
+        $response = $request->post($baseUrl.$endpoint, $payload);
+
+        if ($response->failed()) {
+            Log::warning('AI provider error', [
+                'provider' => config('services.ai.provider'),
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+
+            throw new \RuntimeException('AI provider returned HTTP '.$response->status());
+        }
+
+        return $response->json() ?? [];
+    }
+
+    /**
+     * Headers support both Anthropic-style x-api-key and OpenAI-compatible Bearer/API key providers.
+     */
+    private function aiHeaders(string $key): array
+    {
+        $authMethod = strtolower((string) config('services.ai.auth_method', 'x-api-key'));
+
+        $headers = [
+            'content-type' => 'application/json',
+        ];
+
+        if ($authMethod === 'apikey' || $authMethod === 'api-key') {
+            $headers['Authorization'] = 'Bearer '.$key;
+            $headers['api-key'] = $key;
+        } elseif ($authMethod === 'bearer') {
+            $headers['Authorization'] = 'Bearer '.$key;
+        } else {
+            $headers['x-api-key'] = $key;
+            $headers['anthropic-version'] = '2023-06-01';
+        }
+
+        return $headers;
+    }
+
+    /**
+     * Anthropic Messages API payload.
+     */
+    private function messagesPayload(array $messages): array
+    {
+        return [
+            'model' => config('services.ai.model'),
+            'max_tokens' => 1500,
+            'system' => self::SYSTEM_PROMPT,
+            'messages' => $messages,
+        ];
+    }
+
+    /**
+     * OpenAI-style Responses API payload used by configurable providers like Aerolink.
+     */
+    private function responsesPayload(array $messages): array
+    {
+        $input = collect($messages)->map(fn ($message) => [
+            'role' => $message['role'],
+            'content' => $message['content'],
+        ])->values()->all();
+
+        array_unshift($input, [
+            'role' => 'system',
+            'content' => self::SYSTEM_PROMPT,
+        ]);
+
+        return array_filter([
+            'model' => config('services.ai.model'),
+            'input' => $input,
+            'reasoning' => filled(config('services.ai.reasoning_effort'))
+                ? ['effort' => config('services.ai.reasoning_effort')]
+                : null,
+            'store' => ! filter_var(config('services.ai.disable_response_storage'), FILTER_VALIDATE_BOOLEAN),
+        ], fn ($value) => $value !== null);
+    }
+
+    /**
+     * Extract text from Anthropic Messages or OpenAI-style Responses payloads.
+     */
+    private function extractReply(array $data): ?string
+    {
+        $textBlock = collect($data['content'] ?? [])->firstWhere('type', 'text');
+        if (filled($textBlock['text'] ?? null)) {
+            return $textBlock['text'];
+        }
+
+        if (filled($data['output_text'] ?? null)) {
+            return $data['output_text'];
+        }
+
+        $output = collect($data['output'] ?? []);
+        $message = $output->firstWhere('type', 'message');
+        $content = collect($message['content'] ?? []);
+        $responseText = $content->firstWhere('type', 'output_text');
+
+        return $responseText['text'] ?? null;
     }
 }
