@@ -69,6 +69,19 @@ class AiChatbotController extends Controller
         'events', 'module', 'lesson', 'quiz', 'learning', 'learner', 'progress',
         'contribution', 'feedback', 'weaving', 'craft', 'music', 'tradition',
         'traditional', 'elder', 'community', 'platform', 'app', 'system', 'dashboard',
+        'database', 'data', 'catalog', 'catalogue', 'content', 'records', 'record',
+        'entries', 'entry', 'available', 'library', 'collection', 'resources',
+    ];
+
+    /**
+     * Short follow-up phrases that are meaningful only in the context of an
+     * already in-scope conversation (e.g. "what's available now?", "tell me
+     * more"). These are allowed when an earlier turn established platform scope.
+     */
+    private const FOLLOW_UP_HINTS = [
+        'what', 'which', 'how', 'more', 'else', 'other', 'another', 'now', 'available',
+        'list', 'show', 'tell', 'give', 'have', 'about', 'them', 'those', 'these', 'it',
+        'that', 'this', 'yes', 'ok', 'okay', 'sure', 'continue', 'next', 'and', 'why',
     ];
 
     public function __construct(private readonly PlatformKnowledgeBase $knowledgeBase)
@@ -107,7 +120,7 @@ class AiChatbotController extends Controller
         $lastUserTurn = collect($validated['messages'])->last(fn ($m) => $m['role'] === 'user');
         $lastUserMessage = $lastUserTurn['content'] ?? '';
 
-        if (! $this->isInScope($lastUserMessage)) {
+        if (! $this->isInScope($validated['messages'], $lastUserMessage)) {
             ChatLog::create([
                 'user_id' => $request->user()->id,
                 'user_message' => $lastUserMessage,
@@ -156,11 +169,48 @@ class AiChatbotController extends Controller
         return response()->json(['reply' => $reply]);
     }
 
-    private function isInScope(string $message): bool
+    /**
+     * Decide whether the latest message is in platform scope.
+     *
+     * A message passes if it directly mentions a platform/culture keyword, OR if
+     * the conversation already established scope earlier and this looks like a
+     * natural follow-up (e.g. "what's available now?"). The strict system prompt
+     * and refusal handling remain the final guard against off-topic answers, so
+     * this gate only needs to stop cold-open, clearly unrelated questions.
+     */
+    private function isInScope(array $messages, string $latest): bool
+    {
+        if ($this->matchesScope($latest)) {
+            return true;
+        }
+
+        $allButLatest = collect($messages);
+        $allButLatest = $allButLatest->take(max(0, $allButLatest->count() - 1));
+
+        $scopeEstablished = $allButLatest->contains(
+            fn ($m) => ($m['role'] ?? null) === 'user' && $this->matchesScope((string) ($m['content'] ?? '')),
+        );
+
+        return $scopeEstablished && $this->looksLikeFollowUp($latest);
+    }
+
+    private function matchesScope(string $message): bool
     {
         $normalized = str($message)->lower()->toString();
 
         return collect(self::SCOPE_KEYWORDS)->contains(fn (string $keyword) => str_contains($normalized, $keyword));
+    }
+
+    private function looksLikeFollowUp(string $message): bool
+    {
+        $normalized = str($message)->lower()->toString();
+
+        // Very short replies are almost always follow-ups within the thread.
+        if (mb_strlen(trim($normalized)) <= 40) {
+            return true;
+        }
+
+        return collect(self::FOLLOW_UP_HINTS)->contains(fn (string $hint) => str_contains($normalized, $hint));
     }
 
     private function withDatabaseContext(array $messages, string $databaseContext): array
