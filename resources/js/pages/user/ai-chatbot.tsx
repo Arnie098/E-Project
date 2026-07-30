@@ -1,6 +1,14 @@
 import { Head } from '@inertiajs/react';
 import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
-import { AlertTriangle, ArrowUp, Plus, Sparkles } from 'lucide-react';
+import {
+    ArrowUp,
+    MessageSquarePlus,
+    MessageSquareText,
+    PanelLeft,
+    Sparkles,
+    Trash2,
+    X,
+} from 'lucide-react';
 import { ChatMarkdown } from '@/components/chat-markdown';
 import UserShell from '@/layouts/user-shell';
 import { cn } from '@/lib/utils';
@@ -10,50 +18,146 @@ interface Message {
     content: string;
 }
 
+interface ConversationSummary {
+    id: number;
+    title: string;
+    updated_at: string | null;
+}
+
 interface Props {
     configured: boolean;
     suggestions: string[];
     history: Message[];
+    conversations: ConversationSummary[];
+    activeConversationId: number | null;
 }
-
-const GREETING =
-    'Kumusta! I\u2019m Epanaw, your guide to the Bagobo Tagabawa language and heritage. Ask me anything \u2014 or start with one of these:';
 
 function readCookie(name: string): string | null {
-    const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
-    return match ? decodeURIComponent(match[1]) : null;
+    const match = document.cookie.match(new RegExp('(^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[2]) : null;
 }
 
-export default function AiChatbot({ configured, suggestions, history }: Props) {
+function formatRelative(iso: string | null): string {
+    if (!iso) return '';
+    const then = new Date(iso).getTime();
+    if (Number.isNaN(then)) return '';
+    const min = Math.round((Date.now() - then) / 60000);
+    if (min < 1) return 'just now';
+    if (min < 60) return `${min}m ago`;
+    const hr = Math.round(min / 60);
+    if (hr < 24) return `${hr}h ago`;
+    const day = Math.round(hr / 24);
+    if (day < 7) return `${day}d ago`;
+    try {
+        return new Date(iso).toLocaleDateString();
+    } catch {
+        return '';
+    }
+}
+
+function TypingBubble() {
+    return (
+        <div className="flex items-center gap-1.5 px-1 py-1">
+            {[0, 1, 2].map((i) => (
+                <span
+                    key={i}
+                    className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/60"
+                    style={{ animationDelay: `${i * 0.15}s` }}
+                />
+            ))}
+        </div>
+    );
+}
+
+export default function AiChatbot({
+    configured,
+    suggestions,
+    history,
+    conversations: initialConversations,
+    activeConversationId,
+}: Props) {
     const [messages, setMessages] = useState<Message[]>(history);
+    const [conversations, setConversations] = useState<ConversationSummary[]>(initialConversations);
+    const [activeId, setActiveId] = useState<number | null>(activeConversationId);
     const [input, setInput] = useState('');
     const [sending, setSending] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [loadingId, setLoadingId] = useState<number | null>(null);
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-    }, [messages, sending]);
+    }, [messages, sending, loadingId]);
 
     function newChat() {
         setMessages([]);
+        setActiveId(null);
         setError(null);
         setInput('');
+        setDrawerOpen(false);
         inputRef.current?.focus();
+    }
+
+    async function openConversation(id: number) {
+        if (sending || id === activeId) {
+            setDrawerOpen(false);
+            return;
+        }
+        setError(null);
+        setLoadingId(id);
+        setDrawerOpen(false);
+        try {
+            const res = await fetch(`/user/ai-chatbot/conversations/${id}`, {
+                headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                credentials: 'same-origin',
+            });
+            if (!res.ok) {
+                setError('Could not open that conversation.');
+                return;
+            }
+            const data = await res.json();
+            setMessages(data.messages ?? []);
+            setActiveId(id);
+        } catch {
+            setError('Could not open that conversation.');
+        } finally {
+            setLoadingId(null);
+        }
+    }
+
+    async function deleteConversation(id: number) {
+        try {
+            const res = await fetch(`/user/ai-chatbot/conversations/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-XSRF-TOKEN': readCookie('XSRF-TOKEN') ?? '',
+                },
+                credentials: 'same-origin',
+            });
+            if (!res.ok) {
+                setError('Could not delete that conversation.');
+                return;
+            }
+            setConversations((prev) => prev.filter((c) => c.id !== id));
+            if (activeId === id) newChat();
+        } catch {
+            setError('Could not delete that conversation.');
+        }
     }
 
     async function send(text: string) {
         const trimmed = text.trim();
         if (!trimmed || sending) return;
-
         setError(null);
         const next = [...messages, { role: 'user' as const, content: trimmed }].slice(-20);
         setMessages(next);
         setInput('');
         setSending(true);
-
         try {
             const res = await fetch('/user/ai-chatbot', {
                 method: 'POST',
@@ -64,17 +168,26 @@ export default function AiChatbot({ configured, suggestions, history }: Props) {
                     'X-XSRF-TOKEN': readCookie('XSRF-TOKEN') ?? '',
                 },
                 credentials: 'same-origin',
-                body: JSON.stringify({ messages: next }),
+                body: JSON.stringify({ messages: next, conversation_id: activeId }),
             });
-
             const data = await res.json();
             if (!res.ok) {
                 setError(data.error ?? 'Something went wrong. Please try again.');
                 return;
             }
             setMessages((m) => [...m, { role: 'assistant', content: data.reply }]);
+            if (data.conversation_id) {
+                const newId = data.conversation_id as number;
+                setActiveId(newId);
+                setConversations((prev) => {
+                    const existing = prev.find((c) => c.id === newId);
+                    const title = data.conversation_title ?? existing?.title ?? 'New chat';
+                    const entry = { id: newId, title, updated_at: new Date().toISOString() };
+                    return [entry, ...prev.filter((c) => c.id !== newId)];
+                });
+            }
         } catch {
-            setError('Could not reach the assistant. Check your connection and try again.');
+            setError('Could not reach the assistant. Please try again.');
         } finally {
             setSending(false);
             inputRef.current?.focus();
@@ -93,151 +206,216 @@ export default function AiChatbot({ configured, suggestions, history }: Props) {
         }
     }
 
-    const empty = messages.length === 0;
+    const showEmptyState = messages.length === 0 && loadingId === null;
+
+    const sidebar = (
+        <div className="flex h-full w-full flex-col">
+            <button
+                type="button"
+                onClick={newChat}
+                className="flex w-full items-center gap-2 rounded-xl border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition hover:bg-secondary"
+            >
+                <MessageSquarePlus className="h-4 w-4" />
+                New chat
+            </button>
+            <div className="mt-3 flex-1 overflow-y-auto pr-1">
+                {conversations.length === 0 ? (
+                    <p className="px-2 py-4 text-xs text-muted-foreground">No past chats yet.</p>
+                ) : (
+                    <ul className="space-y-1">
+                        {conversations.map((c) => (
+                            <li key={c.id}>
+                                <div
+                                    className={cn(
+                                        'group flex items-center gap-1 rounded-lg px-2 py-2 text-sm transition',
+                                        activeId === c.id ? 'bg-secondary' : 'hover:bg-secondary/60',
+                                    )}
+                                >
+                                    <button
+                                        type="button"
+                                        onClick={() => void openConversation(c.id)}
+                                        className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                                    >
+                                        <MessageSquareText className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                                        <span className="min-w-0 flex-1">
+                                            <span className="block truncate text-foreground">{c.title}</span>
+                                            <span className="block text-[10px] text-muted-foreground">
+                                                {formatRelative(c.updated_at)}
+                                            </span>
+                                        </span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => void deleteConversation(c.id)}
+                                        aria-label="Delete conversation"
+                                        className="shrink-0 rounded p-1 text-muted-foreground opacity-0 transition hover:text-red-600 focus:opacity-100 group-hover:opacity-100"
+                                    >
+                                        <Trash2 className="h-3.5 w-3.5" />
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+        </div>
+    );
 
     return (
         <UserShell>
-            <Head title="AI Chatbot \u2014 EPANAW BAGOBO" />
+            <Head title="AI Guide" />
 
-            <div className="mx-auto flex h-[calc(100vh-10rem)] max-w-3xl flex-col">
-                {/* Header */}
-                <div className="mb-4 flex items-center gap-3">
-                    <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary text-primary-foreground">
-                        <Sparkles className="h-5 w-5" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                        <h1 className="text-lg font-bold text-foreground">Epanaw \u2014 AI Guide</h1>
-                        <p className="text-xs text-muted-foreground">Ask about the Bagobo Tagabawa language, culture, and stories.</p>
-                    </div>
-                    <button
-                        type="button"
-                        onClick={newChat}
-                        disabled={sending || empty}
-                        className="flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2 text-xs font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-40"
-                    >
-                        <Plus className="h-3.5 w-3.5" aria-hidden="true" />
-                        New chat
-                    </button>
-                </div>
+            <div className="mx-auto flex h-[calc(100vh-7rem)] max-w-5xl gap-4">
+                {/* Desktop sidebar */}
+                <aside className="hidden w-64 shrink-0 flex-col rounded-2xl border border-border bg-card p-3 md:flex">
+                    {sidebar}
+                </aside>
 
-                {!configured && (
-                    <div className="mb-4 flex items-start gap-3 rounded-xl border border-amber-300 bg-tile-amber px-4 py-3 text-sm text-amber-900">
-                        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-                        <p>
-                            The assistant isn&rsquo;t connected yet. Add an <code className="font-mono">ANTHROPIC_API_KEY</code> to your{' '}
-                            <code className="font-mono">.env</code> file to start chatting.
-                        </p>
-                    </div>
-                )}
-
-                {/* Conversation */}
-                <div
-                    ref={scrollRef}
-                    className="flex-1 space-y-5 overflow-y-auto rounded-2xl border border-border bg-card p-5"
-                >
-                    {empty ? (
-                        <div className="flex h-full flex-col items-center justify-center text-center">
-                            <div className="grid h-14 w-14 place-items-center rounded-2xl bg-secondary">
-                                <Sparkles className="h-6 w-6 text-primary" />
+                {/* Mobile drawer */}
+                {drawerOpen && (
+                    <div className="fixed inset-0 z-40 md:hidden">
+                        <div className="absolute inset-0 bg-black/40" onClick={() => setDrawerOpen(false)} />
+                        <div className="absolute left-0 top-0 h-full w-72 max-w-[80%] border-r border-border bg-card p-3 shadow-xl">
+                            <div className="mb-2 flex items-center justify-between">
+                                <span className="text-sm font-semibold">Chat history</span>
+                                <button type="button" onClick={() => setDrawerOpen(false)} aria-label="Close history">
+                                    <X className="h-4 w-4" />
+                                </button>
                             </div>
-                            <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">{GREETING}</p>
-                            <div className="mt-5 grid w-full max-w-lg gap-2 sm:grid-cols-2">
-                                {suggestions.map((s) => (
-                                    <button
-                                        key={s}
-                                        onClick={() => void send(s)}
-                                        disabled={!configured || sending}
-                                        className="rounded-xl border border-border bg-secondary/40 px-4 py-3 text-left text-sm text-foreground transition-colors hover:border-primary/40 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
-                                    >
-                                        {s}
-                                    </button>
-                                ))}
-                            </div>
+                            {sidebar}
                         </div>
-                    ) : (
-                        messages.map((m, i) => <Bubble key={i} message={m} />)
-                    )}
-
-                    {sending && <TypingBubble />}
-                </div>
-
-                {error && (
-                    <p className="mt-2 flex items-center gap-1.5 text-sm text-red-600">
-                        <AlertTriangle className="h-3.5 w-3.5" />
-                        {error}
-                    </p>
+                    </div>
                 )}
 
-                {/* Composer */}
-                <form onSubmit={onSubmit} className="mt-3">
-                    <div className="flex items-end gap-2 rounded-2xl border border-border bg-card p-2 focus-within:border-primary/50">
-                        <textarea
-                            ref={inputRef}
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={onKeyDown}
-                            rows={1}
-                            disabled={!configured}
-                            placeholder={configured ? 'Message Epanaw\u2026' : 'Assistant not configured'}
-                            className="max-h-40 flex-1 resize-none bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed"
-                        />
+                {/* Main chat column */}
+                <div className="flex min-w-0 flex-1 flex-col">
+                    <div className="mb-4 flex items-center gap-3">
                         <button
-                            type="submit"
-                            disabled={!configured || sending || input.trim() === ''}
-                            className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-                            aria-label="Send message"
+                            type="button"
+                            onClick={() => setDrawerOpen(true)}
+                            className="rounded-lg border border-border bg-card p-2 md:hidden"
+                            aria-label="Open chat history"
                         >
-                            <ArrowUp className="h-4 w-4" />
+                            <PanelLeft className="h-4 w-4" />
+                        </button>
+                        <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary text-primary-foreground">
+                            <Sparkles className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <h1 className="truncate text-lg font-semibold text-foreground">Epanaw \u2014 AI Guide</h1>
+                            <p className="truncate text-sm text-muted-foreground">
+                                Ask about Bagobo Tagabawa language, culture, and platform features.
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={newChat}
+                            className="flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-2 text-sm text-foreground transition hover:bg-secondary md:hidden"
+                        >
+                            <MessageSquarePlus className="h-4 w-4" />
                         </button>
                     </div>
-                    <p className="mt-1.5 px-1 text-[11px] text-muted-foreground">
-                        Epanaw can be wrong about specific dialect details \u2014 confirm important facts with an elder or the Vocabulary Dictionary.
-                    </p>
-                </form>
+
+                    {!configured && (
+                        <div className="mb-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-200">
+                            The AI assistant is not configured yet. Add an <code>AI_API_KEY</code> to your
+                            <code> .env</code> file to enable replies.
+                        </div>
+                    )}
+
+                    <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border bg-card">
+                        <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto p-4">
+                            {loadingId !== null ? (
+                                <div className="grid h-full place-items-center text-sm text-muted-foreground">
+                                    Opening conversation\u2026
+                                </div>
+                            ) : showEmptyState ? (
+                                <div className="grid h-full place-items-center">
+                                    <div className="w-full max-w-md text-center">
+                                        <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary">
+                                            <Sparkles className="h-6 w-6" />
+                                        </div>
+                                        <p className="mb-4 text-sm text-muted-foreground">
+                                            Kumusta! I\u2019m Epanaw. Ask me about Bagobo Tagabawa words, stories, culture,
+                                            or how to use this platform.
+                                        </p>
+                                        <div className="flex flex-col gap-2">
+                                            {suggestions.map((s) => (
+                                                <button
+                                                    key={s}
+                                                    type="button"
+                                                    onClick={() => void send(s)}
+                                                    className="rounded-xl border border-border bg-background px-3 py-2 text-left text-sm text-foreground transition hover:bg-secondary"
+                                                >
+                                                    {s}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                messages.map((m, i) => (
+                                    <div
+                                        key={i}
+                                        className={cn('flex', m.role === 'user' ? 'justify-end' : 'justify-start')}
+                                    >
+                                        <div
+                                            className={cn(
+                                                'max-w-[85%] rounded-2xl px-4 py-2.5 text-sm',
+                                                m.role === 'user'
+                                                    ? 'bg-primary text-primary-foreground'
+                                                    : 'bg-secondary text-foreground',
+                                            )}
+                                        >
+                                            {m.role === 'assistant' ? (
+                                                <ChatMarkdown content={m.content} />
+                                            ) : (
+                                                <span className="whitespace-pre-wrap">{m.content}</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+
+                            {sending && (
+                                <div className="flex justify-start">
+                                    <div className="rounded-2xl bg-secondary px-3 py-2 text-foreground">
+                                        <TypingBubble />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {error && (
+                            <div className="border-t border-border bg-red-50 px-4 py-2 text-xs text-red-700 dark:bg-red-500/10 dark:text-red-300">
+                                {error}
+                            </div>
+                        )}
+
+                        <form onSubmit={onSubmit} className="border-t border-border p-3">
+                            <div className="flex items-end gap-2 rounded-2xl border border-border bg-background px-3 py-2">
+                                <textarea
+                                    ref={inputRef}
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    onKeyDown={onKeyDown}
+                                    rows={1}
+                                    placeholder="Ask about Bagobo Tagabawa language or this platform\u2026"
+                                    className="max-h-32 flex-1 resize-none bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={sending || input.trim() === ''}
+                                    className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground transition disabled:opacity-40"
+                                    aria-label="Send message"
+                                >
+                                    <ArrowUp className="h-4 w-4" />
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </UserShell>
-    );
-}
-
-function Bubble({ message }: { message: Message }) {
-    const isUser = message.role === 'user';
-    return (
-        <div className={cn('flex gap-3', isUser && 'flex-row-reverse')}>
-            {!isUser && (
-                <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
-                    <Sparkles className="h-4 w-4" />
-                </div>
-            )}
-            <div
-                className={cn(
-                    'max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed',
-                    isUser ? 'whitespace-pre-wrap bg-primary text-primary-foreground' : 'bg-secondary text-foreground',
-                )}
-            >
-                {isUser ? message.content : <ChatMarkdown content={message.content} />}
-            </div>
-        </div>
-    );
-}
-
-function TypingBubble() {
-    return (
-        <div className="flex gap-3" aria-label="Epanaw is thinking">
-            <div className="relative grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
-                <Sparkles className="h-4 w-4" />
-                <span className="absolute inset-0 animate-ping rounded-lg bg-primary/40" aria-hidden="true" />
-            </div>
-            <div className="flex items-center gap-1.5 rounded-2xl bg-secondary px-4 py-3">
-                {[0, 150, 300].map((delay) => (
-                    <span
-                        key={delay}
-                        className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/60"
-                        style={{ animationDelay: `${delay}ms` }}
-                        aria-hidden="true"
-                    />
-                ))}
-                <span className="ml-1 text-xs text-muted-foreground">Epanaw is thinking\u2026</span>
-            </div>
-        </div>
     );
 }
