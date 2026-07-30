@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { usePage } from '@inertiajs/react';
 import { DashboardLayout, type DashboardUser } from '@/components/dashboard-layout';
 import { userNav } from '@/components/dashboard-nav';
+import { FloatingAiChat } from '@/components/floating-ai-chat';
 import type { SharedData } from '@/types';
 
 const roleLabel: Record<string, string> = { learner: 'Learner', admin: 'Admin', super: 'Super Admin' };
@@ -19,6 +20,7 @@ export default function UserShell({ children }: { children: ReactNode }) {
     return (
         <DashboardLayout title="Learner Dashboard" nav={userNav} user={useCurrentUser()} showSearch notifications={3}>
             {children}
+            <FloatingAiChat />
         </DashboardLayout>
     );
 }
