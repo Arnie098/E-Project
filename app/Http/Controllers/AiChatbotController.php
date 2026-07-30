@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChatConversation;
 use App\Models\ChatLog;
 use App\Services\PlatformKnowledgeBase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -90,16 +92,24 @@ class AiChatbotController extends Controller
 
     public function index(Request $request): Response
     {
-        $history = $request->user()->chatLogs()->latest()->take(50)->get()
-            ->reverse()
-            ->flatMap(fn (ChatLog $log) => [
-                ['role' => 'user', 'content' => $log->user_message],
-                ['role' => 'assistant', 'content' => $log->bot_response],
+        $user = $request->user();
+
+        $conversations = $user->chatConversations()
+            ->latest('updated_at')
+            ->get(['id', 'title', 'updated_at'])
+            ->map(fn (ChatConversation $c) => [
+                'id' => $c->id,
+                'title' => $c->title,
+                'updated_at' => $c->updated_at?->toIso8601String(),
             ]);
+
+        $active = $user->chatConversations()->latest('updated_at')->first();
 
         return Inertia::render('user/ai-chatbot', [
             'configured' => filled(config('services.ai.key')),
-            'history' => $history->values(),
+            'conversations' => $conversations->values(),
+            'activeConversationId' => $active?->id,
+            'history' => $active ? $this->messagesFor($active) : [],
             'suggestions' => [
                 'What is the Bagobo Tagabawa culture known for?',
                 'How can I start learning the dialect?',
@@ -115,19 +125,22 @@ class AiChatbotController extends Controller
             'messages' => ['required', 'array', 'min:1', 'max:'.self::MAX_HISTORY],
             'messages.*.role' => ['required', 'string', 'in:user,assistant'],
             'messages.*.content' => ['required', 'string', 'max:4000'],
+            'conversation_id' => ['nullable', 'integer'],
         ]);
 
         $lastUserTurn = collect($validated['messages'])->last(fn ($m) => $m['role'] === 'user');
         $lastUserMessage = $lastUserTurn['content'] ?? '';
 
-        if (! $this->isInScope($validated['messages'], $lastUserMessage)) {
-            ChatLog::create([
-                'user_id' => $request->user()->id,
-                'user_message' => $lastUserMessage,
-                'bot_response' => self::OUT_OF_SCOPE_REPLY,
-            ]);
+        $conversation = $this->resolveConversation($request, $lastUserMessage);
 
-            return response()->json(['reply' => self::OUT_OF_SCOPE_REPLY]);
+        if (! $this->isInScope($validated['messages'], $lastUserMessage)) {
+            $this->record($conversation, $lastUserMessage, self::OUT_OF_SCOPE_REPLY);
+
+            return response()->json([
+                'reply' => self::OUT_OF_SCOPE_REPLY,
+                'conversation_id' => $conversation->id,
+                'conversation_title' => $conversation->title,
+            ]);
         }
 
         $key = config('services.ai.key');
@@ -151,7 +164,13 @@ class AiChatbotController extends Controller
         $reply = $this->extractReply($data);
 
         if (($data['stop_reason'] ?? null) === 'refusal') {
-            return response()->json(['reply' => self::OUT_OF_SCOPE_REPLY]);
+            $this->record($conversation, $lastUserMessage, self::OUT_OF_SCOPE_REPLY);
+
+            return response()->json([
+                'reply' => self::OUT_OF_SCOPE_REPLY,
+                'conversation_id' => $conversation->id,
+                'conversation_title' => $conversation->title,
+            ]);
         }
 
         if (blank($reply)) {
@@ -160,13 +179,92 @@ class AiChatbotController extends Controller
             return response()->json(['error' => 'The assistant returned an empty response. Please try again.'], 502);
         }
 
-        ChatLog::create([
-            'user_id' => $request->user()->id,
-            'user_message' => $lastUserMessage,
-            'bot_response' => $reply,
+        $this->record($conversation, $lastUserMessage, $reply);
+
+        return response()->json([
+            'reply' => $reply,
+            'conversation_id' => $conversation->id,
+            'conversation_title' => $conversation->title,
+        ]);
+    }
+
+    /**
+     * Return the messages for a single conversation (used when switching chats).
+     */
+    public function conversation(Request $request, ChatConversation $conversation): JsonResponse
+    {
+        abort_unless($conversation->user_id === $request->user()->id, 403);
+
+        return response()->json([
+            'id' => $conversation->id,
+            'title' => $conversation->title,
+            'messages' => $this->messagesFor($conversation),
+        ]);
+    }
+
+    /**
+     * Delete a conversation and its messages.
+     */
+    public function destroyConversation(Request $request, ChatConversation $conversation): JsonResponse
+    {
+        abort_unless($conversation->user_id === $request->user()->id, 403);
+
+        $conversation->messages()->delete();
+        $conversation->delete();
+
+        return response()->json(['deleted' => true]);
+    }
+
+    /**
+     * Resolve the conversation for this request, creating one on first message.
+     */
+    private function resolveConversation(Request $request, string $firstMessage): ChatConversation
+    {
+        $conversationId = $request->integer('conversation_id');
+
+        if ($conversationId) {
+            $existing = $request->user()->chatConversations()->find($conversationId);
+            if ($existing) {
+                return $existing;
+            }
+        }
+
+        return $request->user()->chatConversations()->create([
+            'title' => $this->makeTitle($firstMessage),
+        ]);
+    }
+
+    private function makeTitle(string $message): string
+    {
+        $clean = trim(preg_replace('/\s+/', ' ', $message) ?? '');
+
+        return $clean === '' ? 'New chat' : Str::limit($clean, 60);
+    }
+
+    private function record(ChatConversation $conversation, string $userMessage, string $botResponse): void
+    {
+        $conversation->messages()->create([
+            'user_id' => $conversation->user_id,
+            'user_message' => $userMessage,
+            'bot_response' => $botResponse,
         ]);
 
-        return response()->json(['reply' => $reply]);
+        // Bump updated_at so the most recently used conversation sorts first.
+        $conversation->touch();
+    }
+
+    /**
+     * @return array<int, array{role: string, content: string}>
+     */
+    private function messagesFor(ChatConversation $conversation): array
+    {
+        return $conversation->messages()->get()
+            ->flatMap(fn (ChatLog $log) => [
+                ['role' => 'user', 'content' => $log->user_message],
+                ['role' => 'assistant', 'content' => $log->bot_response],
+            ])
+            ->values()
+            ->all();
     }
 
     /**
