@@ -302,7 +302,7 @@ export default function AiChatbot({
                             <Sparkles className="h-5 w-5" />
                         </div>
                         <div className="min-w-0 flex-1">
-                            <h1 className="truncate text-lg font-semibold text-foreground">Epanaw \u2014 AI Guide</h1>
+                            <h1 className="truncate text-lg font-semibold text-foreground">Epanaw — AI Guide</h1>
                             <p className="truncate text-sm text-muted-foreground">
                                 Ask about Bagobo Tagabawa language, culture, and platform features.
                             </p>
@@ -327,7 +327,7 @@ export default function AiChatbot({
                         <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto p-4">
                             {loadingId !== null ? (
                                 <div className="grid h-full place-items-center text-sm text-muted-foreground">
-                                    Opening conversation\u2026
+                                    Opening conversation…
                                 </div>
                             ) : showEmptyState ? (
                                 <div className="grid h-full place-items-center">
@@ -336,7 +336,7 @@ export default function AiChatbot({
                                             <Sparkles className="h-6 w-6" />
                                         </div>
                                         <p className="mb-4 text-sm text-muted-foreground">
-                                            Kumusta! I\u2019m Epanaw. Ask me about Bagobo Tagabawa words, stories, culture,
+                                            Kumusta! I’m Epanaw. Ask me about Bagobo Tagabawa words, stories, culture,
                                             or how to use this platform.
                                         </p>
                                         <div className="flex flex-col gap-2">
@@ -400,7 +400,7 @@ export default function AiChatbot({
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyDown={onKeyDown}
                                     rows={1}
-                                    placeholder="Ask about Bagobo Tagabawa language or this platform\u2026"
+                                    placeholder="Ask about Bagobo Tagabawa language or this platform…"
                                     className="max-h-32 flex-1 resize-none bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
                                 />
                                 <button
