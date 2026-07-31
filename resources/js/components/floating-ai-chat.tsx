@@ -1,12 +1,31 @@
-import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
-import { AlertTriangle, ArrowUp, MessageCircle, Plus, Sparkles, X } from 'lucide-react';
+import { ChangeEvent, FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { AlertTriangle, ArrowUp, FileText, Loader2, MessageCircle, Paperclip, Plus, Sparkles, X } from 'lucide-react';
 import { ChatMarkdown } from '@/components/chat-markdown';
 import { cn } from '@/lib/utils';
+
+type Attachment = {
+    id: number;
+    name: string;
+    kind: 'image' | 'document';
+    url: string;
+    mime?: string | null;
+    size?: number;
+};
 
 type Message = {
     role: 'user' | 'assistant';
     content: string;
     at?: number;
+    attachments?: Attachment[];
+};
+
+type Pending = {
+    tempKey: string;
+    name: string;
+    kind: 'image' | 'document';
+    uploading: boolean;
+    localUrl?: string;
+    attachment?: Attachment;
 };
 
 const GREETING = 'Kumusta! I\u2019m Epanaw. Ask me about Bagobo Tagabawa language, culture, stories, or EPANAW BAGOBO learning features.';
@@ -19,6 +38,9 @@ const SUGGESTIONS = [
 
 const STORAGE_KEY = 'epanaw-floating-chat-history';
 const MAX_STORED = 50;
+const MAX_ATTACHMENTS = 4;
+const MAX_ATTACHMENT_MB = 10;
+const ATTACHMENT_ACCEPT = 'image/*,.pdf,.txt,.md,.csv,.json,.log,.doc,.docx,.xls,.xlsx,.ppt,.pptx';
 
 function readCookie(name: string): string | null {
     const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
@@ -34,6 +56,12 @@ function loadHistory(): Message[] {
         if (!Array.isArray(parsed)) return [];
         return parsed
             .filter((m) => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
+            .map((m) => ({
+                role: m.role,
+                content: m.content,
+                at: typeof m.at === 'number' ? m.at : undefined,
+                attachments: Array.isArray(m.attachments) ? m.attachments : undefined,
+            }))
             .slice(-MAX_STORED);
     } catch {
         return [];
@@ -53,12 +81,14 @@ export function FloatingAiChat() {
     const [open, setOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
+    const [pending, setPending] = useState<Pending[]>([]);
     const [sending, setSending] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const toggleRef = useRef<HTMLButtonElement>(null);
+    const fileRef = useRef<HTMLInputElement>(null);
 
     // Restore any prior conversation so history survives reloads and navigation.
     useEffect(() => {
@@ -89,23 +119,88 @@ export function FloatingAiChat() {
 
     useEffect(() => {
         scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-    }, [messages, sending, open]);
+    }, [messages, sending, open, pending]);
+
+    const uploading = pending.some((p) => p.uploading);
 
     function newChat() {
         setMessages([]);
         setError(null);
         setInput('');
+        setPending([]);
         inputRef.current?.focus();
+    }
+
+    function onPickFiles(e: ChangeEvent<HTMLInputElement>) {
+        const files = e.target.files;
+        if (files) void uploadFiles(files);
+        if (fileRef.current) fileRef.current.value = '';
+    }
+
+    async function uploadFiles(files: FileList) {
+        setError(null);
+        for (const file of Array.from(files)) {
+            if (pending.length >= MAX_ATTACHMENTS) {
+                setError(`You can attach up to ${MAX_ATTACHMENTS} files per message.`);
+                break;
+            }
+            if (file.size > MAX_ATTACHMENT_MB * 1024 * 1024) {
+                setError(`\u201c${file.name}\u201d is larger than ${MAX_ATTACHMENT_MB} MB.`);
+                continue;
+            }
+
+            const tempKey = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+            const kind: 'image' | 'document' = file.type.startsWith('image/') ? 'image' : 'document';
+            const localUrl = kind === 'image' ? URL.createObjectURL(file) : undefined;
+            setPending((prev) => [...prev, { tempKey, name: file.name, kind, uploading: true, localUrl }]);
+
+            try {
+                const form = new FormData();
+                form.append('file', file);
+                const res = await fetch('/user/ai-chatbot/attachments', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-XSRF-TOKEN': readCookie('XSRF-TOKEN') ?? '',
+                    },
+                    credentials: 'same-origin',
+                    body: form,
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    const message = data?.errors?.file?.[0] ?? data?.message ?? 'Upload failed.';
+                    setPending((prev) => prev.filter((p) => p.tempKey !== tempKey));
+                    setError(`\u201c${file.name}\u201d: ${message}`);
+                    continue;
+                }
+                setPending((prev) =>
+                    prev.map((p) => (p.tempKey === tempKey ? { ...p, uploading: false, attachment: data } : p)),
+                );
+            } catch {
+                setPending((prev) => prev.filter((p) => p.tempKey !== tempKey));
+                setError(`Could not upload \u201c${file.name}\u201d.`);
+            }
+        }
+    }
+
+    function removePending(tempKey: string) {
+        setPending((prev) => prev.filter((p) => p.tempKey !== tempKey));
     }
 
     async function send(text: string) {
         const trimmed = text.trim();
-        if (!trimmed || sending) return;
+        const ready = pending.filter((p) => p.attachment).map((p) => p.attachment as Attachment);
+        if ((!trimmed && ready.length === 0) || sending || uploading) return;
 
         setError(null);
-        const next = [...messages, { role: 'user' as const, content: trimmed, at: Date.now() }].slice(-MAX_STORED);
+        const next = [
+            ...messages,
+            { role: 'user' as const, content: trimmed, at: Date.now(), attachments: ready.length > 0 ? ready : undefined },
+        ].slice(-MAX_STORED);
         setMessages(next);
         setInput('');
+        setPending([]);
         setSending(true);
 
         try {
@@ -118,7 +213,10 @@ export function FloatingAiChat() {
                     'X-XSRF-TOKEN': readCookie('XSRF-TOKEN') ?? '',
                 },
                 credentials: 'same-origin',
-                body: JSON.stringify({ messages: next.map(({ role, content }) => ({ role, content })) }),
+                body: JSON.stringify({
+                    messages: next.map(({ role, content }) => ({ role, content: content || '(sent an attachment)' })),
+                    attachment_ids: ready.map((a) => a.id),
+                }),
             });
 
             const data = await res.json();
@@ -151,6 +249,8 @@ export function FloatingAiChat() {
             setOpen(false);
         }
     }
+
+    const canSend = (input.trim() !== '' || pending.some((p) => p.attachment)) && !sending && !uploading;
 
     return (
         <div className="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6 print:hidden">
@@ -228,11 +328,61 @@ export function FloatingAiChat() {
                         </p>
                     )}
 
+                    {pending.length > 0 && (
+                        <div className="flex flex-wrap gap-2 px-3 pt-1">
+                            {pending.map((p) => (
+                                <div
+                                    key={p.tempKey}
+                                    className="flex items-center gap-2 rounded-lg border border-border bg-background py-1 pl-1 pr-2 text-xs"
+                                >
+                                    {p.kind === 'image' && p.localUrl ? (
+                                        <img src={p.localUrl} alt={p.name} className="h-7 w-7 rounded object-cover" />
+                                    ) : (
+                                        <span className="grid h-7 w-7 place-items-center rounded bg-secondary">
+                                            <FileText className="h-3.5 w-3.5" aria-hidden="true" />
+                                        </span>
+                                    )}
+                                    <span className="max-w-[7rem] truncate">{p.name}</span>
+                                    {p.uploading ? (
+                                        <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" aria-hidden="true" />
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={() => removePending(p.tempKey)}
+                                            aria-label={`Remove ${p.name}`}
+                                            className="rounded p-0.5 text-muted-foreground hover:text-red-600"
+                                        >
+                                            <X className="h-3.5 w-3.5" aria-hidden="true" />
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
                     <form onSubmit={onSubmit} className="border-t border-border p-3">
                         <label htmlFor="epanaw-floating-input" className="sr-only">
                             Message Epanaw
                         </label>
                         <div className="flex items-end gap-2 rounded-2xl border border-border bg-background p-2 focus-within:border-primary/60">
+                            <input
+                                ref={fileRef}
+                                type="file"
+                                multiple
+                                accept={ATTACHMENT_ACCEPT}
+                                onChange={onPickFiles}
+                                className="hidden"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => fileRef.current?.click()}
+                                disabled={pending.length >= MAX_ATTACHMENTS}
+                                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-muted-foreground hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-40"
+                                aria-label="Attach a file"
+                                title="Attach an image or document"
+                            >
+                                <Paperclip className="h-4 w-4" aria-hidden="true" />
+                            </button>
                             <textarea
                                 id="epanaw-floating-input"
                                 ref={inputRef}
@@ -245,7 +395,7 @@ export function FloatingAiChat() {
                             />
                             <button
                                 type="submit"
-                                disabled={sending || input.trim() === ''}
+                                disabled={!canSend}
                                 className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-40"
                                 aria-label="Send message to Epanaw"
                             >
@@ -253,7 +403,8 @@ export function FloatingAiChat() {
                             </button>
                         </div>
                         <p className="mt-1.5 px-1 text-[11px] text-muted-foreground">
-                            Epanaw only answers EPANAW BAGOBO and Bagobo Tagabawa-related questions.
+                            Attach images or documents (up to {MAX_ATTACHMENT_MB} MB). Epanaw only answers EPANAW
+                            BAGOBO and Bagobo Tagabawa-related questions.
                         </p>
                     </form>
                 </section>
@@ -290,6 +441,35 @@ function ChatBubble({ message }: { message: Message }) {
                     isUser ? 'whitespace-pre-wrap bg-primary text-primary-foreground' : 'bg-secondary text-foreground',
                 )}
             >
+                {message.attachments && message.attachments.length > 0 && (
+                    <div className="mb-2 flex flex-wrap gap-2">
+                        {message.attachments.map((a) =>
+                            a.kind === 'image' ? (
+                                <a key={a.id} href={a.url} target="_blank" rel="noreferrer" className="block">
+                                    <img
+                                        src={a.url}
+                                        alt={a.name}
+                                        className="h-20 w-20 rounded-lg border border-white/30 object-cover"
+                                    />
+                                </a>
+                            ) : (
+                                <a
+                                    key={a.id}
+                                    href={a.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className={cn(
+                                        'flex max-w-[10rem] items-center gap-1.5 rounded-lg border px-2 py-1 text-xs',
+                                        isUser ? 'border-white/30 bg-white/10' : 'border-border bg-background text-foreground',
+                                    )}
+                                >
+                                    <FileText className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                                    <span className="truncate">{a.name}</span>
+                                </a>
+                            ),
+                        )}
+                    </div>
+                )}
                 {isUser ? message.content : <ChatMarkdown content={message.content} />}
             </div>
             {time && <span className="px-1 text-[10px] text-muted-foreground">{time}</span>}
