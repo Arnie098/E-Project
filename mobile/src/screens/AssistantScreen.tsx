@@ -22,7 +22,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as Clipboard from 'expo-clipboard';
 import * as FileSystem from 'expo-file-system';
 import { api } from '../api/endpoints';
-import { ApiError, UploadFile } from '../api/client';
+import { ApiError, UploadFile, authHeader } from '../api/client';
 import type { ChatAttachment, ChatMessage, Conversation } from '../api/types';
 import { colors, font, radius, spacing } from '../theme';
 
@@ -358,7 +358,11 @@ function MessageBubble({ item }: { item: Bubble }) {
       >
         {item.attachments?.map((a) => (
           a.kind === 'image' && (a.localUri || a.url) ? (
-            <Image key={a.id} source={{ uri: a.localUri ?? a.url }} style={styles.bubbleImage} />
+            <Image
+              key={a.id}
+              source={a.localUri ? { uri: a.localUri } : { uri: a.url, headers: authHeader() }}
+              style={styles.bubbleImage}
+            />
           ) : (
             <View key={a.id} style={styles.fileChip}>
               <Ionicons name="document-text-outline" size={16} color={isUser ? colors.white : colors.primaryDark} />

@@ -5,7 +5,13 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { apiFetch, clearToken, getToken, setToken } from '../api/client';
+import {
+  apiFetch,
+  clearToken,
+  getToken,
+  setToken,
+  setUnauthorizedHandler,
+} from '../api/client';
 import type { User } from '../api/types';
 
 type Status = 'loading' | 'authenticated' | 'unauthenticated';
@@ -53,6 +59,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     bootstrap();
   }, [bootstrap]);
+
+  // Send the learner back to login if any authenticated request returns 401
+  // (token expired or revoked mid-session).
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      clearToken();
+      setUserState(null);
+      setStatus('unauthenticated');
+    });
+    return () => setUnauthorizedHandler(null);
+  }, []);
 
   const login = useCallback(async (email: string, password: string) => {
     const res = await apiFetch<{ token: string; user: User }>('/login', {

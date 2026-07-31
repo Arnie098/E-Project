@@ -3,16 +3,42 @@ import { API_URL } from '../config';
 
 const TOKEN_KEY = 'epanaw_token';
 
+// In-memory copy of the token so synchronous consumers (e.g. <Image> headers)
+// can read it without awaiting SecureStore.
+let cachedToken: string | null = null;
+
 export async function getToken(): Promise<string | null> {
-  return SecureStore.getItemAsync(TOKEN_KEY);
+  if (cachedToken !== null) return cachedToken;
+  cachedToken = await SecureStore.getItemAsync(TOKEN_KEY);
+  return cachedToken;
 }
 
 export async function setToken(token: string): Promise<void> {
+  cachedToken = token;
   await SecureStore.setItemAsync(TOKEN_KEY, token);
 }
 
 export async function clearToken(): Promise<void> {
+  cachedToken = null;
   await SecureStore.deleteItemAsync(TOKEN_KEY);
+}
+
+/**
+ * Synchronous Authorization header for consumers that cannot await, such as a
+ * React Native <Image> request that must send the bearer token to load a
+ * token-protected attachment. Returns an empty object when signed out.
+ */
+export function authHeader(): Record<string, string> {
+  return cachedToken ? { Authorization: `Bearer ${cachedToken}` } : {};
+}
+
+// Global 401 handler so a token that expires or is revoked mid-session sends
+// the learner back to the login screen instead of leaving every screen stuck
+// on an error state. Registered by AuthContext.
+let unauthorizedHandler: (() => void) | null = null;
+
+export function setUnauthorizedHandler(handler: (() => void) | null): void {
+  unauthorizedHandler = handler;
 }
 
 export class ApiError extends Error {
@@ -69,6 +95,7 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
   const data = text ? safeJson(text) : null;
 
   if (!res.ok) {
+    if (res.status === 401 && auth) unauthorizedHandler?.();
     const message =
       (data && (data.message || data.error)) || `Request failed (${res.status})`;
     throw new ApiError(message, res.status, data?.errors);
@@ -108,6 +135,7 @@ export async function apiUpload<T>(path: string, file: UploadFile): Promise<T> {
   const data = text ? safeJson(text) : null;
 
   if (!res.ok) {
+    if (res.status === 401) unauthorizedHandler?.();
     const message =
       (data && (data.message || data.error)) || `Upload failed (${res.status})`;
     throw new ApiError(message, res.status, data?.errors);

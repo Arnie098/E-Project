@@ -25,6 +25,7 @@ class ContentController extends Controller
         $user = $request->user();
         $modules = $user->learningModules()->orderByPivot('progress', 'desc')->get();
         $completed = $modules->where('pivot.progress', 100)->count();
+        $announcement = Announcement::orderByDesc('published_at')->first();
 
         return response()->json([
             'firstName' => explode(' ', $user->name)[0],
@@ -36,7 +37,13 @@ class ContentController extends Controller
             ],
             'events' => Event::where('starts_at', '>=', now())->orderBy('starts_at')->take(3)->get()
                 ->map(fn ($e) => ['id' => $e->id, 'title' => $e->title, 'when' => $e->starts_at->format('M j, Y g:i A')]),
-            'announcement' => Announcement::orderByDesc('published_at')->first(),
+            'announcement' => $announcement ? [
+                'id' => $announcement->id,
+                'title' => $announcement->title,
+                'body' => $announcement->body,
+                'author' => $announcement->author,
+                'date' => $announcement->published_at?->format('M j, Y'),
+            ] : null,
         ]);
     }
 
