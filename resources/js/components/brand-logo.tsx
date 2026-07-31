@@ -30,7 +30,7 @@ export function BrandLogo({
     tagline?: boolean;
 }) {
     const settings = (usePage().props as { settings?: { siteName?: string; tagline?: string } }).settings;
-    const name = settings?.siteName ?? 'EPANAW BAGOBO';
+    const name = settings?.siteName ?? 'MANAYUN BAGOBO';
     const tag = settings?.tagline ?? 'Preserve. Revitalize. Inspire.';
 
     return (

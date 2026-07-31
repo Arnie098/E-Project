@@ -53,7 +53,7 @@ export function PublicLayout({ children, showAuthButtons = true }: { children: R
                     <p className="text-sm font-medium text-foreground/80">
                         Together, let's preserve our heritage and inspire future generations.
                     </p>
-                    <p className="mt-2 text-xs text-muted-foreground">© 2026 EPANAW BAGOBO. All rights reserved.</p>
+                    <p className="mt-2 text-xs text-muted-foreground">© 2026 MANAYUN BAGOBO. All rights reserved.</p>
                 </div>
                 {/* Tribal pattern band */}
                 <div

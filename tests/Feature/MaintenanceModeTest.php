@@ -39,10 +39,10 @@ class MaintenanceModeTest extends TestCase
         $super = User::factory()->create(['role' => 'super']);
 
         $this->actingAs($super)
-            ->patch('/super/settings', ['siteName' => 'EPANAW BAGOBO', 'tagline' => 'Test', 'maintenance' => true])
+            ->patch('/super/settings', ['siteName' => 'MANAYUN BAGOBO', 'tagline' => 'Test', 'maintenance' => true])
             ->assertRedirect();
 
         $this->assertSame('1', Setting::get('maintenance_mode'));
-        $this->assertSame('EPANAW BAGOBO', Setting::get('site_name'));
+        $this->assertSame('MANAYUN BAGOBO', Setting::get('site_name'));
     }
 }

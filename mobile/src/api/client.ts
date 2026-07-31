@@ -1,7 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import { API_URL } from '../config';
 
-const TOKEN_KEY = 'epanaw_token';
+const TOKEN_KEY = 'manayun_token';
 
 // In-memory copy of the token so synchronous consumers (e.g. <Image> headers)
 // can read it without awaiting SecureStore.

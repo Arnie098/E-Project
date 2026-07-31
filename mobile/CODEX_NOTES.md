@@ -3,6 +3,10 @@
 This summarizes everything added for the mobile app so you can continue in your
 editor. All changes are on branch `main`.
 
+> Branding: the app is now **MANAYUN BAGOBO** (renamed from EPANAW BAGOBO). The
+> Expo `name`/`slug`/`scheme` and native bundle IDs are `com.manayun.mobile`, and
+> the AI assistant persona is **Manayun**.
+
 ## What was added
 
 ### Backend (Laravel) — mobile JSON API
@@ -59,17 +63,17 @@ npx expo start
 - `POST /api/chatbot/attachments` takes multipart `file` and returns
   `{ id, name, kind, mime, size, url, readable }`. Send the returned `id`s in the
   next chat message as `attachment_ids` (max 4, 10 MB each).
-- The `url` in an attachment payload points at the web named route
-  (`user.ai-chatbot.attachment`); the mobile client renders freshly-picked images
-  from their local device URI, so it does not depend on that URL.
-- Sanctum token is stored under SecureStore key `epanaw_token`.
+- Server-side chat history now returns attachments too; the `url` points at the
+  token-authenticated `api.chatbot.attachment` route, and the mobile `<Image>`
+  sends the bearer token via `authHeader()` from `src/api/client.ts`.
+- Sanctum token is stored under SecureStore key `manayun_token`.
 - The mobile client sends the last 20 messages as chat context; the server still
   enforces the scope gate, so off-topic questions get the same refusal reply.
 - `EXPO_PUBLIC_API_URL` is inlined at build time — restart Expo after changing `.env`.
 
 ## Suggested next steps (not yet done)
-- Rendering images from server-side history (currently only just-picked images preview inline; history documents show as chips).
+- Audio/video playback for pronunciations and the media gallery (add `expo-av`).
+- Asset-URL helper + display of image/thumbnail fields in Home/Stories/Media/Repository.
+- Story/repository detail views (needs the API to return full story body).
 - Push notifications for events/announcements.
 - Offline caching of vocabulary/stories.
-- Verify each `Api\*Controller` response shape matches `mobile/src/api/types.ts`
-  against your real data and adjust field mappings if needed.

@@ -34,10 +34,10 @@ export function TabNavigator() {
         ),
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'EPANAW BAGOBO' }} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'MANAYUN BAGOBO' }} />
       <Tab.Screen name="Learn" component={LearnScreen} options={{ title: 'Learning Modules' }} />
       <Tab.Screen name="Explore" component={ExploreScreen} options={{ title: 'Explore' }} />
-      <Tab.Screen name="Assistant" component={AssistantScreen} options={{ title: 'Epanaw AI' }} />
+      <Tab.Screen name="Assistant" component={AssistantScreen} options={{ title: 'Manayun AI' }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'Profile' }} />
     </Tab.Navigator>
   );

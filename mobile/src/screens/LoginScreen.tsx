@@ -48,7 +48,7 @@ export function LoginScreen({ navigation }: Props) {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.brand}>
-          <Text style={styles.logo}>EPANAW BAGOBO</Text>
+          <Text style={styles.logo}>MANAYUN BAGOBO</Text>
           <Text style={styles.tagline}>Preserving Bagobo Tagabawa language & culture</Text>
         </View>
 

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "EPANAW BAGOBO",
-    "slug": "epanaw-mobile",
+    "name": "MANAYUN BAGOBO",
+    "slug": "manayun-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "scheme": "epanaw",
+    "scheme": "manayun",
     "newArchEnabled": false,
     "splash": {
       "resizeMode": "contain",
@@ -16,13 +16,13 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.epanaw.mobile",
+      "bundleIdentifier": "com.manayun.mobile",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "Allow EPANAW BAGOBO to access your photos so you can attach images to the AI assistant."
+        "NSPhotoLibraryUsageDescription": "Allow MANAYUN BAGOBO to access your photos so you can attach images to the AI assistant."
       }
     },
     "android": {
-      "package": "com.epanaw.mobile",
+      "package": "com.manayun.mobile",
       "adaptiveIcon": {
         "backgroundColor": "#0f766e"
       }
@@ -34,7 +34,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow EPANAW BAGOBO to access your photos so you can attach images to the AI assistant."
+          "photosPermission": "Allow MANAYUN BAGOBO to access your photos so you can attach images to the AI assistant."
         }
       ]
     ]

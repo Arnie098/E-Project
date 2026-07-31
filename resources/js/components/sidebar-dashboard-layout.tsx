@@ -113,7 +113,7 @@ export function SidebarDashboardLayout({ title, nav, user, notifications, childr
 
                 <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
                 <footer className="px-4 py-5 text-center text-xs text-muted-foreground sm:px-6 lg:px-8">
-                    EPANAW BAGOBO © 2025. All rights reserved.
+                    MANAYUN BAGOBO © 2025. All rights reserved.
                 </footer>
             </div>
         </div>

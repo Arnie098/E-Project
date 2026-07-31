@@ -42,7 +42,7 @@ export function PageStub({
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 <PanelCard title="Overview" className="lg:col-span-2">
                     <p className="text-sm leading-relaxed text-muted-foreground">
-                        This module is part of the EPANAW BAGOBO framework for preserving and revitalizing the Bagobo Tagabawa dialect and
+                        This module is part of the MANAYUN BAGOBO framework for preserving and revitalizing the Bagobo Tagabawa dialect and
                         cultural heritage. Use this space to manage {title.toLowerCase()} with the same look and feel as the rest of the
                         dashboard.
                     </p>

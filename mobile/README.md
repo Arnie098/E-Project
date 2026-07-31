@@ -1,6 +1,6 @@
-# EPANAW BAGOBO — Mobile App (Expo / React Native)
+# MANAYUN BAGOBO — Mobile App (Expo / React Native)
 
-A React Native (Expo, managed workflow) mobile client for the EPANAW BAGOBO
+A React Native (Expo, managed workflow) mobile client for the MANAYUN BAGOBO
 platform. It talks to the existing Laravel app over a JSON API secured with
 Laravel Sanctum bearer tokens.
 
@@ -10,7 +10,7 @@ Laravel Sanctum bearer tokens.
 - **Home dashboard**: greeting, stats, announcement, quick access, continue learning, upcoming events
 - **Learning modules**: list, detail with lesson content, and interactive **quiz** with server-side grading
 - **Explore**: vocabulary dictionary (search + categories), storytelling archive, multimedia gallery, cultural repository, events
-- **AI Assistant (Epanaw AI)**: chat with the same scope-limited assistant as the web app, with **chat history** (open/delete past conversations) and English/Cebuano/Tagalog support
+- **AI Assistant (Manayun AI)**: chat with the same scope-limited assistant as the web app, with **chat history** (open/delete past conversations) and English/Cebuano/Tagalog support
 - **AI chat attachments**: attach a **photo from the library**, a **document** (PDF/Word/text), or **paste an image** from the clipboard, then ask about it. Off-topic images/documents are politely declined, exactly like text questions.
 - **Community**: submit contributions and feedback; view your submissions
 - **Progress**: track completed / in-progress modules and quiz scores
@@ -103,6 +103,7 @@ mobile/
 1. `AuthContext` reads the SecureStore token on launch and calls `GET /api/user`.
 2. Valid token → authenticated stack (tabs). No/invalid token → auth stack (login/register).
 3. Login/register store the returned Sanctum token; logout clears it and calls `POST /api/logout`.
+4. A global 401 handler clears the token and returns to Login if it expires mid-session.
 
 ## AI chat attachments
 

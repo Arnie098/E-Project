@@ -1,4 +1,4 @@
-# EPANAW BAGOBO
+# MANAYUN BAGOBO
 
 A digital platform for preserving, promoting, and revitalizing the **Bagobo Tagabawa** dialect and cultural heritage.
 
@@ -10,7 +10,8 @@ Originally a static TanStack Start prototype, now rebuilt as a full-stack **Lara
 - **Frontend:** React 19 + TypeScript via Inertia.js 2, Vite 6
 - **Styling:** Tailwind CSS v4 (OKLCH design tokens), shadcn/ui (Radix), lucide-react
 - **Auth:** Session auth (Laravel starter kit) with a custom `role` field
-- **AI:** Claude via the Anthropic Messages API (server-side, Laravel `Http` client)
+- **AI:** Configurable provider (Aerolink/OpenAI-compatible or Anthropic) via the server-side Laravel `Http` client
+- **Mobile:** Expo (React Native + TypeScript) client in `mobile/`, Sanctum bearer-token API under `routes/api.php`
 
 ## Roles & areas
 
@@ -43,14 +44,14 @@ Visit http://127.0.0.1:8000.
 
 ### AI Chatbot setup (optional)
 
-The learner AI Chatbot ("Epanaw") calls the Claude Messages API. Add a key to `.env` to enable it:
+The learner AI Chatbot ("Manayun") calls a configurable AI provider. Add a key to `.env` to enable it:
 
 ```
-ANTHROPIC_API_KEY=sk-ant-...
-ANTHROPIC_MODEL=claude-opus-4-8   # optional; this is the default
+AI_API_KEY=...
+AI_MODEL=gpt-5.6-sol   # optional; matches your provider
 ```
 
-Without a key the chatbot page shows a "not configured" notice and the rest of the app works normally. Config lives in `config/services.php` (`services.anthropic`).
+Without a key the chatbot page shows a "not configured" notice and the rest of the app works normally. Config lives in `config/services.php` (`services.ai`).
 
 ### Demo accounts (password: `password`)
 
@@ -66,7 +67,7 @@ Without a key the chatbot page shows a "not configured" notice and the rest of t
 
 - **Learning Modules** — lessons with content, difficulty, and an interactive quiz; server-side grading (≥60% passes), progress tracking, and **My Progress** with per-lesson status/scores.
 - **Vocabulary Dictionary** — searchable, category-filtered entries with phonetic pronunciation and a verified **Pronunciation Library** (native speaker + verifier).
-- **AI Chatbot** — "Epanaw", a Claude-powered guide scoped to Bagobo Tagabawa culture; conversations are logged and rehydrated on reload.
+- **AI Chatbot** — "Manayun", an AI-powered guide scoped to Bagobo Tagabawa culture; conversations are logged and rehydrated on reload.
 - **Cultural Repository, Multimedia Gallery, Storytelling Archive** — browsable content with search/type/category filters.
 - **Community Contributions & Feedback** — learners submit content (queued for review) and star-rated feedback.
 - **Events** — upcoming/past cultural events.
@@ -93,11 +94,13 @@ Feature tests cover RBAC enforcement, quiz grading, community/feedback submissio
 ## Project layout
 
 - `routes/web.php` — public, learner, admin, super route groups
-- `app/Http/Controllers/*` — `User`/`Admin`/`Super`DashboardController, `AdminCrudController`, `LearningController`, `CommunityController`, `AiChatbotController`
+- `routes/api.php` — Sanctum-secured mobile API
+- `app/Http/Controllers/*` — `User`/`Admin`/`Super`DashboardController, `AdminCrudController`, `LearningController`, `CommunityController`, `AiChatbotController`, `Api/*`
 - `app/Http/Middleware/*` — `EnsureUserHasRole`, `EnsureNotUnderMaintenance`
 - `app/Models/*` — domain models (LearningModule, QuizQuestion, QuizResult, VocabularyWord, Pronunciation, MediaItem, Story, RepositoryItem, Contribution, ResourceVerification, Feedback, Event, ChatLog, ActivityLog, Setting, …)
 - `database/seeders/DatabaseSeeder.php` — demo users + content
 - `resources/js/pages/{user,admin,super}/*` — Inertia page components
 - `resources/js/layouts/*` — dashboard chrome
 - `resources/js/components/*` — brand-logo, dashboard-layout, `admin/entity-manager`, `ui/*`
+- `mobile/*` — Expo React Native app
 - `resources/css/app.css` — Tailwind v4 tokens

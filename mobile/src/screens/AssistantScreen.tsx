@@ -224,9 +224,9 @@ export function AssistantScreen() {
       {messages.length === 0 ? (
         <View style={styles.empty}>
           <Ionicons name="chatbubbles-outline" size={48} color={colors.primary} />
-          <Text style={styles.emptyTitle}>Ask Epanaw</Text>
+          <Text style={styles.emptyTitle}>Ask Manayun</Text>
           <Text style={styles.emptySub}>
-            Your guide to Bagobo Tagabawa language, culture, and the EPANAW BAGOBO platform. Ask in English, Cebuano, or Tagalog — and attach a photo or document to ask about it.
+            Your guide to Bagobo Tagabawa language, culture, and the MANAYUN BAGOBO platform. Ask in English, Cebuano, or Tagalog — and attach a photo or document to ask about it.
           </Text>
         </View>
       ) : (
