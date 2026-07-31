@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ChatbotController;
 use App\Http\Controllers\Api\CommunityController;
 use App\Http\Controllers\Api\ContentController;
+use App\Http\Controllers\Api\TranslationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,6 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/contributions', [CommunityController::class, 'storeContribution']);
     Route::get('/feedback', [CommunityController::class, 'feedback']);
     Route::post('/feedback', [CommunityController::class, 'storeFeedback']);
+
+    // Voice / text translation into Bagobo Tagabawa (English or Tagalog source)
+    Route::post('/translate', [TranslationController::class, 'translate']);
 
     // AI chatbot (reuses the web controller's full scope-gated reply logic)
     Route::post('/chatbot', [AiChatbotController::class, 'chat']);
