@@ -11,13 +11,10 @@ Laravel Sanctum bearer tokens.
 - **Learning modules**: list, detail with lesson content, and interactive **quiz** with server-side grading
 - **Explore**: vocabulary dictionary (search + categories), storytelling archive, multimedia gallery, cultural repository, events
 - **AI Assistant (Epanaw AI)**: chat with the same scope-limited assistant as the web app, with **chat history** (open/delete past conversations) and English/Cebuano/Tagalog support
+- **AI chat attachments**: attach a **photo from the library**, a **document** (PDF/Word/text), or **paste an image** from the clipboard, then ask about it. Off-topic images/documents are politely declined, exactly like text questions.
 - **Community**: submit contributions and feedback; view your submissions
 - **Progress**: track completed / in-progress modules and quiz scores
 - **Profile**: view and edit your profile, sign out
-
-> Note: attachment upload from mobile is not included in v1 (the web app keeps
-> that feature). The chat endpoint accepts attachment IDs but the mobile client
-> does not send them yet.
 
 ## Requirements
 
@@ -45,7 +42,8 @@ endpoints are:
 - `GET /api/dashboard`, `/api/vocabulary`, `/api/stories`, `/api/media`, `/api/events`, `/api/repository`
 - `GET /api/learning-modules`, `GET /api/learning-modules/{id}`, `POST /api/learning-modules/{id}/quiz`, `GET /api/progress`
 - `GET|POST /api/contributions`, `GET|POST /api/feedback`
-- `POST /api/chatbot`, `GET /api/chatbot/conversations`, `GET|DELETE /api/chatbot/conversations/{id}`
+- `POST /api/chatbot`, `POST /api/chatbot/attachments`, `GET /api/chatbot/attachments/{id}`
+- `GET /api/chatbot/conversations`, `GET|DELETE /api/chatbot/conversations/{id}`
 
 ## 2. Configure & run the mobile app
 
@@ -74,6 +72,11 @@ npx expo start
 
 Scan the QR code with Expo Go, or press `a` / `i` for an emulator.
 
+> The attachment feature uses `expo-image-picker`, `expo-document-picker`,
+> `expo-clipboard`, and `expo-file-system` (already in `package.json`). If you
+> add them manually, prefer `npx expo install <pkg>` so versions match the SDK.
+> Photo-library access requires the permission declared in `app.json`.
+
 ## Project structure
 
 ```
@@ -83,7 +86,7 @@ mobile/
     config.ts             # reads EXPO_PUBLIC_API_URL
     theme.ts              # colors, spacing, radius, fonts
     api/
-      client.ts           # fetch wrapper + SecureStore token + ApiError
+      client.ts           # fetch wrapper + multipart upload + SecureStore token + ApiError
       endpoints.ts        # typed API calls
       types.ts            # shared response types
     context/AuthContext.tsx
@@ -100,3 +103,11 @@ mobile/
 1. `AuthContext` reads the SecureStore token on launch and calls `GET /api/user`.
 2. Valid token → authenticated stack (tabs). No/invalid token → auth stack (login/register).
 3. Login/register store the returned Sanctum token; logout clears it and calls `POST /api/logout`.
+
+## AI chat attachments
+
+1. Tap the **+** button in the chat input to attach a photo, a document, or paste an image.
+2. Each file is uploaded to `POST /api/chatbot/attachments`, which returns an attachment id.
+3. When you send, the ids go with the message as `attachment_ids`; the shared
+   `AiChatbotController@chat` embeds images/extracted text into the same turn and
+   applies the same scope + accuracy rules.
