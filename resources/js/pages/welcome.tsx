@@ -20,7 +20,7 @@ export default function Welcome() {
 
     return (
         <PublicLayout>
-            <Head title="EPANAW BAGOBO — Preserve. Revitalize. Inspire.">
+            <Head title="MANAYUN BAGOBO — Preserve. Revitalize. Inspire.">
                 <meta
                     name="description"
                     content="A digital platform dedicated to preserving, promoting, and revitalizing the Bagobo Tagabawa language, traditions, stories, and cultural practices."
@@ -34,7 +34,7 @@ export default function Welcome() {
                         <h1 className="text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                             Welcome to
                             <br />
-                            EPANAW BAGOBO
+                            MANAYUN BAGOBO
                         </h1>
                         <p className="mt-6 text-lg font-medium text-foreground/80 sm:text-xl">
                             Preserving the Bagobo Tagabawa Dialect and Cultural Heritage
