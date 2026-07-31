@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, ClipboardEvent, FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { AlertTriangle, ArrowUp, FileText, Loader2, MessageCircle, Paperclip, Plus, Sparkles, X } from 'lucide-react';
 import { ChatMarkdown } from '@/components/chat-markdown';
 import { cn } from '@/lib/utils';
@@ -45,6 +45,20 @@ const ATTACHMENT_ACCEPT = 'image/*,.pdf,.txt,.md,.csv,.json,.log,.doc,.docx,.xls
 function readCookie(name: string): string | null {
     const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
     return match ? decodeURIComponent(match[1]) : null;
+}
+
+function imagesFromClipboard(data: DataTransfer | null): File[] {
+    if (!data) return [];
+    const images: File[] = [];
+    for (const item of Array.from(data.items)) {
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+            const file = item.getAsFile();
+            if (!file) continue;
+            const ext = file.type.split('/')[1] || 'png';
+            images.push(file.name ? file : new File([file], `pasted-${Date.now()}.${ext}`, { type: file.type }));
+        }
+    }
+    return images;
 }
 
 function loadHistory(): Message[] {
@@ -137,7 +151,15 @@ export function FloatingAiChat() {
         if (fileRef.current) fileRef.current.value = '';
     }
 
-    async function uploadFiles(files: FileList) {
+    function onPaste(e: ClipboardEvent<HTMLTextAreaElement>) {
+        const images = imagesFromClipboard(e.clipboardData);
+        if (images.length > 0) {
+            e.preventDefault();
+            void uploadFiles(images);
+        }
+    }
+
+    async function uploadFiles(files: FileList | File[]) {
         setError(null);
         for (const file of Array.from(files)) {
             if (pending.length >= MAX_ATTACHMENTS) {
@@ -389,6 +411,7 @@ export function FloatingAiChat() {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={onKeyDown}
+                                onPaste={onPaste}
                                 rows={1}
                                 placeholder="Ask Epanaw\u2026"
                                 className="max-h-28 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
@@ -403,8 +426,8 @@ export function FloatingAiChat() {
                             </button>
                         </div>
                         <p className="mt-1.5 px-1 text-[11px] text-muted-foreground">
-                            Attach images or documents (up to {MAX_ATTACHMENT_MB} MB). Epanaw only answers EPANAW
-                            BAGOBO and Bagobo Tagabawa-related questions.
+                            Attach or paste images or documents (up to {MAX_ATTACHMENT_MB} MB). Epanaw only answers
+                            EPANAW BAGOBO and Bagobo Tagabawa-related questions.
                         </p>
                     </form>
                 </section>
