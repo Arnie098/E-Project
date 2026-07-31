@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
+  Image,
   KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -14,12 +17,18 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
+import * as Clipboard from 'expo-clipboard';
+import * as FileSystem from 'expo-file-system';
 import { api } from '../api/endpoints';
-import { ApiError } from '../api/client';
-import type { ChatMessage, Conversation } from '../api/types';
+import { ApiError, UploadFile } from '../api/client';
+import type { ChatAttachment, ChatMessage, Conversation } from '../api/types';
 import { colors, font, radius, spacing } from '../theme';
 
 type Bubble = ChatMessage & { pending?: boolean; failed?: boolean };
+
+const MAX_ATTACHMENTS = 4;
 
 export function AssistantScreen() {
   const nav = useNavigation();
@@ -27,8 +36,11 @@ export function AssistantScreen() {
   const [conversationId, setConversationId] = useState<number | null>(null);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [attachments, setAttachments] = useState<ChatAttachment[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [showAttachMenu, setShowAttachMenu] = useState(false);
   const listRef = useRef<FlatList<Bubble>>(null);
 
   const loadConversations = async () => {
@@ -64,6 +76,7 @@ export function AssistantScreen() {
     setMessages([]);
     setConversationId(null);
     setInput('');
+    setAttachments([]);
   }
 
   async function openConversation(id: number) {
@@ -72,6 +85,7 @@ export function AssistantScreen() {
       const res = await api.conversation(id);
       setMessages(res.messages as Bubble[]);
       setConversationId(res.id);
+      setAttachments([]);
     } catch (e) {
       // ignore
     }
@@ -87,23 +101,98 @@ export function AssistantScreen() {
     }
   }
 
+  function removeAttachment(id: number) {
+    setAttachments((prev) => prev.filter((a) => a.id !== id));
+  }
+
+  async function uploadFile(file: UploadFile, localImageUri?: string) {
+    if (attachments.length >= MAX_ATTACHMENTS) {
+      Alert.alert('Limit reached', `You can attach up to ${MAX_ATTACHMENTS} files.`);
+      return;
+    }
+    setUploading(true);
+    try {
+      const saved = await api.uploadAttachment(file);
+      setAttachments((prev) => [...prev, { ...saved, localUri: localImageUri }]);
+    } catch (e) {
+      Alert.alert('Upload failed', e instanceof ApiError ? e.message : 'Could not upload the file.');
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function pickImage() {
+    setShowAttachMenu(false);
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert('Permission needed', 'Allow photo access to attach images.');
+      return;
+    }
+    const res = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 0.8,
+    });
+    if (res.canceled || !res.assets?.length) return;
+    const asset = res.assets[0];
+    const name = asset.fileName ?? `image-${Date.now()}.jpg`;
+    const type = asset.mimeType ?? 'image/jpeg';
+    await uploadFile({ uri: asset.uri, name, type }, asset.uri);
+  }
+
+  async function pickDocument() {
+    setShowAttachMenu(false);
+    const res = await DocumentPicker.getDocumentAsync({ type: '*/*', copyToCacheDirectory: true });
+    if (res.canceled || !res.assets?.length) return;
+    const asset = res.assets[0];
+    await uploadFile({
+      uri: asset.uri,
+      name: asset.name,
+      type: asset.mimeType ?? 'application/octet-stream',
+    });
+  }
+
+  async function pasteImage() {
+    setShowAttachMenu(false);
+    try {
+      const hasImage = await Clipboard.hasImageAsync();
+      if (!hasImage) {
+        Alert.alert('No image', 'There is no image in your clipboard.');
+        return;
+      }
+      const img = await Clipboard.getImageAsync({ format: 'png' });
+      if (!img?.data) return;
+      const base64 = img.data.includes(',') ? img.data.split(',')[1] : img.data;
+      const uri = `${FileSystem.cacheDirectory}pasted-${Date.now()}.png`;
+      await FileSystem.writeAsStringAsync(uri, base64, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      await uploadFile({ uri, name: 'pasted-image.png', type: 'image/png' }, uri);
+    } catch (e) {
+      Alert.alert('Paste failed', 'Could not read an image from your clipboard.');
+    }
+  }
+
   async function send() {
     const text = input.trim();
-    if (!text || sending) return;
+    if ((!text && attachments.length === 0) || sending || uploading) return;
 
+    const contentToSend = text || 'Please take a look at the attached file(s).';
     const history: ChatMessage[] = messages
       .filter((m) => !m.failed)
       .map((m) => ({ role: m.role, content: m.content }));
-    const outgoing: ChatMessage = { role: 'user', content: text };
-    const next = [...history, outgoing];
+    const sentAttachments = attachments;
+    const attachmentIds = sentAttachments.map((a) => a.id);
+    const outgoing: Bubble = { role: 'user', content: contentToSend, attachments: sentAttachments };
+    const apiHistory: ChatMessage[] = [...history, { role: 'user', content: contentToSend }];
 
     setMessages((prev) => [...prev, outgoing, { role: 'assistant', content: '', pending: true }]);
     setInput('');
+    setAttachments([]);
     setSending(true);
     requestAnimationFrame(() => listRef.current?.scrollToEnd({ animated: true }));
 
     try {
-      const res = await api.chat(next.slice(-20), conversationId);
+      const res = await api.chat(apiHistory.slice(-20), conversationId, attachmentIds);
       setConversationId(res.conversation_id);
       setMessages((prev) => {
         const copy = [...prev];
@@ -124,6 +213,8 @@ export function AssistantScreen() {
     }
   }
 
+  const canSend = (!!input.trim() || attachments.length > 0) && !sending && !uploading;
+
   return (
     <KeyboardAvoidingView
       style={styles.flex}
@@ -135,7 +226,7 @@ export function AssistantScreen() {
           <Ionicons name="chatbubbles-outline" size={48} color={colors.primary} />
           <Text style={styles.emptyTitle}>Ask Epanaw</Text>
           <Text style={styles.emptySub}>
-            Your guide to Bagobo Tagabawa language, culture, and the EPANAW BAGOBO platform. Ask in English, Cebuano, or Tagalog.
+            Your guide to Bagobo Tagabawa language, culture, and the EPANAW BAGOBO platform. Ask in English, Cebuano, or Tagalog — and attach a photo or document to ask about it.
           </Text>
         </View>
       ) : (
@@ -145,11 +236,52 @@ export function AssistantScreen() {
           keyExtractor={(_, i) => String(i)}
           contentContainerStyle={styles.list}
           onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: true })}
-          renderItem={({ item }) => <Bubble item={item} />}
+          renderItem={({ item }) => <MessageBubble item={item} />}
         />
       )}
 
+      {attachments.length > 0 ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.previewBar}
+          contentContainerStyle={styles.previewContent}
+        >
+          {attachments.map((a) => (
+            <View key={a.id} style={styles.previewItem}>
+              {a.kind === 'image' && a.localUri ? (
+                <Image source={{ uri: a.localUri }} style={styles.previewImg} />
+              ) : (
+                <View style={styles.previewDoc}>
+                  <Ionicons name="document-text-outline" size={20} color={colors.primaryDark} />
+                  <Text style={styles.previewDocName} numberOfLines={1}>{a.name}</Text>
+                </View>
+              )}
+              <TouchableOpacity style={styles.previewRemove} onPress={() => removeAttachment(a.id)}>
+                <Ionicons name="close-circle" size={20} color={colors.text} />
+              </TouchableOpacity>
+            </View>
+          ))}
+          {uploading ? (
+            <View style={styles.previewUploading}>
+              <ActivityIndicator color={colors.primary} />
+            </View>
+          ) : null}
+        </ScrollView>
+      ) : null}
+
       <View style={styles.inputBar}>
+        <TouchableOpacity
+          style={styles.attachBtn}
+          onPress={() => setShowAttachMenu(true)}
+          disabled={sending || uploading || attachments.length >= MAX_ATTACHMENTS}
+        >
+          <Ionicons
+            name="add-circle-outline"
+            size={26}
+            color={attachments.length >= MAX_ATTACHMENTS ? colors.textMuted : colors.primary}
+          />
+        </TouchableOpacity>
         <TextInput
           style={styles.input}
           value={input}
@@ -158,10 +290,22 @@ export function AssistantScreen() {
           placeholderTextColor={colors.textMuted}
           multiline
         />
-        <TouchableOpacity style={[styles.sendBtn, (!input.trim() || sending) && styles.sendDisabled]} onPress={send} disabled={!input.trim() || sending}>
+        <TouchableOpacity style={[styles.sendBtn, !canSend && styles.sendDisabled]} onPress={send} disabled={!canSend}>
           {sending ? <ActivityIndicator color={colors.white} size="small" /> : <Ionicons name="send" size={20} color={colors.white} />}
         </TouchableOpacity>
       </View>
+
+      <Modal visible={showAttachMenu} animationType="slide" transparent onRequestClose={() => setShowAttachMenu(false)}>
+        <Pressable style={styles.modalBackdrop} onPress={() => setShowAttachMenu(false)}>
+          <Pressable style={styles.attachSheet}>
+            <Text style={styles.modalTitle}>Attach</Text>
+            <AttachOption icon="image-outline" label="Photo from library" onPress={pickImage} />
+            <AttachOption icon="document-outline" label="Document (PDF, Word, text)" onPress={pickDocument} />
+            <AttachOption icon="clipboard-outline" label="Paste image from clipboard" onPress={pasteImage} />
+            <Text style={styles.attachHint}>Up to {MAX_ATTACHMENTS} files. Off-topic images or documents will be politely declined.</Text>
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       <Modal visible={showHistory} animationType="slide" transparent onRequestClose={() => setShowHistory(false)}>
         <Pressable style={styles.modalBackdrop} onPress={() => setShowHistory(false)}>
@@ -192,7 +336,16 @@ export function AssistantScreen() {
   );
 }
 
-function Bubble({ item }: { item: Bubble }) {
+function AttachOption({ icon, label, onPress }: { icon: keyof typeof Ionicons.glyphMap; label: string; onPress: () => void }) {
+  return (
+    <TouchableOpacity style={styles.attachOption} onPress={onPress}>
+      <Ionicons name={icon} size={22} color={colors.primary} />
+      <Text style={styles.attachOptionLabel}>{label}</Text>
+    </TouchableOpacity>
+  );
+}
+
+function MessageBubble({ item }: { item: Bubble }) {
   const isUser = item.role === 'user';
   return (
     <View style={[styles.bubbleRow, isUser ? styles.rowRight : styles.rowLeft]}>
@@ -203,11 +356,21 @@ function Bubble({ item }: { item: Bubble }) {
           item.failed && styles.failedBubble,
         ]}
       >
+        {item.attachments?.map((a) => (
+          a.kind === 'image' && (a.localUri || a.url) ? (
+            <Image key={a.id} source={{ uri: a.localUri ?? a.url }} style={styles.bubbleImage} />
+          ) : (
+            <View key={a.id} style={styles.fileChip}>
+              <Ionicons name="document-text-outline" size={16} color={isUser ? colors.white : colors.primaryDark} />
+              <Text style={[styles.fileChipText, isUser && styles.userText]} numberOfLines={1}>{a.name}</Text>
+            </View>
+          )
+        ))}
         {item.pending ? (
           <ActivityIndicator color={colors.primary} size="small" />
-        ) : (
+        ) : item.content ? (
           <Text style={[styles.bubbleText, isUser && styles.userText, item.failed && styles.failedText]}>{item.content}</Text>
-        )}
+        ) : null}
       </View>
     </View>
   );
@@ -231,6 +394,35 @@ const styles = StyleSheet.create({
   bubbleText: { fontSize: font.sm, color: colors.text, lineHeight: 21 },
   userText: { color: colors.white },
   failedText: { color: colors.danger },
+  bubbleImage: { width: 180, height: 180, borderRadius: radius.md, marginBottom: spacing(2), resizeMode: 'cover' },
+  fileChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing(2),
+    backgroundColor: 'rgba(0,0,0,0.06)',
+    borderRadius: radius.md,
+    paddingHorizontal: spacing(3),
+    paddingVertical: spacing(2),
+    marginBottom: spacing(2),
+    maxWidth: 220,
+  },
+  fileChipText: { fontSize: font.xs, color: colors.text, flexShrink: 1 },
+  previewBar: { maxHeight: 96, backgroundColor: colors.white, borderTopWidth: 1, borderTopColor: colors.border },
+  previewContent: { padding: spacing(3), gap: spacing(3), alignItems: 'center' },
+  previewItem: { width: 68 },
+  previewImg: { width: 68, height: 68, borderRadius: radius.md },
+  previewDoc: {
+    width: 68,
+    height: 68,
+    borderRadius: radius.md,
+    backgroundColor: colors.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing(1),
+  },
+  previewDocName: { fontSize: 9, color: colors.primaryDark, marginTop: 2, textAlign: 'center' },
+  previewRemove: { position: 'absolute', top: -6, right: -6, backgroundColor: colors.white, borderRadius: radius.full },
+  previewUploading: { width: 68, height: 68, alignItems: 'center', justifyContent: 'center' },
   inputBar: {
     flexDirection: 'row',
     alignItems: 'flex-end',
@@ -240,6 +432,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.border,
     backgroundColor: colors.white,
   },
+  attachBtn: { paddingBottom: spacing(2) },
   input: {
     flex: 1,
     maxHeight: 120,
@@ -261,7 +454,11 @@ const styles = StyleSheet.create({
   sendDisabled: { opacity: 0.5 },
   modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
   modalSheet: { backgroundColor: colors.white, borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: spacing(5), maxHeight: '70%' },
+  attachSheet: { backgroundColor: colors.white, borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: spacing(5) },
   modalTitle: { fontSize: font.lg, fontWeight: '800', color: colors.text, marginBottom: spacing(4) },
+  attachOption: { flexDirection: 'row', alignItems: 'center', gap: spacing(3), paddingVertical: spacing(4), borderBottomWidth: 1, borderBottomColor: colors.border },
+  attachOptionLabel: { fontSize: font.md, color: colors.text, fontWeight: '600' },
+  attachHint: { fontSize: font.xs, color: colors.textMuted, marginTop: spacing(3), lineHeight: 18 },
   historyRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacing(3), borderBottomWidth: 1, borderBottomColor: colors.border },
   historyTitle: { fontSize: font.sm, color: colors.text, fontWeight: '600' },
   historyDelete: { paddingHorizontal: spacing(2) },

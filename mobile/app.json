@@ -16,7 +16,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.epanaw.mobile"
+      "bundleIdentifier": "com.epanaw.mobile",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Allow EPANAW BAGOBO to access your photos so you can attach images to the AI assistant."
+      }
     },
     "android": {
       "package": "com.epanaw.mobile",
@@ -26,6 +29,14 @@
     },
     "web": {
       "bundler": "metro"
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow EPANAW BAGOBO to access your photos so you can attach images to the AI assistant."
+        }
+      ]
+    ]
   }
 }

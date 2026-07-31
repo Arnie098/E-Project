@@ -76,3 +76,42 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
 
   return data as T;
 }
+
+export type UploadFile = { uri: string; name: string; type: string };
+
+/**
+ * Upload a single file as multipart/form-data. Do NOT set Content-Type
+ * manually — fetch adds the multipart boundary automatically.
+ */
+export async function apiUpload<T>(path: string, file: UploadFile): Promise<T> {
+  const token = await getToken();
+
+  const form = new FormData();
+  // React Native FormData accepts a { uri, name, type } object for files.
+  form.append('file', { uri: file.uri, name: file.name, type: file.type } as any);
+
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}${path}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: form,
+    });
+  } catch (e) {
+    throw new ApiError('Network error during upload. Check your connection.', 0);
+  }
+
+  const text = await res.text();
+  const data = text ? safeJson(text) : null;
+
+  if (!res.ok) {
+    const message =
+      (data && (data.message || data.error)) || `Upload failed (${res.status})`;
+    throw new ApiError(message, res.status, data?.errors);
+  }
+
+  return data as T;
+}

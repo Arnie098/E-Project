@@ -1,4 +1,4 @@
-import { apiFetch } from './client';
+import { apiFetch, apiUpload, UploadFile } from './client';
 import type {
   Dashboard,
   VocabularyWord,
@@ -15,6 +15,7 @@ import type {
   Contribution,
   Feedback,
   ChatMessage,
+  ChatAttachment,
   ChatResponse,
   Conversation,
   User,
@@ -73,11 +74,18 @@ export const api = {
   createFeedback: (body: { subject: string; body: string; rating: number }) =>
     apiFetch<{ feedback: Feedback }>('/feedback', { method: 'POST', body }),
 
-  chat: (messages: ChatMessage[], conversationId?: number | null) =>
+  chat: (messages: ChatMessage[], conversationId?: number | null, attachmentIds?: number[]) =>
     apiFetch<ChatResponse>('/chatbot', {
       method: 'POST',
-      body: { messages, conversation_id: conversationId ?? null },
+      body: {
+        messages: messages.map((m) => ({ role: m.role, content: m.content })),
+        conversation_id: conversationId ?? null,
+        attachment_ids: attachmentIds ?? [],
+      },
     }),
+
+  uploadAttachment: (file: UploadFile) =>
+    apiUpload<ChatAttachment>('/chatbot/attachments', file),
 
   conversations: () =>
     apiFetch<{ conversations: Conversation[] }>('/chatbot/conversations'),

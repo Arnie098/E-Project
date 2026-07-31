@@ -141,7 +141,23 @@ export type Feedback = {
   submittedAt: string;
 };
 
-export type ChatMessage = { role: 'user' | 'assistant'; content: string };
+export type ChatAttachment = {
+  id: number;
+  name: string;
+  kind: 'image' | 'document';
+  mime: string | null;
+  size: number;
+  url: string;
+  readable: boolean;
+  // Local device URI for instant preview of a just-picked image (not from server).
+  localUri?: string;
+};
+
+export type ChatMessage = {
+  role: 'user' | 'assistant';
+  content: string;
+  attachments?: ChatAttachment[];
+};
 export type ChatResponse = {
   reply: string;
   conversation_id: number;

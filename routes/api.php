@@ -42,6 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // AI chatbot (reuses the web controller's full scope-gated reply logic)
     Route::post('/chatbot', [AiChatbotController::class, 'chat']);
+    Route::post('/chatbot/attachments', [AiChatbotController::class, 'uploadAttachment']);
+    Route::get('/chatbot/attachments/{attachment}', [AiChatbotController::class, 'attachment'])
+        ->name('api.chatbot.attachment');
     Route::get('/chatbot/conversations', [ChatbotController::class, 'conversations']);
     Route::get('/chatbot/conversations/{conversation}', [ChatbotController::class, 'conversation']);
     Route::delete('/chatbot/conversations/{conversation}', [ChatbotController::class, 'destroyConversation']);
