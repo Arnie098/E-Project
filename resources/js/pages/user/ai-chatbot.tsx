@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { ChangeEvent, FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, ClipboardEvent, FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import {
     ArrowUp,
     FileText,
@@ -62,6 +62,20 @@ interface Props {
 function readCookie(name: string): string | null {
     const match = document.cookie.match(new RegExp('(^|; )' + name + '=([^;]*)'));
     return match ? decodeURIComponent(match[2]) : null;
+}
+
+function imagesFromClipboard(data: DataTransfer | null): File[] {
+    if (!data) return [];
+    const images: File[] = [];
+    for (const item of Array.from(data.items)) {
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+            const file = item.getAsFile();
+            if (!file) continue;
+            const ext = file.type.split('/')[1] || 'png';
+            images.push(file.name ? file : new File([file], `pasted-${Date.now()}.${ext}`, { type: file.type }));
+        }
+    }
+    return images;
 }
 
 function formatRelative(iso: string | null): string {
@@ -227,7 +241,15 @@ export default function AiChatbot({
         if (fileRef.current) fileRef.current.value = '';
     }
 
-    async function uploadFiles(files: FileList) {
+    function onPaste(e: ClipboardEvent<HTMLTextAreaElement>) {
+        const images = imagesFromClipboard(e.clipboardData);
+        if (images.length > 0) {
+            e.preventDefault();
+            void uploadFiles(images);
+        }
+    }
+
+    async function uploadFiles(files: FileList | File[]) {
         setError(null);
         const list = Array.from(files);
         for (const file of list) {
@@ -480,7 +502,7 @@ export default function AiChatbot({
                                         </div>
                                         <p className="mb-4 text-sm text-muted-foreground">
                                             Kumusta! I’m Epanaw. Ask me about Bagobo Tagabawa words, stories, culture,
-                                            or how to use this platform. You can also attach an image or document.
+                                            or how to use this platform. You can also attach or paste an image or document.
                                         </p>
                                         <div className="flex flex-col gap-2">
                                             {suggestions.map((s) => (
@@ -595,6 +617,7 @@ export default function AiChatbot({
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyDown={onKeyDown}
+                                    onPaste={onPaste}
                                     rows={1}
                                     placeholder="Ask about Bagobo Tagabawa language or this platform…"
                                     className="max-h-32 flex-1 resize-none bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
@@ -609,7 +632,7 @@ export default function AiChatbot({
                                 </button>
                             </div>
                             <p className="mt-1.5 px-1 text-[11px] text-muted-foreground">
-                                Attach images, PDFs, or documents (up to {maxAttachmentMb} MB each). Epanaw only
+                                Attach or paste images, PDFs, or documents (up to {maxAttachmentMb} MB each). Epanaw only
                                 analyzes attachments related to Bagobo Tagabawa or this platform.
                             </p>
                         </form>
