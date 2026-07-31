@@ -18,11 +18,16 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.manayun.mobile",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "Allow MANAYUN BAGOBO to access your photos so you can attach images to the AI assistant."
+        "NSPhotoLibraryUsageDescription": "Allow MANAYUN BAGOBO to access your photos so you can attach images to the AI assistant.",
+        "NSMicrophoneUsageDescription": "Allow MANAYUN BAGOBO to use the microphone for voice translation.",
+        "NSSpeechRecognitionUsageDescription": "Allow MANAYUN BAGOBO to recognize your speech for voice translation."
       }
     },
     "android": {
       "package": "com.manayun.mobile",
+      "permissions": [
+        "RECORD_AUDIO"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#0f766e"
       }
@@ -35,6 +40,13 @@
         "expo-image-picker",
         {
           "photosPermission": "Allow MANAYUN BAGOBO to access your photos so you can attach images to the AI assistant."
+        }
+      ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Allow MANAYUN BAGOBO to use the microphone for voice translation.",
+          "speechRecognitionPermission": "Allow MANAYUN BAGOBO to recognize your speech for voice translation."
         }
       ]
     ]

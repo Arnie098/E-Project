@@ -32,6 +32,25 @@ export type VocabularyWord = {
   speaker: string | null;
 };
 
+export type TranslationMatch = {
+  id: number;
+  word: string;
+  meaning: string;
+  pronunciation: string | null;
+  audio: string | null;
+  speaker: string | null;
+};
+
+export type TranslationResult = {
+  source: 'en' | 'tl';
+  sourceLabel: string;
+  target: string;
+  targetLabel: string;
+  input: string;
+  translation: string;
+  matches: TranslationMatch[];
+};
+
 export type Story = {
   id: number;
   title: string;

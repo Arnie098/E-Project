@@ -7,6 +7,7 @@ export type TabParamList = {
   Home: undefined;
   Learn: undefined;
   Explore: undefined;
+  Translate: undefined;
   Assistant: undefined;
   Profile: undefined;
 };

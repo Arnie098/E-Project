@@ -6,6 +6,7 @@ import { colors } from '../theme';
 import { HomeScreen } from '../screens/HomeScreen';
 import { LearnScreen } from '../screens/LearnScreen';
 import { ExploreScreen } from '../screens/ExploreScreen';
+import { TranslateScreen } from '../screens/TranslateScreen';
 import { AssistantScreen } from '../screens/AssistantScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 
@@ -15,6 +16,7 @@ const icons: Record<keyof TabParamList, keyof typeof Ionicons.glyphMap> = {
   Home: 'home',
   Learn: 'book',
   Explore: 'compass',
+  Translate: 'language',
   Assistant: 'chatbubble-ellipses',
   Profile: 'person',
 };
@@ -37,6 +39,7 @@ export function TabNavigator() {
       <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'MANAYUN BAGOBO' }} />
       <Tab.Screen name="Learn" component={LearnScreen} options={{ title: 'Learning Modules' }} />
       <Tab.Screen name="Explore" component={ExploreScreen} options={{ title: 'Explore' }} />
+      <Tab.Screen name="Translate" component={TranslateScreen} options={{ title: 'Voice Translate' }} />
       <Tab.Screen name="Assistant" component={AssistantScreen} options={{ title: 'Manayun AI' }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'Profile' }} />
     </Tab.Navigator>

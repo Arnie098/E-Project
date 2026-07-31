@@ -2,6 +2,7 @@ import { apiFetch, apiUpload, UploadFile } from './client';
 import type {
   Dashboard,
   VocabularyWord,
+  TranslationResult,
   Story,
   MediaItem,
   EventItem,
@@ -26,6 +27,9 @@ export const api = {
 
   vocabulary: () =>
     apiFetch<{ words: VocabularyWord[]; categories: string[] }>('/vocabulary'),
+
+  translate: (body: { text: string; source: 'en' | 'tl' }) =>
+    apiFetch<TranslationResult>('/translate', { method: 'POST', body }),
 
   stories: () => apiFetch<{ stories: Story[] }>('/stories'),
 
