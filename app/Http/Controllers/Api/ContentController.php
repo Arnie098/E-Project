@@ -80,6 +80,7 @@ class ContentController extends Controller
                 'views' => $s->views,
                 'readTime' => $s->read_time,
                 'summary' => $s->summary,
+                'body' => $s->body,
                 'categories' => $s->categories ?? [],
                 'image' => $s->image,
             ])->values(),
@@ -98,6 +99,7 @@ class ContentController extends Controller
                 'views' => $m->views,
                 'duration' => $m->duration,
                 'thumbnail' => $m->thumbnail,
+                'file' => $m->source_file,
             ])->values(),
         ]);
     }
