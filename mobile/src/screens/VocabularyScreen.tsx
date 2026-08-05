@@ -1,15 +1,28 @@
 import React, { useMemo, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { api } from '../api/endpoints';
 import { useAsync } from '../hooks/useAsync';
+import { useAudioPlayer } from '../hooks/useAudioPlayer';
+import { assetUrl } from '../lib/assets';
 import { Card, EmptyState, ErrorState, Loading, Pill } from '../components/ui';
 import { colors, font, radius, spacing } from '../theme';
 
 export function VocabularyScreen() {
-  const { data, loading, error, reload } = useAsync(() => api.vocabulary());
+  const { data, loading, refreshing, error, reload, refresh } = useAsync(() => api.vocabulary());
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<string | null>(null);
+
+  const { play, playingKey, loadingKey, error: audioError } = useAudioPlayer();
 
   const filtered = useMemo(() => {
     if (!data) return [];
@@ -30,7 +43,7 @@ export function VocabularyScreen() {
   return (
     <ScrollView
       contentContainerStyle={styles.container}
-      refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} />}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} />}
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.searchBox}>
@@ -53,21 +66,47 @@ export function VocabularyScreen() {
         </ScrollView>
       ) : null}
 
+      {audioError ? <Text style={styles.audioError}>{audioError}</Text> : null}
+
       {filtered.length === 0 ? (
         <EmptyState title="No words found" subtitle="Try a different search or category." />
       ) : (
-        filtered.map((w) => (
-          <Card key={w.id}>
-            <View style={styles.wordRow}>
-              <Text style={styles.word}>{w.word}</Text>
-              {w.category ? <Pill label={w.category} tone="muted" /> : null}
-            </View>
-            {w.pronunciation ? <Text style={styles.pron}>/{w.pronunciation}/</Text> : null}
-            <Text style={styles.meaning}>{w.meaning}</Text>
-            {w.example ? <Text style={styles.example}>“{w.example}”</Text> : null}
-            {w.speaker ? <Text style={styles.speaker}>Native speaker: {w.speaker}</Text> : null}
-          </Card>
-        ))
+        filtered.map((w) => {
+          const key = `word-${w.id}`;
+          const playing = playingKey === key;
+          const busy = loadingKey === key;
+          return (
+            <Card key={w.id}>
+              <View style={styles.headRow}>
+                <View style={{ flex: 1 }}>
+                  <View style={styles.wordRow}>
+                    <Text style={styles.word}>{w.word}</Text>
+                    {w.category ? <Pill label={w.category} tone="muted" /> : null}
+                  </View>
+                  {w.pronunciation ? <Text style={styles.pron}>/{w.pronunciation}/</Text> : null}
+                </View>
+                {w.audio ? (
+                  <TouchableOpacity
+                    onPress={() => play(key, assetUrl(w.audio))}
+                    style={[styles.playButton, playing && styles.playButtonActive]}
+                    accessibilityRole="button"
+                    accessibilityLabel={playing ? `Stop pronunciation of ${w.word}` : `Play pronunciation of ${w.word}`}
+                  >
+                    {busy ? (
+                      <ActivityIndicator color={colors.white} size="small" />
+                    ) : (
+                      <Ionicons name={playing ? 'stop' : 'volume-high'} size={20} color={colors.white} />
+                    )}
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+
+              <Text style={styles.meaning}>{w.meaning}</Text>
+              {w.example ? <Text style={styles.example}>“{w.example}”</Text> : null}
+              {w.speaker ? <Text style={styles.speaker}>Native speaker: {w.speaker}</Text> : null}
+            </Card>
+          );
+        })
       )}
     </ScrollView>
   );
@@ -100,10 +139,21 @@ const styles = StyleSheet.create({
   chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
   chipText: { fontSize: font.xs, color: colors.text, fontWeight: '600' },
   chipTextActive: { color: colors.white },
-  wordRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  audioError: { fontSize: font.xs, color: colors.danger, marginBottom: spacing(3) },
+  headRow: { flexDirection: 'row', alignItems: 'center', gap: spacing(3) },
+  wordRow: { flexDirection: 'row', alignItems: 'center', gap: spacing(2), flexWrap: 'wrap' },
   word: { fontSize: font.lg, fontWeight: '800', color: colors.primary },
   pron: { fontSize: font.sm, color: colors.textMuted, fontStyle: 'italic', marginTop: spacing(1) },
   meaning: { fontSize: font.sm, color: colors.text, marginTop: spacing(2) },
   example: { fontSize: font.sm, color: colors.textMuted, fontStyle: 'italic', marginTop: spacing(2) },
   speaker: { fontSize: font.xs, color: colors.textMuted, marginTop: spacing(2) },
+  playButton: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.full,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  playButtonActive: { backgroundColor: colors.danger },
 });

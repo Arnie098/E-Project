@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Audio } from 'expo-av';
 import * as Clipboard from 'expo-clipboard';
 import { api } from '../api/endpoints';
 import type { TranslationMatch, TranslationResult } from '../api/types';
+import { assetUrl } from '../lib/assets';
+import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { Card, EmptyState, Loading, PrimaryButton } from '../components/ui';
 import { colors, font, radius, spacing } from '../theme';
 
@@ -21,27 +22,14 @@ try {
 
 type Source = 'en' | 'tl';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
-let ORIGIN = API_URL;
-if (ORIGIN.endsWith('/')) ORIGIN = ORIGIN.slice(0, -1);
-if (ORIGIN.endsWith('/api')) ORIGIN = ORIGIN.slice(0, -4);
-
-function assetUrl(path: string | null): string | null {
-  if (!path) return null;
-  if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  let p = path;
-  if (p.startsWith('/')) p = p.slice(1);
-  if (p.startsWith('storage/')) p = p.slice('storage/'.length);
-  return `${ORIGIN}/storage/${p}`;
-}
-
 export function TranslateScreen() {
   const [source, setSource] = useState<Source>('en');
   const [text, setText] = useState('');
   const [result, setResult] = useState<TranslationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
-  const soundRef = useRef<Audio.Sound | null>(null);
+
+  const { play, playingKey, loadingKey, error: audioError } = useAudioPlayer();
 
   useEffect(() => {
     const mod = SpeechModule?.ExpoSpeechRecognitionModule;
@@ -58,13 +46,6 @@ export function TranslateScreen() {
       onError?.remove?.();
     };
   }, []);
-
-  useEffect(
-    () => () => {
-      soundRef.current?.unloadAsync().catch(() => {});
-    },
-    [],
-  );
 
   const toggleListening = async () => {
     const mod = SpeechModule?.ExpoSpeechRecognitionModule;
@@ -114,22 +95,6 @@ export function TranslateScreen() {
     }
   };
 
-  const playAudio = async (path: string | null) => {
-    const url = assetUrl(path);
-    if (!url) return;
-    try {
-      if (soundRef.current) {
-        await soundRef.current.unloadAsync();
-        soundRef.current = null;
-      }
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-      const { sound } = await Audio.Sound.createAsync({ uri: url }, { shouldPlay: true });
-      soundRef.current = sound;
-    } catch {
-      Alert.alert('Playback error', 'Could not play the pronunciation audio.');
-    }
-  };
-
   const copyTranslation = async () => {
     if (result?.translation) {
       await Clipboard.setStringAsync(result.translation);
@@ -174,6 +139,8 @@ export function TranslateScreen() {
 
       <PrimaryButton title="Translate" onPress={translate} loading={loading} />
 
+      {audioError ? <Text style={styles.audioError}>{audioError}</Text> : null}
+
       {loading ? (
         <View style={{ marginTop: spacing(6) }}>
           <Loading label="Translating to Bagobo Tagabawa" />
@@ -193,9 +160,18 @@ export function TranslateScreen() {
           {result.matches.length > 0 ? (
             <>
               <Text style={styles.matchesTitle}>Verified words &amp; pronunciation</Text>
-              {result.matches.map((m) => (
-                <MatchCard key={m.id} match={m} onPlay={() => playAudio(m.audio)} />
-              ))}
+              {result.matches.map((m) => {
+                const key = `match-${m.id}`;
+                return (
+                  <MatchCard
+                    key={key}
+                    match={m}
+                    playing={playingKey === key}
+                    busy={loadingKey === key}
+                    onPlay={() => play(key, assetUrl(m.audio))}
+                  />
+                );
+              })}
             </>
           ) : null}
         </View>
@@ -216,7 +192,17 @@ function LangButton({ label, active, onPress }: { label: string; active: boolean
   );
 }
 
-function MatchCard({ match, onPlay }: { match: TranslationMatch; onPlay: () => void }) {
+function MatchCard({
+  match,
+  playing,
+  busy,
+  onPlay,
+}: {
+  match: TranslationMatch;
+  playing: boolean;
+  busy: boolean;
+  onPlay: () => void;
+}) {
   return (
     <Card>
       <View style={styles.matchRow}>
@@ -227,8 +213,17 @@ function MatchCard({ match, onPlay }: { match: TranslationMatch; onPlay: () => v
           {match.speaker ? <Text style={styles.matchSpeaker}>Native speaker: {match.speaker}</Text> : null}
         </View>
         {match.audio ? (
-          <TouchableOpacity onPress={onPlay} style={styles.playButton} accessibilityLabel={`Play ${match.word}`}>
-            <Ionicons name="volume-high" size={20} color={colors.white} />
+          <TouchableOpacity
+            onPress={onPlay}
+            style={[styles.playButton, playing && styles.playButtonActive]}
+            accessibilityRole="button"
+            accessibilityLabel={playing ? `Stop ${match.word}` : `Play ${match.word}`}
+          >
+            {busy ? (
+              <ActivityIndicator color={colors.white} size="small" />
+            ) : (
+              <Ionicons name={playing ? 'stop' : 'volume-high'} size={20} color={colors.white} />
+            )}
           </TouchableOpacity>
         ) : null}
       </View>
@@ -275,6 +270,7 @@ const styles = StyleSheet.create({
   },
   micButtonActive: { backgroundColor: colors.danger },
   listening: { fontSize: font.xs, color: colors.danger, marginTop: -spacing(1), marginBottom: spacing(3) },
+  audioError: { fontSize: font.xs, color: colors.danger, marginTop: spacing(3) },
   resultHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   resultLabel: { fontSize: font.xs, color: colors.textMuted, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1 },
   translation: { fontSize: font.xl, color: colors.primary, fontWeight: '800', marginTop: spacing(2) },
@@ -292,4 +288,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  playButtonActive: { backgroundColor: colors.danger },
 });
