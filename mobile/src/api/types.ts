@@ -60,6 +60,8 @@ export type Story = {
   views: number | null;
   readTime: string | null;
   summary: string | null;
+  /** Full story text, shown when a story is expanded. */
+  body: string | null;
   categories: string[];
   image: string | null;
 };
@@ -73,6 +75,8 @@ export type MediaItem = {
   views: number | null;
   duration: string | null;
   thumbnail: string | null;
+  /** Playable audio/video (or full-size image) path. */
+  file: string | null;
 };
 
 export type EventItem = {
