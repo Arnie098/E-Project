@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import { API_URL } from '../config';
+import { requireApiUrl } from '../config';
 
 const TOKEN_KEY = 'manayun_token';
 
@@ -81,7 +81,7 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
 
   let res: Response;
   try {
-    res = await fetch(`${API_URL}${path}`, {
+    res = await fetch(`${requireApiUrl()}${path}`, {
       method,
       headers,
       body: body !== undefined ? JSON.stringify(body) : undefined,
@@ -119,7 +119,7 @@ export async function apiUpload<T>(path: string, file: UploadFile): Promise<T> {
 
   let res: Response;
   try {
-    res = await fetch(`${API_URL}${path}`, {
+    res = await fetch(`${requireApiUrl()}${path}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

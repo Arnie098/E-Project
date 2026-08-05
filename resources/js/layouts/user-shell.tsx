@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 import { usePage } from '@inertiajs/react';
 import { DashboardLayout, type DashboardUser } from '@/components/dashboard-layout';
-import { userNav } from '@/components/dashboard-nav';
 import { FloatingAiChat } from '@/components/floating-ai-chat';
+import { userNav } from '@/components/dashboard-nav';
 import type { SharedData } from '@/types';
 
 const roleLabel: Record<string, string> = { learner: 'Learner', admin: 'Admin', super: 'Super Admin' };

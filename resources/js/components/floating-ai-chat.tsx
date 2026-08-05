@@ -1,5 +1,5 @@
 import { ChangeEvent, ClipboardEvent, FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
-import { AlertTriangle, ArrowUp, FileText, Loader2, MessageCircle, Paperclip, Plus, Sparkles, X } from 'lucide-react';
+import { AlertTriangle, ArrowUp, FileText, History, Loader2, MessageCircle, Paperclip, Plus, Sparkles, X } from 'lucide-react';
 import { ChatMarkdown } from '@/components/chat-markdown';
 import { cn } from '@/lib/utils';
 
@@ -17,6 +17,12 @@ type Message = {
     content: string;
     at?: number;
     attachments?: Attachment[];
+};
+
+type ConversationSummary = {
+    id: number;
+    title: string;
+    updated_at?: string | null;
 };
 
 type Pending = {
@@ -91,9 +97,24 @@ function formatTime(at?: number): string {
     }
 }
 
+function formatConversationTime(value?: string | null): string {
+    if (!value) return '';
+    const date = new Date(value);
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+    if (seconds < 60) return 'now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)}d`;
+    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+
 export function FloatingAiChat() {
     const [open, setOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
+    const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
+    const [conversations, setConversations] = useState<ConversationSummary[]>([]);
+    const [historyOpen, setHistoryOpen] = useState(false);
+    const [loadingConversationId, setLoadingConversationId] = useState<number | null>(null);
     const [input, setInput] = useState('');
     const [pending, setPending] = useState<Pending[]>([]);
     const [sending, setSending] = useState(false);
@@ -126,6 +147,7 @@ export function FloatingAiChat() {
     useEffect(() => {
         if (open) {
             window.setTimeout(() => inputRef.current?.focus(), 100);
+            void loadConversations();
         } else {
             toggleRef.current?.focus();
         }
@@ -137,11 +159,50 @@ export function FloatingAiChat() {
 
     const uploading = pending.some((p) => p.uploading);
 
+    async function loadConversations() {
+        try {
+            const res = await fetch('/user/ai-chatbot/conversations', {
+                headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                credentials: 'same-origin',
+            });
+            if (res.ok) setConversations((await res.json()).conversations ?? []);
+        } catch {
+            // The local conversation remains available if history cannot load.
+        }
+    }
+
+    async function openConversation(id: number) {
+        if (sending || id === activeConversationId) {
+            setHistoryOpen(false);
+            return;
+        }
+        setLoadingConversationId(id);
+        setError(null);
+        try {
+            const res = await fetch(`/user/ai-chatbot/conversations/${id}`, {
+                headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                credentials: 'same-origin',
+            });
+            if (!res.ok) throw new Error();
+            const data = await res.json();
+            setMessages(data.messages ?? []);
+            setActiveConversationId(id);
+            setPending([]);
+            setHistoryOpen(false);
+        } catch {
+            setError('Could not open that conversation.');
+        } finally {
+            setLoadingConversationId(null);
+        }
+    }
+
     function newChat() {
         setMessages([]);
+        setActiveConversationId(null);
         setError(null);
         setInput('');
         setPending([]);
+        setHistoryOpen(false);
         inputRef.current?.focus();
     }
 
@@ -238,6 +299,7 @@ export function FloatingAiChat() {
                 body: JSON.stringify({
                     messages: next.map(({ role, content }) => ({ role, content: content || '(sent an attachment)' })),
                     attachment_ids: ready.map((a) => a.id),
+                    conversation_id: activeConversationId,
                 }),
             });
 
@@ -248,6 +310,8 @@ export function FloatingAiChat() {
             }
 
             setMessages((current) => [...current, { role: 'assistant', content: data.reply, at: Date.now() }]);
+            if (data.conversation_id) setActiveConversationId(data.conversation_id);
+            void loadConversations();
         } catch {
             setError('Could not reach Epanaw. Check your connection and try again.');
         } finally {
@@ -299,6 +363,15 @@ export function FloatingAiChat() {
                         <div className="flex items-center gap-1">
                             <button
                                 type="button"
+                                onClick={() => { setHistoryOpen((value) => !value); void loadConversations(); }}
+                                className="rounded-lg p-2 hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/70"
+                                aria-label="Show chat history"
+                                title="Chat history"
+                            >
+                                <History className="h-4 w-4" aria-hidden="true" />
+                            </button>
+                            <button
+                                type="button"
                                 onClick={newChat}
                                 disabled={sending || messages.length === 0}
                                 className="rounded-lg p-2 hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/70 disabled:cursor-not-allowed disabled:opacity-40"
@@ -317,6 +390,26 @@ export function FloatingAiChat() {
                             </button>
                         </div>
                     </header>
+
+                    {historyOpen && (
+                        <div className="absolute z-10 mt-[3.75rem] max-h-64 w-full overflow-y-auto border-b border-border bg-card p-2 shadow-lg">
+                            <div className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Chat history</div>
+                            {conversations.length === 0 ? (
+                                <p className="px-2 py-3 text-xs text-muted-foreground">No saved chats yet.</p>
+                            ) : conversations.map((conversation) => (
+                                <button
+                                    key={conversation.id}
+                                    type="button"
+                                    onClick={() => void openConversation(conversation.id)}
+                                    disabled={loadingConversationId !== null}
+                                    className={cn('flex w-full items-center justify-between gap-2 rounded-lg px-2 py-2 text-left text-xs hover:bg-secondary disabled:opacity-50', conversation.id === activeConversationId && 'bg-secondary')}
+                                >
+                                    <span className="truncate">{conversation.title}</span>
+                                    <span className="shrink-0 text-[10px] text-muted-foreground">{formatConversationTime(conversation.updated_at)}</span>
+                                </button>
+                            ))}
+                        </div>
+                    )}
 
                     <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto p-4" aria-live="polite">
                         {messages.length === 0 ? (
@@ -425,10 +518,6 @@ export function FloatingAiChat() {
                                 <ArrowUp className="h-4 w-4" aria-hidden="true" />
                             </button>
                         </div>
-                        <p className="mt-1.5 px-1 text-[11px] text-muted-foreground">
-                            Attach or paste images or documents (up to {MAX_ATTACHMENT_MB} MB). Epanaw only answers
-                            EPANAW BAGOBO and Bagobo Tagabawa-related questions.
-                        </p>
                     </form>
                 </section>
             )}

@@ -1,0 +1,17 @@
+.git
+.env
+.env.*
+!.env.example
+node_modules
+mobile/node_modules
+mobile/.expo
+vendor
+storage/logs
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+public/build
+public/hot
+tests
+Refference
+_legacy-tanstack

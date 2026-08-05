@@ -32,6 +32,7 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureNotUnderMaintenance::class
     Route::post('/user/ai-chatbot', [AiChatbotController::class, 'chat'])->name('user.ai-chatbot.send');
     Route::post('/user/ai-chatbot/attachments', [AiChatbotController::class, 'uploadAttachment'])->name('user.ai-chatbot.attachment.store');
     Route::get('/user/ai-chatbot/attachments/{attachment}', [AiChatbotController::class, 'attachment'])->name('user.ai-chatbot.attachment');
+    Route::get('/user/ai-chatbot/conversations', [AiChatbotController::class, 'conversations'])->name('user.ai-chatbot.conversations');
     Route::get('/user/ai-chatbot/conversations/{conversation}', [AiChatbotController::class, 'conversation'])->name('user.ai-chatbot.conversation');
     Route::delete('/user/ai-chatbot/conversations/{conversation}', [AiChatbotController::class, 'destroyConversation'])->name('user.ai-chatbot.conversation.destroy');
 

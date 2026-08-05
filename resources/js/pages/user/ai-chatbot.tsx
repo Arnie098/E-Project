@@ -631,10 +631,6 @@ export default function AiChatbot({
                                     <ArrowUp className="h-4 w-4" />
                                 </button>
                             </div>
-                            <p className="mt-1.5 px-1 text-[11px] text-muted-foreground">
-                                Attach or paste images, PDFs, or documents (up to {maxAttachmentMb} MB each). Epanaw only
-                                analyzes attachments related to Bagobo Tagabawa or this platform.
-                            </p>
                         </form>
                     </div>
                 </div>

@@ -284,6 +284,23 @@ class AiChatbotController extends Controller
     }
 
     /**
+     * Return the user's conversation summaries for the floating chat history.
+     */
+    public function conversations(Request $request): JsonResponse
+    {
+        return response()->json([
+            'conversations' => $request->user()->chatConversations()
+                ->latest('updated_at')
+                ->get(['id', 'title', 'updated_at'])
+                ->map(fn (ChatConversation $conversation) => [
+                    'id' => $conversation->id,
+                    'title' => $conversation->title,
+                    'updated_at' => $conversation->updated_at?->toIso8601String(),
+                ]),
+        ]);
+    }
+
+    /**
      * Delete a conversation and its messages.
      */
     public function destroyConversation(Request $request, ChatConversation $conversation): JsonResponse
@@ -567,7 +584,12 @@ class AiChatbotController extends Controller
         $baseUrl = rtrim((string) config('services.ai.base_url', 'https://api.anthropic.com'), '/');
         $endpoint = $wireApi === 'responses' ? '/v1/responses' : '/v1/messages';
 
-        $request = Http::withHeaders($this->aiHeaders($key))->timeout(60);
+        $request = Http::withHeaders($this->aiHeaders($key) + ['accept' => 'application/json', 'expect' => ''])
+            ->withOptions([
+                'curl' => [CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1],
+            ])
+            ->connectTimeout(10)
+            ->timeout(25);
         $payload = $wireApi === 'responses'
             ? $this->responsesPayload($messages)
             : $this->messagesPayload($messages);
@@ -661,6 +683,7 @@ class AiChatbotController extends Controller
         return array_filter([
             'model' => config('services.ai.model'),
             'input' => $input,
+            'max_output_tokens' => 1500,
             'reasoning' => filled(config('services.ai.reasoning_effort'))
                 ? ['effort' => config('services.ai.reasoning_effort')]
                 : null,
