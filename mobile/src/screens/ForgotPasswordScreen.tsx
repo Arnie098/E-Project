@@ -11,28 +11,29 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AuthStackParamList } from '../navigation/types';
-import { useAuth } from '../context/AuthContext';
-import { PrimaryButton, TextField } from '../components/ui';
+import { api } from '../api/endpoints';
 import { ApiError } from '../api/client';
+import { PrimaryButton, TextField } from '../components/ui';
 import { colors, font, spacing } from '../theme';
 
-type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
+type Props = NativeStackScreenProps<AuthStackParamList, 'ForgotPassword'>;
 
-export function LoginScreen({ navigation }: Props) {
-  const { login } = useAuth();
+export function ForgotPasswordScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const insets = useSafeAreaInsets();
 
   async function submit() {
     setError(null);
+    setMessage(null);
     setLoading(true);
     try {
-      await login(email.trim(), password);
+      const res = await api.forgotPassword(email.trim());
+      setMessage(res.message);
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Could not sign in. Please try again.');
+      setError(e instanceof ApiError ? e.message : 'Could not send the reset link. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -47,13 +48,12 @@ export function LoginScreen({ navigation }: Props) {
         contentContainerStyle={[styles.container, { paddingTop: insets.top + spacing(10) }]}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={styles.brand}>
-          <Text style={styles.logo}>MANAYUN BAGOBO</Text>
-          <Text style={styles.tagline}>Preserving Bagobo Tagabawa language & culture</Text>
-        </View>
+        <Text style={styles.heading}>Reset your password</Text>
+        <Text style={styles.sub}>
+          Enter the email linked to your account and we'll send a link to reset your password.
+        </Text>
 
-        <Text style={styles.heading}>Welcome back</Text>
-
+        {message ? <Text style={styles.formSuccess}>{message}</Text> : null}
         {error ? <Text style={styles.formError}>{error}</Text> : null}
 
         <TextField
@@ -65,23 +65,12 @@ export function LoginScreen({ navigation }: Props) {
           autoComplete="email"
           placeholder="you@example.com"
         />
-        <TextField
-          label="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          placeholder="Your password"
-        />
 
-        <TouchableOpacity style={styles.forgotLink} onPress={() => navigation.navigate('ForgotPassword')}>
-          <Text style={styles.forgotText}>Forgot password?</Text>
-        </TouchableOpacity>
+        <PrimaryButton title="Send reset link" onPress={submit} loading={loading} disabled={!email.trim()} />
 
-        <PrimaryButton title="Sign in" onPress={submit} loading={loading} />
-
-        <TouchableOpacity style={styles.footerLink} onPress={() => navigation.navigate('Register')}>
+        <TouchableOpacity style={styles.footerLink} onPress={() => navigation.goBack()}>
           <Text style={styles.footerText}>
-            New here? <Text style={styles.footerAccent}>Create an account</Text>
+            Remembered it? <Text style={styles.footerAccent}>Back to sign in</Text>
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -92,10 +81,8 @@ export function LoginScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: colors.bg },
   container: { padding: spacing(6), flexGrow: 1 },
-  brand: { alignItems: 'center', marginBottom: spacing(8) },
-  logo: { fontSize: font.xxl, fontWeight: '800', color: colors.primary, letterSpacing: 0.5 },
-  tagline: { fontSize: font.sm, color: colors.textMuted, marginTop: spacing(2), textAlign: 'center' },
-  heading: { fontSize: font.xl, fontWeight: '700', color: colors.text, marginBottom: spacing(5) },
+  heading: { fontSize: font.xl, fontWeight: '800', color: colors.text },
+  sub: { fontSize: font.sm, color: colors.textMuted, marginTop: spacing(2), marginBottom: spacing(5), lineHeight: 21 },
   formError: {
     backgroundColor: colors.dangerBg,
     color: colors.danger,
@@ -104,8 +91,14 @@ const styles = StyleSheet.create({
     marginBottom: spacing(4),
     fontSize: font.sm,
   },
-  forgotLink: { alignSelf: 'flex-end', marginTop: spacing(1), marginBottom: spacing(4) },
-  forgotText: { color: colors.primary, fontSize: font.sm, fontWeight: '600' },
+  formSuccess: {
+    backgroundColor: '#ecfdf3',
+    color: colors.success,
+    padding: spacing(3),
+    borderRadius: 12,
+    marginBottom: spacing(4),
+    fontSize: font.sm,
+  },
   footerLink: { marginTop: spacing(6), alignItems: 'center' },
   footerText: { color: colors.textMuted, fontSize: font.sm },
   footerAccent: { color: colors.primary, fontWeight: '700' },

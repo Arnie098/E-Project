@@ -110,4 +110,17 @@ export const api = {
     bio?: string | null;
     location?: string | null;
   }) => apiFetch<{ user: User }>('/user', { method: 'PUT', body }),
+
+  updatePassword: (body: {
+    current_password: string;
+    password: string;
+    password_confirmation: string;
+  }) => apiFetch<{ message: string }>('/user/password', { method: 'POST', body }),
+
+  forgotPassword: (email: string) =>
+    apiFetch<{ message: string }>('/forgot-password', {
+      method: 'POST',
+      auth: false,
+      body: { email },
+    }),
 };

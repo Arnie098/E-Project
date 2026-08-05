@@ -23,6 +23,14 @@ export function ProfileScreen() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
 
+  // Change-password form state
+  const [changingPw, setChangingPw] = useState(false);
+  const [currentPw, setCurrentPw] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const [pwErrors, setPwErrors] = useState<Record<string, string>>({});
+  const [savingPw, setSavingPw] = useState(false);
+
   async function save() {
     setErrors({});
     setSaving(true);
@@ -41,6 +49,37 @@ export function ProfileScreen() {
       }
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function savePassword() {
+    setPwErrors({});
+    if (newPw !== confirmPw) {
+      setPwErrors({ password_confirmation: 'Passwords do not match.' });
+      return;
+    }
+    setSavingPw(true);
+    try {
+      await api.updatePassword({
+        current_password: currentPw,
+        password: newPw,
+        password_confirmation: confirmPw,
+      });
+      setCurrentPw('');
+      setNewPw('');
+      setConfirmPw('');
+      setChangingPw(false);
+      Alert.alert('Password updated', 'Your password has been changed.');
+    } catch (e) {
+      if (e instanceof ApiError && e.errors) {
+        const flat: Record<string, string> = {};
+        Object.entries(e.errors).forEach(([k, v]) => (flat[k] = v[0]));
+        setPwErrors(flat);
+      } else {
+        Alert.alert('Error', e instanceof ApiError ? e.message : 'Could not update your password.');
+      }
+    } finally {
+      setSavingPw(false);
     }
   }
 
@@ -111,7 +150,43 @@ export function ProfileScreen() {
         )}
       </Card>
 
-      <View style={{ marginTop: spacing(2) }}>
+      <View style={{ height: spacing(3) }} />
+
+      <Card>
+        <View style={styles.rowBetween}>
+          <Text style={styles.cardTitle}>Security</Text>
+          {!changingPw ? (
+            <TouchableOpacity onPress={() => setChangingPw(true)}>
+              <Text style={styles.editLink}>Change password</Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+
+        {changingPw ? (
+          <View style={{ marginTop: spacing(3) }}>
+            <TextField label="Current password" value={currentPw} onChangeText={setCurrentPw} secureTextEntry error={pwErrors.current_password} />
+            <TextField label="New password" value={newPw} onChangeText={setNewPw} secureTextEntry placeholder="At least 8 characters" error={pwErrors.password} />
+            <TextField label="Confirm new password" value={confirmPw} onChangeText={setConfirmPw} secureTextEntry error={pwErrors.password_confirmation} />
+            <PrimaryButton title="Update password" onPress={savePassword} loading={savingPw} disabled={!currentPw || !newPw || !confirmPw} />
+            <View style={{ height: spacing(2) }} />
+            <PrimaryButton
+              title="Cancel"
+              variant="outline"
+              onPress={() => {
+                setChangingPw(false);
+                setCurrentPw('');
+                setNewPw('');
+                setConfirmPw('');
+                setPwErrors({});
+              }}
+            />
+          </View>
+        ) : (
+          <Text style={[styles.muted, { marginTop: spacing(2) }]}>Keep your account secure by updating your password regularly.</Text>
+        )}
+      </Card>
+
+      <View style={{ marginTop: spacing(3) }}>
         <PrimaryButton title="Sign out" variant="danger" onPress={confirmLogout} />
       </View>
     </ScrollView>
