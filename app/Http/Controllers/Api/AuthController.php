@@ -7,7 +7,9 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -83,6 +85,42 @@ class AuthController extends Controller
         $user->update($validated);
 
         return response()->json(['user' => $this->profile($user->fresh())]);
+    }
+
+    /**
+     * Update the authenticated learner's password. Mirrors the web
+     * Settings\PasswordController: requires the current password and a
+     * confirmed new password meeting the app's default strength rules.
+     */
+    public function updatePassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'string', PasswordRule::defaults(), 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($request->input('password')),
+        ]);
+
+        return response()->json(['message' => 'Your password has been updated.']);
+    }
+
+    /**
+     * Send a password reset link. Always returns a generic message so the
+     * endpoint never reveals whether an email is registered.
+     */
+    public function forgotPassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        Password::sendResetLink($request->only('email'));
+
+        return response()->json([
+            'message' => 'If that email is registered, a password reset link has been sent.',
+        ]);
     }
 
     public function logout(Request $request): JsonResponse
