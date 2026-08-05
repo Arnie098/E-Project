@@ -12,6 +12,7 @@
     "doctor": "expo-doctor"
   },
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.2.3",
     "@expo/vector-icons": "^14.0.0",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
