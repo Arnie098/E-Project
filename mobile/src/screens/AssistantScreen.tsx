@@ -20,7 +20,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Clipboard from 'expo-clipboard';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { api } from '../api/endpoints';
 import { ApiError, UploadFile, authHeader } from '../api/client';
 import type { ChatAttachment, ChatMessage, Conversation } from '../api/types';

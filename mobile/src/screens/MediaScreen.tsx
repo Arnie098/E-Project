@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { ResizeMode, Video } from 'expo-av';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import { api } from '../api/endpoints';
 import type { MediaItem } from '../api/types';
 import { useAsync } from '../hooks/useAsync';
@@ -127,13 +127,7 @@ export function MediaScreen() {
 
           {viewer ? (
             viewer.item.type === 'video' ? (
-              <Video
-                source={{ uri: viewer.url }}
-                style={styles.viewerMedia}
-                useNativeControls
-                shouldPlay
-                resizeMode={ResizeMode.CONTAIN}
-              />
+              <VideoPlayer url={viewer.url} />
             ) : (
               <Image source={{ uri: viewer.url }} style={styles.viewerMedia} resizeMode="contain" />
             )
@@ -142,6 +136,14 @@ export function MediaScreen() {
       </Modal>
     </>
   );
+}
+
+function VideoPlayer({ url }: { url: string }) {
+  const player = useVideoPlayer(url, (instance) => {
+    instance.play();
+  });
+
+  return <VideoView player={player} style={styles.viewerMedia} nativeControls contentFit="contain" />;
 }
 
 const styles = StyleSheet.create({
