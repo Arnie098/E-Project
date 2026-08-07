@@ -20,6 +20,7 @@ export default function Vocabulary({ items, stats }: Props) {
             deleteRoute="admin.vocabulary.destroy"
             createLabel="Add Vocabulary Word"
             emptyMessage="No vocabulary words have been added yet."
+            rowMutation={{ label: 'Verify', route: 'admin.vocabulary.verify', isVisible: (item) => item.verified !== 'Verified' }}
             fields={[
                 { name: 'word', label: 'Bagobo Tagabawa Word', placeholder: 'Salamat' },
                 { name: 'meaning', label: 'Meaning', placeholder: 'Thank you' },

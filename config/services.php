@@ -35,26 +35,6 @@ return [
         ],
     ],
 
-    'ai' => [
-        'provider' => env('AI_PROVIDER', env('ANTHROPIC_PROVIDER', 'anthropic')),
-        'key' => env('AI_API_KEY', env('ANTHROPIC_API_KEY')),
-        'base_url' => env('AI_BASE_URL', 'https://api.anthropic.com'),
-        'wire_api' => env('AI_WIRE_API', 'messages'),
-        'model' => env('AI_MODEL', env('ANTHROPIC_MODEL', 'gpt-5.6-luna')),
-        'reasoning_effort' => env('AI_REASONING_EFFORT'),
-        'disable_response_storage' => env('AI_DISABLE_RESPONSE_STORAGE', false),
-        'auth_method' => env('AI_AUTH_METHOD', env('AI_PREFERRED_AUTH_METHOD', 'x-api-key')),
-
-        // Optional semantic retrieval layer. When disabled, the chatbot uses
-        // lexical full-text ranking only. When enabled, query and record
-        // embeddings are blended into the relevance score.
-        'embeddings' => [
-            'enabled' => env('AI_EMBEDDINGS_ENABLED', false),
-            'model' => env('AI_EMBEDDINGS_MODEL'),
-            'base_url' => env('AI_EMBEDDINGS_BASE_URL'),
-        ],
-    ],
-
     'anthropic' => [
         'key' => env('ANTHROPIC_API_KEY'),
         'model' => env('ANTHROPIC_MODEL', 'claude-3-5-sonnet-20241022'),
@@ -69,6 +49,11 @@ return [
         'reasoning_effort' => env('AI_REASONING_EFFORT', 'high'),
         'disable_response_storage' => filter_var(env('AI_DISABLE_RESPONSE_STORAGE', true), FILTER_VALIDATE_BOOLEAN),
         'auth_method' => env('AI_AUTH_METHOD', 'apikey'),
+        'embeddings' => [
+            'enabled' => env('AI_EMBEDDINGS_ENABLED', false),
+            'model' => env('AI_EMBEDDINGS_MODEL'),
+            'base_url' => env('AI_EMBEDDINGS_BASE_URL'),
+        ],
     ],
 
 ];

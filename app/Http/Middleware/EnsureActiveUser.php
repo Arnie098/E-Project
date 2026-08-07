@@ -12,7 +12,7 @@ class EnsureActiveUser
     /** Block deactivated accounts even when they still hold an old session. */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()?->status === 'Inactive') {
+        if ($request->user() && ! $request->user()->isActive()) {
             if ($request->expectsJson()) {
                 // A disabled mobile account must not keep using an existing
                 // personal-access token. Revoke every token immediately.

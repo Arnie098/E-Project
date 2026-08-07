@@ -54,6 +54,12 @@ interface CrudStat {
     value: string;
 }
 
+interface Pagination {
+    currentPage: number;
+    lastPage: number;
+    total: number;
+}
+
 interface Props {
     title: string;
     description: string;
@@ -69,6 +75,7 @@ interface Props {
     emptyMessage: string;
     createLabel?: string;
     rowAction?: { label: string; href: (item: CrudItem) => string };
+    rowMutation?: { label: string; route: string; isVisible?: (item: CrudItem) => boolean };
 }
 
 export function EntityManager({
@@ -86,8 +93,9 @@ export function EntityManager({
     emptyMessage,
     createLabel = 'Add Entry',
     rowAction,
+    rowMutation,
 }: Props) {
-    const page = usePage<{ flash?: { status?: string } }>();
+    const page = usePage<{ flash?: { status?: string }; pagination?: Pagination }>();
     const [editingItem, setEditingItem] = useState<CrudItem | null>(null);
     const createFormRef = useRef<HTMLFormElement>(null);
 
@@ -242,6 +250,16 @@ export function EntityManager({
                                                             {rowAction.label}
                                                         </Link>
                                                     )}
+                                                    {rowMutation && (rowMutation.isVisible?.(item) ?? true) && (
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => router.patch(route(rowMutation.route, item.id), {}, { preserveScroll: true })}
+                                                        >
+                                                            {rowMutation.label}
+                                                        </Button>
+                                                    )}
                                                     <Button type="button" variant="outline" size="sm" onClick={() => startEdit(item)}>
                                                         <Pencil className="h-4 w-4" />
                                                         Edit
@@ -282,6 +300,32 @@ export function EntityManager({
                     </form>
                 </PanelCard>
             </div>
+
+            {page.props.pagination && page.props.pagination.lastPage > 1 && (
+                <div className="mt-6 flex items-center justify-between gap-4">
+                    <p className="text-sm text-muted-foreground">
+                        Page {page.props.pagination.currentPage} of {page.props.pagination.lastPage} · {page.props.pagination.total} records
+                    </p>
+                    <div className="flex gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            disabled={page.props.pagination.currentPage <= 1}
+                            onClick={() => router.get(window.location.pathname, { page: page.props.pagination!.currentPage - 1 }, { preserveScroll: true })}
+                        >
+                            Previous
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            disabled={page.props.pagination.currentPage >= page.props.pagination.lastPage}
+                            onClick={() => router.get(window.location.pathname, { page: page.props.pagination!.currentPage + 1 }, { preserveScroll: true })}
+                        >
+                            Next
+                        </Button>
+                    </div>
+                </div>
+            )}
 
             <Dialog open={editingItem !== null} onOpenChange={(open) => !open && setEditingItem(null)}>
                 <DialogContent className="max-h-[85vh] overflow-y-auto">

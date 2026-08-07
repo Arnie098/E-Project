@@ -228,6 +228,7 @@ class UserManagementTest extends TestCase
         $audio = $word->pronunciationRecord?->audio_file;
         $this->assertStringStartsWith('/storage/pronunciations/', $audio);
         $this->assertSame('Elder Rosa', $word->pronunciationRecord?->native_speaker);
+        $this->assertNull($word->pronunciationRecord?->verified_at);
         Storage::disk('public')->assertExists(substr((string) $audio, strlen('/storage/')));
 
         $this->patch("/admin/vocabulary/{$word->id}", [
@@ -238,6 +239,10 @@ class UserManagementTest extends TestCase
             'native_speaker' => 'Elder Rosa',
         ])->assertSessionHasNoErrors();
         $this->assertSame('Updated meaning', $word->fresh()->meaning);
+
+        $this->patch("/admin/vocabulary/{$word->id}/verify")
+            ->assertSessionHas('status', 'Vocabulary word verified.');
+        $this->assertNotNull($word->fresh()->pronunciationRecord?->verified_at);
 
         $this->delete("/admin/vocabulary/{$word->id}");
         $this->assertDatabaseMissing('vocabulary_words', ['id' => $word->id]);
@@ -280,6 +285,21 @@ class UserManagementTest extends TestCase
             ->assertJsonPath('message', 'Your account is inactive. Please contact an administrator.');
 
         $this->assertSame(0, $learner->fresh()->tokens()->count());
+    }
+
+    public function test_inactive_accounts_cannot_log_in_through_the_mobile_api(): void
+    {
+        $learner = User::factory()->create([
+            'email' => 'inactive@example.com',
+            'password' => 'password',
+            'status' => User::STATUS_INACTIVE,
+        ]);
+
+        $this->postJson('/api/login', [
+            'email' => $learner->email,
+            'password' => 'password',
+        ])->assertUnprocessable()
+            ->assertJsonValidationErrors('email');
     }
 
     public function test_deleting_media_removes_its_uploaded_files(): void

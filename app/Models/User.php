@@ -16,6 +16,10 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
+    public const STATUS_ACTIVE = 'Active';
+
+    public const STATUS_INACTIVE = 'Inactive';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -64,6 +68,11 @@ class User extends Authenticatable
     public function isSuper(): bool
     {
         return $this->role === 'super';
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === self::STATUS_ACTIVE;
     }
 
     /**

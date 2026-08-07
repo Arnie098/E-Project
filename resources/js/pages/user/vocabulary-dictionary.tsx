@@ -16,6 +16,7 @@ interface Word {
     audio: string | null;
     speaker: string | null;
     verifiedBy: string | null;
+    verified: boolean;
 }
 
 interface Stats {
@@ -192,13 +193,13 @@ export default function VocabularyDictionary({
                                         </p>
                                     )}
 
-                                    {w.speaker && (
+                                    {w.speaker && w.verified && (
                                         <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-emerald-700">
                                             <BadgeCheck className="h-3.5 w-3.5" />
                                             Pronunciation verified — {w.speaker}
                                         </p>
                                     )}
-                                    {w.audio && (
+                                    {w.audio && w.verified && (
                                         <audio controls preload="none" className="mt-3 w-full" src={w.audio}>
                                             Your browser does not support pronunciation audio playback.
                                         </audio>

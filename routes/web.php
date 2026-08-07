@@ -57,6 +57,7 @@ Route::middleware(['auth', 'active', 'role:admin,super'])->group(function () {
     Route::get('/admin/vocabulary', [AdminCrudController::class, 'vocabulary'])->name('admin.vocabulary');
     Route::post('/admin/vocabulary', [AdminCrudController::class, 'storeVocabulary'])->name('admin.vocabulary.store');
     Route::patch('/admin/vocabulary/{vocabularyWord}', [AdminCrudController::class, 'updateVocabulary'])->name('admin.vocabulary.update');
+    Route::patch('/admin/vocabulary/{vocabularyWord}/verify', [AdminCrudController::class, 'verifyVocabulary'])->name('admin.vocabulary.verify');
     Route::delete('/admin/vocabulary/{vocabularyWord}', [AdminCrudController::class, 'destroyVocabulary'])->name('admin.vocabulary.destroy');
     Route::get('/admin/learning-materials', [AdminCrudController::class, 'learningMaterials'])->name('admin.learning-materials');
     Route::post('/admin/learning-materials', [AdminCrudController::class, 'storeLearningMaterial'])->name('admin.learning-materials.store');

@@ -29,7 +29,7 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => 'learner',
-            'status' => 'active',
+            'status' => User::STATUS_ACTIVE,
         ]);
 
         return response()->json([
@@ -54,9 +54,9 @@ class AuthController extends Controller
             ]);
         }
 
-        if (($user->status ?? 'active') === 'suspended') {
+        if (! $user->isActive()) {
             throw ValidationException::withMessages([
-                'email' => ['This account is suspended.'],
+                'email' => ['This account is inactive. Please contact an administrator.'],
             ]);
         }
 

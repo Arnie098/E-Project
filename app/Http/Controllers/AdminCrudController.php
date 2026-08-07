@@ -14,6 +14,7 @@ use App\Models\ResourceVerification;
 use App\Models\VocabularyWord;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -23,8 +24,10 @@ class AdminCrudController extends Controller
 {
     public function vocabulary(): Response
     {
+        $words = VocabularyWord::with('pronunciationRecord.verifier')->orderBy('word')->paginate(20);
+
         return Inertia::render('admin/vocabulary', [
-            'items' => VocabularyWord::with('pronunciationRecord.verifier')->orderBy('word')->get()->map(fn (VocabularyWord $word) => [
+            'items' => $words->getCollection()->map(fn (VocabularyWord $word) => [
                 'id' => $word->id,
                 'word' => $word->word,
                 'meaning' => $word->meaning,
@@ -33,9 +36,10 @@ class AdminCrudController extends Controller
                 'example' => $word->example,
                 'audio_file' => $word->pronunciationRecord?->audio_file,
                 'native_speaker' => $word->pronunciationRecord?->native_speaker,
-                'verified' => $word->pronunciationRecord?->verified_at?->format('M j, Y'),
+                'verified' => $word->pronunciationRecord?->verified_at ? 'Verified' : 'Unverified',
                 'updatedAt' => $word->updated_at->format('M j, Y'),
-            ]),
+            ])->values(),
+            'pagination' => $this->pagination($words),
             'stats' => [
                 ['label' => 'Vocabulary Words', 'value' => (string) VocabularyWord::count()],
                 ['label' => 'With Audio', 'value' => (string) VocabularyWord::whereHas('pronunciationRecord', fn ($query) => $query->whereNotNull('audio_file'))->count()],
@@ -80,10 +84,29 @@ class AdminCrudController extends Controller
         return back()->with('status', 'Vocabulary word deleted.');
     }
 
+    public function verifyVocabulary(Request $request, VocabularyWord $vocabularyWord): RedirectResponse
+    {
+        $record = $vocabularyWord->pronunciationRecord;
+
+        if (! $record) {
+            return back()->with('status', 'Add pronunciation details before verifying this word.');
+        }
+
+        $record->update([
+            'verified_by' => $request->user()->id,
+            'verified_at' => now(),
+        ]);
+        $this->recordCrudActivity($request, 'Verified vocabulary word', $vocabularyWord->word);
+
+        return back()->with('status', 'Vocabulary word verified.');
+    }
+
     public function learningMaterials(): Response
     {
+        $modules = LearningModule::withCount('questions')->latest()->paginate(20);
+
         return Inertia::render('admin/learning-materials', [
-            'items' => LearningModule::withCount('questions')->latest()->get()->map(fn (LearningModule $module) => [
+            'items' => $modules->getCollection()->map(fn (LearningModule $module) => [
                 'id' => $module->id,
                 'title' => $module->title,
                 'description' => $module->description,
@@ -94,7 +117,8 @@ class AdminCrudController extends Controller
                 'image' => $module->image,
                 'questions' => $module->questions_count,
                 'updatedAt' => $module->updated_at->format('M j, Y'),
-            ]),
+            ])->values(),
+            'pagination' => $this->pagination($modules),
             'stats' => [
                 ['label' => 'Total Lessons', 'value' => (string) LearningModule::count()],
                 ['label' => 'Quiz Questions', 'value' => (string) QuizQuestion::count()],
@@ -172,6 +196,16 @@ class AdminCrudController extends Controller
         ]);
     }
 
+    /** @return array{currentPage: int, lastPage: int, total: int} */
+    private function pagination(LengthAwarePaginator $paginator): array
+    {
+        return [
+            'currentPage' => $paginator->currentPage(),
+            'lastPage' => $paginator->lastPage(),
+            'total' => $paginator->total(),
+        ];
+    }
+
     public function storeLearningMaterial(Request $request): RedirectResponse
     {
         $data = $this->validateLearningMaterial($request);
@@ -204,8 +238,10 @@ class AdminCrudController extends Controller
 
     public function repositoryItems(): Response
     {
+        $repositoryItems = RepositoryItem::latest()->paginate(20);
+
         return Inertia::render('admin/cultural-repository', [
-            'items' => RepositoryItem::latest()->get()->map(fn (RepositoryItem $item) => [
+            'items' => $repositoryItems->getCollection()->map(fn (RepositoryItem $item) => [
                 'id' => $item->id,
                 'title' => $item->title,
                 'category' => $item->category,
@@ -213,7 +249,8 @@ class AdminCrudController extends Controller
                 'description' => $item->description,
                 'media' => $item->media,
                 'updatedAt' => $item->updated_at->format('M j, Y'),
-            ]),
+            ])->values(),
+            'pagination' => $this->pagination($repositoryItems),
             'stats' => [
                 ['label' => 'Repository Items', 'value' => (string) RepositoryItem::count()],
                 ['label' => 'Image Entries', 'value' => (string) RepositoryItem::where('type', 'Image')->count()],
@@ -254,8 +291,10 @@ class AdminCrudController extends Controller
 
     public function contributions(): Response
     {
+        $contributions = Contribution::with(['verifications' => fn ($query) => $query->latest('verified_at')])->latest()->paginate(20);
+
         return Inertia::render('admin/contributions', [
-            'items' => Contribution::with(['verifications' => fn ($query) => $query->latest('verified_at')])->latest()->get()->map(fn (Contribution $contribution) => [
+            'items' => $contributions->getCollection()->map(fn (Contribution $contribution) => [
                 'id' => $contribution->id,
                 'contributor_name' => $contribution->contributor_name,
                 'item' => $contribution->item,
@@ -264,7 +303,8 @@ class AdminCrudController extends Controller
                 'status' => $contribution->status,
                 'remarks' => $contribution->verifications->first()?->remarks,
                 'updatedAt' => $contribution->updated_at->format('M j, Y'),
-            ]),
+            ])->values(),
+            'pagination' => $this->pagination($contributions),
             'stats' => [
                 ['label' => 'All Submissions', 'value' => (string) Contribution::count()],
                 ['label' => 'Pending Review', 'value' => (string) Contribution::where('status', 'Pending')->count()],
@@ -329,15 +369,18 @@ class AdminCrudController extends Controller
 
     public function feedback(): Response
     {
+        $feedbackItems = Feedback::latest()->paginate(20);
+
         return Inertia::render('admin/feedback', [
-            'items' => Feedback::latest()->get()->map(fn (Feedback $feedback) => [
+            'items' => $feedbackItems->getCollection()->map(fn (Feedback $feedback) => [
                 'id' => $feedback->id,
                 'subject' => $feedback->subject,
                 'body' => $feedback->body,
                 'status' => $feedback->status,
                 'user' => $feedback->user?->name,
                 'updatedAt' => $feedback->updated_at->format('M j, Y'),
-            ]),
+            ])->values(),
+            'pagination' => $this->pagination($feedbackItems),
             'stats' => [
                 ['label' => 'Feedback Entries', 'value' => (string) Feedback::count()],
                 ['label' => 'Open Cases', 'value' => (string) Feedback::where('status', 'Open')->count()],
@@ -373,15 +416,18 @@ class AdminCrudController extends Controller
 
     public function events(): Response
     {
+        $events = Event::orderBy('starts_at')->paginate(20);
+
         return Inertia::render('admin/events', [
-            'items' => Event::orderBy('starts_at')->get()->map(fn (Event $event) => [
+            'items' => $events->getCollection()->map(fn (Event $event) => [
                 'id' => $event->id,
                 'title' => $event->title,
                 'starts_at' => optional($event->starts_at)->format('Y-m-d\TH:i'),
                 'startsAtLabel' => optional($event->starts_at)->format('M j, Y g:i A'),
                 'location' => $event->location,
                 'updatedAt' => $event->updated_at->format('M j, Y'),
-            ]),
+            ])->values(),
+            'pagination' => $this->pagination($events),
             'stats' => [
                 ['label' => 'Upcoming Events', 'value' => (string) Event::where('starts_at', '>=', now())->count()],
                 ['label' => 'Past Events', 'value' => (string) Event::where('starts_at', '<', now())->count()],
@@ -417,8 +463,10 @@ class AdminCrudController extends Controller
 
     public function multimedia(): Response
     {
+        $mediaItems = MediaItem::latest()->paginate(20);
+
         return Inertia::render('admin/multimedia', [
-            'items' => MediaItem::latest()->get()->map(fn (MediaItem $m) => [
+            'items' => $mediaItems->getCollection()->map(fn (MediaItem $m) => [
                 'id' => $m->id,
                 'title' => $m->title,
                 'category' => $m->category,
@@ -427,7 +475,8 @@ class AdminCrudController extends Controller
                 'thumbnail' => $m->thumbnail,
                 'source_file' => $m->source_file,
                 'updatedAt' => $m->updated_at->format('M j, Y'),
-            ]),
+            ])->values(),
+            'pagination' => $this->pagination($mediaItems),
             'stats' => [
                 ['label' => 'Total Media', 'value' => (string) MediaItem::count()],
                 ['label' => 'Videos', 'value' => (string) MediaItem::where('media_type', 'video')->count()],
@@ -509,14 +558,14 @@ class AdminCrudController extends Controller
         ];
 
         if ($record) {
-            $record->update($values + ['verified_by' => $request->user()->id, 'verified_at' => now()]);
+            $record->update($values + ['verified_by' => null, 'verified_at' => null]);
 
             return;
         }
 
         $word->pronunciationRecord()->create($values + [
-            'verified_by' => $request->user()->id,
-            'verified_at' => now(),
+            'verified_by' => null,
+            'verified_at' => null,
         ]);
     }
 

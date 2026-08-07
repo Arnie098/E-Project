@@ -155,6 +155,7 @@ class UserDashboardController extends Controller
                 'audio' => $w->pronunciationRecord?->audio_file,
                 'speaker' => $w->pronunciationRecord?->native_speaker,
                 'verifiedBy' => $w->pronunciationRecord?->verifier?->name,
+                'verified' => $w->pronunciationRecord?->verified_at !== null,
             ])->values(),
             'categories' => $words->pluck('category')->filter()->unique()->sort()->values(),
             'stats' => [

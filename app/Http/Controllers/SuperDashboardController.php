@@ -327,7 +327,7 @@ class SuperDashboardController extends Controller
     {
         $snapshot = [
             'created_at' => now()->toIso8601String(),
-            'scope' => 'Content and system configuration only; user accounts, credentials, sessions, tokens, and chat history are excluded.',
+            'scope' => 'Database content and system configuration only; uploaded media files, user accounts, credentials, sessions, tokens, and chat history are excluded.',
             'tables' => collect(self::BACKUP_TABLES)
                 ->mapWithKeys(fn (string $table) => [$table => DB::table($table)->get()]),
         ];
@@ -336,7 +336,7 @@ class SuperDashboardController extends Controller
         $this->pruneBackups();
         ActivityLog::record($request->user()->username ?? $request->user()->name, 'Created a system backup', 'hard-drive-download');
 
-        return back()->with('status', 'Encrypted content backup created. User accounts and credentials are excluded.');
+        return back()->with('status', 'Encrypted database-content backup created. Uploaded files, user accounts, and credentials are excluded.');
     }
 
     public function downloadBackup(Request $request, string $backup)

@@ -16,8 +16,8 @@ export default function Backup({ backups }: { backups: string[] }) {
                     <div>
                         <h1 className="text-2xl font-bold">System Backups</h1>
                         <p className="text-sm text-muted-foreground">
-                            Encrypted content and configuration snapshots. User accounts, credentials, sessions, tokens,
-                            and chat history are excluded. The 10 newest backups are kept. Restore is not available
+                            Encrypted database-content and configuration snapshots. Uploaded media files, user accounts,
+                            credentials, sessions, tokens, and chat history are excluded. The 10 newest backups are kept. Restore is not available
                             from the web interface.
                         </p>
                     </div>
