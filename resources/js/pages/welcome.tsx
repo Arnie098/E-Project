@@ -5,18 +5,18 @@ import { Button } from '@/components/ui/button';
 import type { SharedData } from '@/types';
 import heroImg from '@/assets/heritage-hero.jpg';
 
-const features = [
-    { icon: Book, title: 'Dictionary', desc: 'Learn Bagobo Tagabawa words and their meanings.', href: '/login' },
-    { icon: Sparkles, title: 'Learn', desc: 'Interactive lessons and quizzes for every learner.', href: '/login' },
-    { icon: Building2, title: 'Repository', desc: 'Explore stories, documents, images, audio, and more.', href: '/login' },
-    { icon: Users, title: 'Community', desc: 'Share knowledge and preserve together.', href: '/login' },
-    { icon: Calendar, title: 'Events', desc: 'Join cultural events and celebrations.', href: '/login' },
-    { icon: MessageSquare, title: 'AI Assistant', desc: 'Ask and learn with our AI-powered assistant.', href: '/login' },
-];
-
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
-    const startHref = auth?.user ? '/user' : '/register';
+    const startHref = auth?.user ? '/dashboard' : '/register';
+    const protectedHref = (path: string) => auth?.user ? path : '/login';
+    const features = [
+        { icon: Book, title: 'Dictionary', desc: 'Learn Bagobo Tagabawa words and their meanings.', href: protectedHref('/user/vocabulary-dictionary') },
+        { icon: Sparkles, title: 'Learn', desc: 'Interactive lessons and quizzes for every learner.', href: protectedHref('/user/learning-modules') },
+        { icon: Building2, title: 'Repository', desc: 'Explore stories, documents, images, audio, and more.', href: protectedHref('/user/cultural-repository') },
+        { icon: Users, title: 'Community', desc: 'Share knowledge and preserve together.', href: protectedHref('/user/community-contributions') },
+        { icon: Calendar, title: 'Events', desc: 'Join cultural events and celebrations.', href: protectedHref('/user/events') },
+        { icon: MessageSquare, title: 'AI Assistant', desc: 'Ask and learn with our AI-powered assistant.', href: protectedHref('/user/ai-chatbot') },
+    ];
 
     return (
         <PublicLayout>
@@ -28,7 +28,7 @@ export default function Welcome() {
             </Head>
 
             {/* Hero */}
-            <section className="relative overflow-hidden border-b border-border">
+            <section id="about" className="relative overflow-hidden border-b border-border">
                 <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-20">
                     <div className="min-w-0">
                         <h1 className="text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">

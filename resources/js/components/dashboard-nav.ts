@@ -19,9 +19,9 @@ import {
     HardDriveDownload,
     Wrench,
     Globe,
-    CreditCard,
     FolderKanban,
     Film,
+    Languages,
 } from 'lucide-react';
 import type { NavItem } from './dashboard-layout';
 
@@ -41,6 +41,7 @@ export const userNav: NavItem[] = [
 
 export const adminNav: NavItem[] = [
     { title: 'Dashboard', url: '/admin', icon: LayoutDashboard },
+    { title: 'Vocabulary & Pronunciation', url: '/admin/vocabulary', icon: Languages },
     { title: 'Learning Materials', url: '/admin/learning-materials', icon: BookOpen },
     { title: 'Cultural Repository', url: '/admin/cultural-repository', icon: Building2 },
     { title: 'Multimedia Management', url: '/admin/multimedia', icon: Film },
@@ -49,7 +50,6 @@ export const adminNav: NavItem[] = [
     { title: 'User Management', url: '/admin/users', icon: UserCog },
     { title: 'Events Management', url: '/admin/events', icon: Calendar },
     { title: 'Reports & Analytics', url: '/admin/reports', icon: BarChart3 },
-    { title: 'System Settings', url: '/admin/settings', icon: Settings },
 ];
 
 export const superNav: NavItem[] = [
@@ -64,7 +64,6 @@ export const superNav: NavItem[] = [
     { title: 'Backup & Restore', url: '/super/backup', icon: HardDriveDownload },
     { title: 'Reports & Analytics', url: '/super/reports', icon: BarChart3 },
     { title: 'Security Management', url: '/super/security', icon: ShieldCheck },
-    { title: 'Site Configuration', url: '/super/site', icon: Globe },
-    { title: 'Maintenance', url: '/super/maintenance', icon: Wrench },
-    { title: 'Subscription Management', url: '/super/subscription', icon: CreditCard },
+    { title: 'Site Configuration', url: '/super/settings', icon: Globe },
+    { title: 'Maintenance', url: '/super/settings', icon: Wrench },
 ];

@@ -22,16 +22,16 @@ class AiChatbotController extends Controller
 {
     /**
      * The assistant's persona. This is intentionally strict: Epanaw must stay
-     * inside EPANAW BAGOBO's platform scope and must not invent cultural or
+     * inside MANAYUN BAGOBO's platform scope and must not invent cultural or
      * dialect information beyond verified system data.
      */
     private const SYSTEM_PROMPT = <<<'PROMPT'
-        You are "Epanaw", the friendly AI guide inside EPANAW BAGOBO — a platform for
+        You are "Epanaw", the friendly AI guide inside MANAYUN BAGOBO — a platform for
         preserving and revitalizing the Bagobo Tagabawa dialect and cultural heritage of
         Mindanao, Philippines.
 
         STRICT SCOPE RULES:
-        - Only answer questions that are directly related to EPANAW BAGOBO, its learner
+        - Only answer questions that are directly related to MANAYUN BAGOBO, its learner
           tools, learning modules, vocabulary dictionary, pronunciation library, cultural
           repository, multimedia gallery, storytelling archive, events, community
           contributions, feedback, and Bagobo Tagabawa language or cultural heritage.
@@ -68,7 +68,7 @@ class AiChatbotController extends Controller
           cultural repository details, lessons, media, or events when they appear in the
           verified platform context or conversation.
         - If the verified platform context does not contain enough information, say that
-          EPANAW BAGOBO does not have enough verified information about that yet.
+          MANAYUN BAGOBO does not have enough verified information about that yet.
         - When a learner attaches an image or file, describe or analyze only what is
           actually shown or written in it, and connect it to Bagobo Tagabawa language,
           culture, or platform features. Do not invent details that are not visible or
@@ -77,7 +77,7 @@ class AiChatbotController extends Controller
           rituals, customs, names, dates, or facts.
         - When unsure, say so plainly and suggest confirming with a community elder, a
           verified Vocabulary Dictionary entry, or the Cultural Repository.
-        - You may give general navigation help for the EPANAW BAGOBO app, but never claim
+        - You may give general navigation help for the MANAYUN BAGOBO app, but never claim
           that you saved, enrolled, uploaded, approved, deleted, or changed anything.
 
         RESPONSE STYLE:
@@ -86,7 +86,7 @@ class AiChatbotController extends Controller
         - Keep every answer focused on this project's mission and available platform data.
         PROMPT;
 
-    private const OUT_OF_SCOPE_REPLY = "I can only help with EPANAW BAGOBO, Bagobo Tagabawa language and culture, or this platform’s learning features.\n\nMakatabang lang ko bahin sa EPANAW BAGOBO, sa pinulongan ug kultura sa Bagobo Tagabawa, o sa mga bahin sa pagkat-on niini nga plataporma.\n\nMakakatulong lang ako tungkol sa EPANAW BAGOBO, sa wika at kultura ng Bagobo Tagabawa, o sa mga bahagi ng pagkatuto sa platform na ito.";
+    private const OUT_OF_SCOPE_REPLY = "I can only help with MANAYUN BAGOBO, Bagobo Tagabawa language and culture, or this platform’s learning features.\n\nMakatabang lang ko bahin sa MANAYUN BAGOBO, sa pinulongan ug kultura sa Bagobo Tagabawa, o sa mga bahin sa pagkat-on niini nga plataporma.\n\nMakakatulong lang ako tungkol sa MANAYUN BAGOBO, sa wika at kultura ng Bagobo Tagabawa, o sa mga bahagi ng pagkatuto sa platform na ito.";
 
     private const MAX_HISTORY = 20;
 
@@ -564,7 +564,7 @@ class AiChatbotController extends Controller
     {
         $contextMessage = [
             'role' => 'user',
-            'content' => "VERIFIED PLATFORM CONTEXT:\n".$databaseContext."\n\nUse only this context for specific platform, language, and culture facts. If it is insufficient, say EPANAW BAGOBO does not have enough verified information yet.",
+            'content' => "VERIFIED PLATFORM CONTEXT:\n".$databaseContext."\n\nUse only this context for specific platform, language, and culture facts. If it is insufficient, say MANAYUN BAGOBO does not have enough verified information yet.",
         ];
 
         $lastUserIndex = collect($messages)->keys()->last(fn ($index) => $messages[$index]['role'] === 'user');

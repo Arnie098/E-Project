@@ -19,11 +19,25 @@ use App\Models\User;
 use App\Models\VocabularyWord;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class SuperDashboardController extends Controller
 {
+    /** Keep the latest snapshots only; backups are deliberately content-only. */
+    private const BACKUP_RETENTION = 10;
+
+    private const BACKUP_TABLES = [
+        'learning_modules', 'quiz_questions', 'repository_items', 'vocabulary_words',
+        'pronunciations', 'media_items', 'stories', 'contributions',
+        'resource_verifications', 'events', 'feedback', 'announcements',
+        'achievements', 'settings',
+    ];
+
     // Map domain icons onto the keys the dashboard widget already knows.
     private const DASHBOARD_ICON = [
         'users' => 'user-plus',
@@ -285,6 +299,79 @@ class SuperDashboardController extends Controller
         ]);
     }
 
+    public function database(): Response
+    {
+        $tables = ['users', 'learning_modules', 'repository_items', 'media_items', 'stories', 'contributions', 'events', 'feedback'];
+
+        return Inertia::render('super/database', [
+            'connection' => config('database.default'),
+            'database' => config('database.connections.'.config('database.default').'.database'),
+            'tables' => collect($tables)->map(fn (string $table) => [
+                'name' => $table,
+                'rows' => DB::table($table)->count(),
+            ]),
+        ]);
+    }
+
+    public function backup(): Response
+    {
+        return Inertia::render('super/backup', [
+            'backups' => collect(Storage::disk('local')->files('backups'))
+                ->filter(fn (string $file) => str_ends_with($file, '.json.enc'))
+                ->sortDesc()
+                ->values(),
+        ]);
+    }
+
+    public function createBackup(Request $request): RedirectResponse
+    {
+        $snapshot = [
+            'created_at' => now()->toIso8601String(),
+            'scope' => 'Content and system configuration only; user accounts, credentials, sessions, tokens, and chat history are excluded.',
+            'tables' => collect(self::BACKUP_TABLES)
+                ->mapWithKeys(fn (string $table) => [$table => DB::table($table)->get()]),
+        ];
+        $file = 'backups/manayun-'.now()->format('Ymd-His').'.json.enc';
+        Storage::disk('local')->put($file, Crypt::encryptString(json_encode($snapshot, JSON_THROW_ON_ERROR)));
+        $this->pruneBackups();
+        ActivityLog::record($request->user()->username ?? $request->user()->name, 'Created a system backup', 'hard-drive-download');
+
+        return back()->with('status', 'Encrypted content backup created. User accounts and credentials are excluded.');
+    }
+
+    public function downloadBackup(Request $request, string $backup)
+    {
+        abort_unless(str_starts_with($backup, 'manayun-') && str_ends_with($backup, '.json.enc'), 404);
+        abort_unless(Storage::disk('local')->exists('backups/'.$backup), 404);
+
+        ActivityLog::record($request->user()->username ?? $request->user()->name, "Downloaded system backup: {$backup}", 'hard-drive-download');
+
+        return Storage::disk('local')->download('backups/'.$backup);
+    }
+
+    private function pruneBackups(): void
+    {
+        $expired = collect(Storage::disk('local')->files('backups'))
+            ->filter(fn (string $file) => str_ends_with($file, '.json.enc'))
+            ->sortDesc()
+            ->slice(self::BACKUP_RETENTION);
+
+        Storage::disk('local')->delete($expired->all());
+    }
+
+    public function security(): Response
+    {
+        return Inertia::render('super/security', [
+            'summary' => [
+                ['label' => 'Active users', 'value' => User::where('status', 'Active')->count()],
+                ['label' => 'Inactive users', 'value' => User::where('status', 'Inactive')->count()],
+                ['label' => 'Super admins', 'value' => User::where('role', 'super')->count()],
+                ['label' => 'Recent audit events', 'value' => ActivityLog::where('occurred_at', '>=', now()->subDay())->count()],
+            ],
+            'recentLogs' => $this->recentActivity(10),
+        ]);
+    }
+
     public function updateSettings(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -314,7 +401,7 @@ class SuperDashboardController extends Controller
         ];
     }
 
-    private function recentActivity(int $take): \Illuminate\Support\Collection
+    private function recentActivity(int $take): Collection
     {
         return ActivityLog::latest('occurred_at')->take($take)->get()->map(fn (ActivityLog $l) => [
             'id' => $l->id,

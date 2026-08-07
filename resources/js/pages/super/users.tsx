@@ -52,7 +52,7 @@ export default function Users({ users, roleCounts }: Props) {
 
     return (
         <SuperShell>
-            <Head title="User Management — EPANAW BAGOBO" />
+            <Head title="User Management — MANAYUN BAGOBO" />
 
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="flex items-center gap-3">

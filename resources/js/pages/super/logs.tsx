@@ -38,7 +38,7 @@ interface Log {
 export default function ActivityLogs({ logs }: { logs: Log[] }) {
     return (
         <SuperShell>
-            <Head title="Activity Logs — EPANAW BAGOBO" />
+            <Head title="Activity Logs — MANAYUN BAGOBO" />
 
             <div className="mb-6 flex items-center gap-3">
                 <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">

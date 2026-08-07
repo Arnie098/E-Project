@@ -39,7 +39,7 @@ export default function Progress({ rows, stats }: { rows: Row[]; stats: Stats })
 
     return (
         <UserShell>
-            <Head title="My Progress — EPANAW BAGOBO" />
+            <Head title="My Progress — MANAYUN BAGOBO" />
 
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-foreground sm:text-3xl">My Progress</h1>

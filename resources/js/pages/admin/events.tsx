@@ -12,7 +12,7 @@ export default function Page({ items, stats }: Props) {
             title="Events Management"
             description="Schedule cultural sessions, workshops, and community events from one place."
             icon={Calendar}
-            pageTitle="Events Management - EPANAW BAGOBO"
+            pageTitle="Events Management - MANAYUN BAGOBO"
             items={items}
             stats={stats}
             createRoute="admin.events.store"

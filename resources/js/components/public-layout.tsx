@@ -1,20 +1,21 @@
 import { type ReactNode } from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { BrandLogo } from '@/components/brand-logo';
 import { Button } from '@/components/ui/button';
-
-const nav = [
-    { label: 'Home', to: '/' },
-    { label: 'About', to: '/' },
-    { label: 'Learn', to: '/login' },
-    { label: 'Repository', to: '/login' },
-    { label: 'Dictionary', to: '/login' },
-    { label: 'Events', to: '/login' },
-    { label: 'About Us', to: '/' },
-    { label: 'Contact', to: '/' },
-];
+import type { SharedData } from '@/types';
 
 export function PublicLayout({ children, showAuthButtons = true }: { children: ReactNode; showAuthButtons?: boolean }) {
+    const { auth } = usePage<SharedData>().props;
+    const protectedHref = (path: string) => auth?.user ? path : '/login';
+    const nav = [
+        { label: 'Home', to: '/' },
+        { label: 'About', to: '/#about' },
+        { label: 'Learn', to: protectedHref('/user/learning-modules') },
+        { label: 'Repository', to: protectedHref('/user/cultural-repository') },
+        { label: 'Dictionary', to: protectedHref('/user/vocabulary-dictionary') },
+        { label: 'Events', to: protectedHref('/user/events') },
+        { label: 'Contact', to: '/#contact' },
+    ];
     return (
         <div className="flex min-h-screen flex-col bg-background">
             <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
@@ -48,7 +49,7 @@ export function PublicLayout({ children, showAuthButtons = true }: { children: R
 
             <div className="flex-1">{children}</div>
 
-            <footer className="border-t border-border">
+            <footer id="contact" className="border-t border-border">
                 <div className="mx-auto max-w-7xl px-4 py-8 text-center sm:px-6 lg:px-8">
                     <p className="text-sm font-medium text-foreground/80">
                         Together, let's preserve our heritage and inspire future generations.

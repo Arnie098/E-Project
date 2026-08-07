@@ -63,7 +63,7 @@ export default function MultimediaGallery({ media }: { media: Media[] }) {
 
     return (
         <UserShell>
-            <Head title="Multimedia Gallery — EPANAW BAGOBO" />
+            <Head title="Multimedia Gallery — MANAYUN BAGOBO" />
 
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Multimedia Gallery</h1>

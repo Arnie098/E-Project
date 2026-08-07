@@ -35,7 +35,7 @@ export default function Feedback({ feedback, stats }: { feedback: FeedbackItem[]
 
     return (
         <UserShell>
-            <Head title="Feedback — EPANAW BAGOBO" />
+            <Head title="Feedback — MANAYUN BAGOBO" />
 
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>

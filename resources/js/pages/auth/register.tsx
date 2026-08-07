@@ -142,7 +142,7 @@ function BrandPanel() {
 
             <Dreamcatcher className="relative z-10 h-52 w-40 text-foreground" />
 
-            <div className="relative z-10 mt-2 font-serif text-3xl font-bold tracking-wide text-foreground">EPANAW BAGOBO</div>
+            <div className="relative z-10 mt-2 font-serif text-3xl font-bold tracking-wide text-foreground">MANAYUN BAGOBO</div>
             <p className="relative z-10 mt-3 max-w-[15rem] text-[15px] leading-relaxed text-foreground/70">
                 Preserving the Bagobo Tagabawa Dialect and Cultural Heritage
             </p>

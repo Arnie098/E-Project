@@ -12,7 +12,7 @@ export default function Page({ items, stats }: Props) {
             title="Cultural Repository"
             description="Maintain the archive of documents, images, and cultural references used across the platform."
             icon={Building2}
-            pageTitle="Cultural Repository - EPANAW BAGOBO"
+            pageTitle="Cultural Repository - MANAYUN BAGOBO"
             items={items}
             stats={stats}
             createRoute="admin.cultural-repository.store"
@@ -36,7 +36,7 @@ export default function Page({ items, stats }: Props) {
                     ],
                 },
                 { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Describe the cultural reference.' },
-                { name: 'media', label: 'Media Path', placeholder: '/heritage-hero.jpg' },
+                { name: 'media', label: 'Media File', type: 'file', accept: 'image/*,audio/*,video/*,.pdf,.doc,.docx' },
             ]}
             columns={[
                 { key: 'title', label: 'Title' },

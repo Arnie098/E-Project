@@ -36,7 +36,7 @@ const difficultyCls: Record<string, string> = {
 export default function LearningModules({ modules, stats }: { modules: Module[]; stats: Stats }) {
     return (
         <UserShell>
-            <Head title="Learning Modules — EPANAW BAGOBO" />
+            <Head title="Learning Modules — MANAYUN BAGOBO" />
 
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>

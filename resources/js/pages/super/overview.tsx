@@ -57,7 +57,7 @@ export default function SystemOverview({ users, content, engagement, recentActiv
 
     return (
         <SuperShell>
-            <Head title="System Overview — EPANAW BAGOBO" />
+            <Head title="System Overview — MANAYUN BAGOBO" />
 
             <div className="mb-6 flex items-center gap-3">
                 <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">

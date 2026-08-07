@@ -12,7 +12,7 @@ export default function Page({ items, stats }: Props) {
             title="Multimedia Management"
             description="Manage the images, audio, and video that appear in the multimedia gallery."
             icon={Film}
-            pageTitle="Multimedia Management - EPANAW BAGOBO"
+            pageTitle="Multimedia Management - MANAYUN BAGOBO"
             items={items}
             stats={stats}
             createRoute="admin.multimedia.store"
@@ -34,7 +34,8 @@ export default function Page({ items, stats }: Props) {
                     ],
                 },
                 { name: 'duration', label: 'Duration', placeholder: '04:35 (video/audio only)' },
-                { name: 'thumbnail', label: 'Thumbnail Path', placeholder: '/heritage-hero.jpg' },
+                { name: 'thumbnail', label: 'Thumbnail Image', type: 'file', accept: 'image/*' },
+                { name: 'source_file', label: 'Media Source File', type: 'file', accept: 'image/*,audio/*,video/*' },
             ]}
             columns={[
                 { key: 'title', label: 'Title' },

@@ -1,5 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, useRef, useState } from 'react';
 import { BookOpen, Calendar, Camera, Clock, Eye, GraduationCap, Mail, MessageSquare, Star, Trophy, Users } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import UserShell from '@/layouts/user-shell';
@@ -16,7 +16,7 @@ interface Activity {
 }
 
 interface Props {
-    profile: { name: string; email: string; username: string | null; role: string; bio: string | null; location: string | null; memberSince: string };
+    profile: { name: string; email: string; username: string | null; role: string; bio: string | null; location: string | null; avatar: string | null; memberSince: string };
     accountSummary: { role: string; memberSince: string; modulesCompleted: number; certificatesEarned: number };
     achievements: { name: string; description: string | null; icon: string | null; earnedAt: string | null }[];
     recentActivity: Activity[];
@@ -42,23 +42,25 @@ const tabs = ['Profile Information', 'Preferences', 'Privacy & Security', 'Notif
 
 export default function Settings({ profile, accountSummary, achievements, recentActivity }: Props) {
     const [tab, setTab] = useState(tabs[0]);
+    const avatarInput = useRef<HTMLInputElement>(null);
     const { data, setData, patch, processing, recentlySuccessful } = useForm({
         name: profile.name,
         email: profile.email,
         bio: profile.bio ?? '',
         location: profile.location ?? '',
+        avatar: null as File | null,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        patch(route('user.settings.update'), { preserveScroll: true });
+        patch(route('user.settings.update'), { preserveScroll: true, forceFormData: true });
     };
 
     const initials = profile.name.split(' ').map((n) => n[0]).slice(0, 2).join('');
 
     return (
         <UserShell>
-            <Head title="Profile Settings — EPANAW BAGOBO" />
+            <Head title="Profile Settings — MANAYUN BAGOBO" />
 
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Profile Settings</h1>
@@ -71,9 +73,10 @@ export default function Settings({ profile, accountSummary, achievements, recent
                         <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
                             <div className="relative">
                                 <div className="grid h-28 w-28 place-items-center overflow-hidden rounded-full bg-muted text-2xl font-bold text-foreground">
-                                    {initials}
+                                    {data.avatar ? <img src={URL.createObjectURL(data.avatar)} alt="Profile preview" className="h-full w-full object-cover" /> : profile.avatar ? <img src={profile.avatar} alt={profile.name} className="h-full w-full object-cover" /> : initials}
                                 </div>
-                                <button className="absolute bottom-1 right-1 grid h-8 w-8 place-items-center rounded-full border border-border bg-card text-foreground">
+                                <input ref={avatarInput} type="file" accept="image/*" className="hidden" onChange={(event) => setData('avatar', event.target.files?.[0] ?? null)} />
+                                <button type="button" onClick={() => avatarInput.current?.click()} className="absolute bottom-1 right-1 grid h-8 w-8 place-items-center rounded-full border border-border bg-card text-foreground" aria-label="Choose profile photo">
                                     <Camera className="h-4 w-4" />
                                 </button>
                             </div>
@@ -132,7 +135,7 @@ export default function Settings({ profile, accountSummary, achievements, recent
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <Button type="submit" disabled={processing}>Save Changes</Button>
-                                    <Button type="button" variant="outline">Cancel</Button>
+                                    <Button type="button" variant="outline" onClick={() => setData({ name: profile.name, email: profile.email, bio: profile.bio ?? '', location: profile.location ?? '', avatar: null })}>Cancel</Button>
                                     {recentlySuccessful && <span className="text-sm text-green-600">Saved.</span>}
                                 </div>
                             </form>

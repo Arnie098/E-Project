@@ -76,7 +76,7 @@ export default function SuperDashboard({ stats, roleDistribution, totalUsers, lo
 
     return (
         <SuperShell>
-            <Head title="Super Admin — EPANAW BAGOBO" />
+            <Head title="Super Admin — MANAYUN BAGOBO" />
             <WelcomeHero
                 greeting="Welcome back, Super Admin! 👋"
                 subtitle="Monitor and maintain the entire system, manage administrators, and ensure system security."
@@ -229,17 +229,21 @@ function MiniLineChart() {
                 ))}
             </div>
             <div className="min-w-0 flex-1">
-                <svg viewBox={`0 0 ${w} ${h}`} className="h-44 w-full overflow-visible" preserveAspectRatio="none">
+                <svg
+                    viewBox={`0 0 ${w} ${h}`}
+                    className="h-44 w-full"
+                    preserveAspectRatio="none"
+                    role="img"
+                    aria-label="System activity over the last seven days"
+                >
                     {yTicks.map((t) => (
                         <line key={t} x1="0" x2={w} y1={h - (t / max) * h} y2={h - (t / max) * h} stroke="oklch(0.92 0.006 260)" strokeWidth="0.5" vectorEffect="non-scaling-stroke" />
                     ))}
                     <polyline points={points} fill="none" stroke="oklch(0.55 0.18 250)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
                     {values.map((v, i) => (
                         <g key={i}>
+                            <title>{`${labels[i]}: ${v} activities`}</title>
                             <circle cx={i * step} cy={h - (v / max) * h} r="1.6" fill="oklch(0.55 0.18 250)" vectorEffect="non-scaling-stroke" />
-                            <text x={i * step} y={h - (v / max) * h - 5} textAnchor="middle" className="fill-muted-foreground text-[7px]" vectorEffect="non-scaling-stroke">
-                                {v}
-                            </text>
                         </g>
                     ))}
                 </svg>

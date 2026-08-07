@@ -7,6 +7,7 @@ use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\SuperDashboardController;
 use App\Http\Controllers\UserDashboardController;
+use App\Http\Middleware\EnsureNotUnderMaintenance;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,10 +19,10 @@ Route::get('/', fn () => Inertia::render('welcome'))->name('home');
  */
 Route::get('/dashboard', function () {
     return redirect(auth()->user()?->homePath() ?? '/login');
-})->middleware('auth')->name('dashboard');
+})->middleware(['auth', 'active'])->name('dashboard');
 
 /* ---------------- Learner ---------------- */
-Route::middleware(['auth', \App\Http\Middleware\EnsureNotUnderMaintenance::class])->group(function () {
+Route::middleware(['auth', 'active', EnsureNotUnderMaintenance::class])->group(function () {
     Route::get('/user', [UserDashboardController::class, 'index'])->name('user.dashboard');
     Route::get('/user/settings', [UserDashboardController::class, 'settings'])->name('user.settings');
     Route::patch('/user/settings', [UserDashboardController::class, 'updateSettings'])->name('user.settings.update');
@@ -51,8 +52,12 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureNotUnderMaintenance::class
 });
 
 /* ---------------- Admin ---------------- */
-Route::middleware(['auth', 'role:admin,super'])->group(function () {
+Route::middleware(['auth', 'active', 'role:admin,super'])->group(function () {
     Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/vocabulary', [AdminCrudController::class, 'vocabulary'])->name('admin.vocabulary');
+    Route::post('/admin/vocabulary', [AdminCrudController::class, 'storeVocabulary'])->name('admin.vocabulary.store');
+    Route::patch('/admin/vocabulary/{vocabularyWord}', [AdminCrudController::class, 'updateVocabulary'])->name('admin.vocabulary.update');
+    Route::delete('/admin/vocabulary/{vocabularyWord}', [AdminCrudController::class, 'destroyVocabulary'])->name('admin.vocabulary.destroy');
     Route::get('/admin/learning-materials', [AdminCrudController::class, 'learningMaterials'])->name('admin.learning-materials');
     Route::post('/admin/learning-materials', [AdminCrudController::class, 'storeLearningMaterial'])->name('admin.learning-materials.store');
     Route::patch('/admin/learning-materials/{learningModule}', [AdminCrudController::class, 'updateLearningMaterial'])->name('admin.learning-materials.update');
@@ -93,15 +98,10 @@ Route::middleware(['auth', 'role:admin,super'])->group(function () {
     Route::patch('/admin/multimedia/{mediaItem}', [AdminCrudController::class, 'updateMedia'])->name('admin.multimedia.update');
     Route::delete('/admin/multimedia/{mediaItem}', [AdminCrudController::class, 'destroyMedia'])->name('admin.multimedia.destroy');
 
-    foreach ([
-        'settings',
-    ] as $segment) {
-        Route::get("/admin/{$segment}", fn () => Inertia::render("admin/{$segment}"))->name("admin.{$segment}");
-    }
 });
 
 /* ---------------- Super Admin ---------------- */
-Route::middleware(['auth', 'role:super'])->group(function () {
+Route::middleware(['auth', 'active', 'role:super'])->group(function () {
     Route::get('/super', [SuperDashboardController::class, 'index'])->name('super.dashboard');
 
     Route::get('/super/overview', [SuperDashboardController::class, 'overview'])->name('super.overview');
@@ -115,12 +115,14 @@ Route::middleware(['auth', 'role:super'])->group(function () {
     Route::get('/super/settings', [SuperDashboardController::class, 'settings'])->name('super.settings');
     Route::patch('/super/settings', [SuperDashboardController::class, 'updateSettings'])->name('super.settings.update');
 
-    foreach ([
-        'database',
-        'backup', 'security', 'site', 'maintenance', 'subscription',
-    ] as $segment) {
-        Route::get("/super/{$segment}", fn () => Inertia::render("super/{$segment}"))->name("super.{$segment}");
-    }
+    Route::get('/super/database', [SuperDashboardController::class, 'database'])->name('super.database');
+    Route::get('/super/backup', [SuperDashboardController::class, 'backup'])->name('super.backup');
+    Route::post('/super/backup', [SuperDashboardController::class, 'createBackup'])->name('super.backup.create');
+    Route::get('/super/backup/{backup}', [SuperDashboardController::class, 'downloadBackup'])->name('super.backup.download');
+    Route::get('/super/security', [SuperDashboardController::class, 'security'])->name('super.security');
+
+    Route::redirect('/super/site', '/super/settings');
+    Route::redirect('/super/maintenance', '/super/settings');
 });
 
 require __DIR__.'/settings.php';

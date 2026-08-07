@@ -44,7 +44,7 @@ export default function StorytellingArchive({ stories, featured }: { stories: St
 
     return (
         <UserShell>
-            <Head title="Storytelling Archive — EPANAW BAGOBO" />
+            <Head title="Storytelling Archive — MANAYUN BAGOBO" />
 
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Storytelling Archive</h1>

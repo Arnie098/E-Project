@@ -47,7 +47,7 @@ export default function Content({ inventory, contributionStatus, recent }: Props
 
     return (
         <SuperShell>
-            <Head title="Content Management — EPANAW BAGOBO" />
+            <Head title="Content Management — MANAYUN BAGOBO" />
 
             <div className="mb-6 flex items-center gap-3">
                 <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">

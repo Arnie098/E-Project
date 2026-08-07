@@ -26,7 +26,7 @@ export default function SystemSettings({ settings }: Props) {
 
     return (
         <SuperShell>
-            <Head title="System Settings — EPANAW BAGOBO" />
+            <Head title="System Settings — MANAYUN BAGOBO" />
 
             <div className="mb-6 flex items-center gap-3">
                 <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">
@@ -50,7 +50,7 @@ export default function SystemSettings({ settings }: Props) {
                     <div className="space-y-4">
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-foreground">Site name</label>
-                            <Input value={data.siteName} onChange={(e) => setData('siteName', e.target.value)} placeholder="EPANAW BAGOBO" />
+                            <Input value={data.siteName} onChange={(e) => setData('siteName', e.target.value)} placeholder="MANAYUN BAGOBO" />
                             <p className="text-xs text-muted-foreground">Shown in the header brand and footer across the platform.</p>
                         </div>
                         <div className="space-y-2">

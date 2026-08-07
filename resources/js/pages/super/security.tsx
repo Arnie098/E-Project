@@ -1,13 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { ShieldCheck } from 'lucide-react';
 import SuperShell from '@/layouts/super-shell';
-import { PageStub } from '@/components/page-stub';
+import { PanelCard } from '@/components/dashboard-layout';
 
-export default function Page() {
-    return (
-        <SuperShell>
-            <Head title="Security Management — EPANAW BAGOBO" />
-            <PageStub title="Security Management" description="Security controls and monitoring." icon={ShieldCheck} />
-        </SuperShell>
-    );
-}
+export default function Security({ summary, recentLogs }: { summary: { label: string; value: number }[]; recentLogs: { id: number; actor: string; action: string; when: string }[] }) { return <SuperShell><Head title="Security Management — MANAYUN BAGOBO" /><div className="mb-6 flex items-center gap-3"><ShieldCheck className="h-8 w-8" /><div><h1 className="text-2xl font-bold">Security Management</h1><p className="text-sm text-muted-foreground">Access status and recent audit activity.</p></div></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{summary.map((item) => <PanelCard key={item.label} title={item.label}><p className="text-3xl font-bold">{item.value}</p></PanelCard>)}</div><PanelCard title="Recent Audit Activity" className="mt-6"><ul className="space-y-3">{recentLogs.map((log) => <li key={log.id} className="flex justify-between gap-3 text-sm"><span><b>{log.actor}</b> {log.action}</span><span className="shrink-0 text-muted-foreground">{log.when}</span></li>)}</ul></PanelCard></SuperShell>; }

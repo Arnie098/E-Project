@@ -48,7 +48,7 @@ export default function CulturalRepository({
 
     return (
         <UserShell>
-            <Head title="Cultural Repository — EPANAW BAGOBO" />
+            <Head title="Cultural Repository — MANAYUN BAGOBO" />
 
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Cultural Repository</h1>

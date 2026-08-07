@@ -12,7 +12,7 @@ export default function Page({ items, stats }: Props) {
             title="Learning Materials"
             description="Author lessons, set module and difficulty, write lesson content, and manage each lesson's quiz."
             icon={BookOpen}
-            pageTitle="Learning Materials - EPANAW BAGOBO"
+            pageTitle="Learning Materials - MANAYUN BAGOBO"
             items={items}
             stats={stats}
             createRoute="admin.learning-materials.store"
@@ -45,7 +45,7 @@ export default function Page({ items, stats }: Props) {
                 { name: 'category', label: 'Category', placeholder: 'Culture' },
                 { name: 'description', label: 'Description', type: 'textarea', placeholder: 'A short summary shown in the catalog.' },
                 { name: 'content', label: 'Lesson Content', type: 'textarea', placeholder: 'The full lesson the learner reads before the quiz.' },
-                { name: 'image', label: 'Image Path', placeholder: '/heritage-hero.jpg' },
+                { name: 'image', label: 'Lesson Image', type: 'file', accept: 'image/*' },
             ]}
             columns={[
                 { key: 'title', label: 'Title' },

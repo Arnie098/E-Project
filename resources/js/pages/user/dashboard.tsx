@@ -25,7 +25,7 @@ export default function UserDashboard({ firstName, continueLearning, stats, even
 
     return (
         <UserShell>
-            <Head title="Dashboard — EPANAW BAGOBO Learner" />
+            <Head title="Dashboard — MANAYUN BAGOBO Learner" />
             <WelcomeHero
                 greeting={`Welcome back, ${firstName}!`}
                 subtitle="Continue your journey in preserving and learning the Bagobo Tagabawa language and culture."

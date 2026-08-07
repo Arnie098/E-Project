@@ -11,6 +11,7 @@ use App\Models\VocabularyWord;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,6 +30,7 @@ class UserDashboardController extends Controller
                 'role' => ucfirst($user->role === 'learner' ? 'Learner' : $user->role),
                 'bio' => $user->bio,
                 'location' => $user->location,
+                'avatar' => $user->avatar_path,
                 'memberSince' => $user->created_at->format('M j, Y'),
             ],
             'accountSummary' => [
@@ -61,8 +63,18 @@ class UserDashboardController extends Controller
             'email' => 'required|email|max:255|unique:users,email,'.$user->id,
             'bio' => 'nullable|string|max:1000',
             'location' => 'nullable|string|max:255',
+            'avatar' => 'nullable|image|max:5120',
         ]);
 
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar_path && str_starts_with($user->avatar_path, '/storage/')) {
+                Storage::disk('public')->delete(substr($user->avatar_path, strlen('/storage/')));
+            }
+
+            $validated['avatar_path'] = '/storage/'.$request->file('avatar')->store('avatars', 'public');
+        }
+
+        unset($validated['avatar']);
         $user->update($validated);
 
         return back()->with('status', 'Profile updated.');

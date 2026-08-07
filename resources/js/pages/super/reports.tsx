@@ -31,7 +31,7 @@ export default function SuperReports({ users, content, engagement, topModules }:
 
     return (
         <SuperShell>
-            <Head title="Reports and Analytics — EPANAW BAGOBO" />
+            <Head title="Reports and Analytics — MANAYUN BAGOBO" />
 
             <div className="mb-6 flex items-center gap-3">
                 <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">

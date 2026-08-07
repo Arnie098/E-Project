@@ -67,7 +67,7 @@ export default function VocabularyDictionary({
 
     return (
         <UserShell>
-            <Head title="Vocabulary Dictionary — EPANAW BAGOBO" />
+            <Head title="Vocabulary Dictionary — MANAYUN BAGOBO" />
 
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
@@ -197,6 +197,11 @@ export default function VocabularyDictionary({
                                             <BadgeCheck className="h-3.5 w-3.5" />
                                             Pronunciation verified — {w.speaker}
                                         </p>
+                                    )}
+                                    {w.audio && (
+                                        <audio controls preload="none" className="mt-3 w-full" src={w.audio}>
+                                            Your browser does not support pronunciation audio playback.
+                                        </audio>
                                     )}
                                 </article>
                             ))}

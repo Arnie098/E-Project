@@ -49,7 +49,7 @@ export default function CommunityContributions({
 
     return (
         <UserShell>
-            <Head title="Community Contributions — EPANAW BAGOBO" />
+            <Head title="Community Contributions — MANAYUN BAGOBO" />
 
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>

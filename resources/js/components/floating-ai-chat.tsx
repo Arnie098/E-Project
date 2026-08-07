@@ -34,7 +34,7 @@ type Pending = {
     attachment?: Attachment;
 };
 
-const GREETING = 'Kumusta! I\u2019m Epanaw. Ask me about Bagobo Tagabawa language, culture, stories, or EPANAW BAGOBO learning features.';
+const GREETING = 'Kumusta! I\u2019m Epanaw. Ask me about Bagobo Tagabawa language, culture, stories, or MANAYUN BAGOBO learning features.';
 
 const SUGGESTIONS = [
     'How can I start learning the dialect?',

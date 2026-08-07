@@ -56,7 +56,7 @@ export default function LearningModulePage({
 
     return (
         <UserShell>
-            <Head title={`${module.title} — EPANAW BAGOBO`} />
+            <Head title={`${module.title} — MANAYUN BAGOBO`} />
 
             <Link href="/user/learning-modules" className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
                 <ArrowLeft className="h-4 w-4" />

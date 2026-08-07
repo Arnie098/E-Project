@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useMemo, useRef, useState } from 'react';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
@@ -26,13 +26,15 @@ import {
 } from '@/components/ui/select';
 
 type Primitive = string | number | null;
+type FormValue = string | File | null;
 
 export interface CrudField {
     name: string;
     label: string;
-    type?: 'text' | 'textarea' | 'select' | 'datetime-local';
+    type?: 'text' | 'textarea' | 'select' | 'datetime-local' | 'file';
     placeholder?: string;
     options?: { label: string; value: string }[];
+    accept?: string;
 }
 
 export interface CrudColumn {
@@ -87,11 +89,12 @@ export function EntityManager({
 }: Props) {
     const page = usePage<{ flash?: { status?: string } }>();
     const [editingItem, setEditingItem] = useState<CrudItem | null>(null);
+    const createFormRef = useRef<HTMLFormElement>(null);
 
     const initialValues = useMemo(
         () =>
-            fields.reduce<Record<string, string>>((carry, field) => {
-                carry[field.name] = '';
+            fields.reduce<Record<string, FormValue>>((carry, field) => {
+                carry[field.name] = field.type === 'file' ? null : '';
 
                 return carry;
             }, {}),
@@ -105,8 +108,10 @@ export function EntityManager({
         setEditingItem(item);
 
         editForm.setData(
-            fields.reduce<Record<string, string>>((carry, field) => {
-                carry[field.name] = String(item[field.name] ?? '');
+            fields.reduce<Record<string, FormValue>>((carry, field) => {
+                // Keep the existing server path as display-only metadata. Sending it
+                // back as a string would fail the backend's file validation.
+                carry[field.name] = field.type === 'file' ? null : String(item[field.name] ?? '');
 
                 return carry;
             }, {}),
@@ -118,7 +123,18 @@ export function EntityManager({
         event.preventDefault();
         createForm.post(route(createRoute), {
             preserveScroll: true,
+            forceFormData: true,
             onSuccess: () => createForm.reset(),
+        });
+    };
+
+    const beginCreate = () => {
+        createForm.reset();
+        createForm.clearErrors();
+
+        requestAnimationFrame(() => {
+            createFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            createFormRef.current?.querySelector<HTMLElement>('input, textarea, button')?.focus();
         });
     };
 
@@ -129,8 +145,10 @@ export function EntityManager({
             return;
         }
 
-        editForm.patch(route(updateRoute, editingItem.id), {
+        editForm.transform((data) => ({ ...data, _method: 'patch' }));
+        editForm.post(route(updateRoute, editingItem.id), {
             preserveScroll: true,
+            forceFormData: true,
             onSuccess: () => {
                 setEditingItem(null);
                 editForm.reset();
@@ -156,7 +174,7 @@ export function EntityManager({
                         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{description}</p>
                     </div>
                 </div>
-                <Button type="button" onClick={() => createForm.reset()}>
+                <Button type="button" onClick={beginCreate}>
                     <Plus className="h-4 w-4" />
                     {createLabel}
                 </Button>
@@ -243,7 +261,7 @@ export function EntityManager({
                 </PanelCard>
 
                 <PanelCard title={createLabel}>
-                    <form className="space-y-4" onSubmit={submitCreate}>
+                    <form ref={createFormRef} className="space-y-4" onSubmit={submitCreate}>
                         {fields.map((field) => (
                             <FieldControl
                                 key={field.name}
@@ -280,6 +298,7 @@ export function EntityManager({
                                 value={editForm.data[field.name]}
                                 error={editForm.errors[field.name]}
                                 onChange={(value) => editForm.setData(field.name, value)}
+                                existingFile={field.type === 'file' ? String(editingItem?.[field.name] ?? '') : undefined}
                             />
                         ))}
                         <DialogFooter>
@@ -302,26 +321,41 @@ function FieldControl({
     value,
     error,
     onChange,
+    existingFile,
 }: {
     field: CrudField;
-    value: string;
+    value: FormValue;
     error?: string;
-    onChange: (value: string) => void;
+    onChange: (value: FormValue) => void;
+    existingFile?: string;
 }) {
     return (
         <div className="space-y-2">
             <Label htmlFor={field.name}>{field.label}</Label>
-            {field.type === 'textarea' ? (
+            {field.type === 'file' ? (
+                <>
+                    <Input
+                        id={field.name}
+                        type="file"
+                        accept={field.accept}
+                        onChange={(event) => onChange(event.target.files?.[0] ?? null)}
+                    />
+                    {typeof File !== 'undefined' && value instanceof File && (
+                        <p className="text-xs text-muted-foreground">Selected: {value.name}</p>
+                    )}
+                    {existingFile && <p className="text-xs text-muted-foreground">Current file: {existingFile}</p>}
+                </>
+            ) : field.type === 'textarea' ? (
                 <textarea
                     id={field.name}
-                    value={value}
+                    value={typeof value === 'string' ? value : ''}
                     placeholder={field.placeholder}
                     onChange={(event) => onChange(event.target.value)}
                     rows={4}
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
             ) : field.type === 'select' ? (
-                <Select value={value} onValueChange={onChange}>
+                <Select value={typeof value === 'string' ? value : ''} onValueChange={onChange}>
                     <SelectTrigger id={field.name}>
                         <SelectValue placeholder={field.placeholder ?? `Select ${field.label.toLowerCase()}`} />
                     </SelectTrigger>
@@ -337,7 +371,7 @@ function FieldControl({
                 <Input
                     id={field.name}
                     type={field.type === 'datetime-local' ? 'datetime-local' : 'text'}
-                    value={value}
+                    value={typeof value === 'string' ? value : ''}
                     placeholder={field.placeholder}
                     onChange={(event) => onChange(event.target.value)}
                 />

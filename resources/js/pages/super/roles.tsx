@@ -28,7 +28,7 @@ const roleMeta: Record<Role['key'], { icon: typeof ShieldCheck; tone: string }> 
 export default function Roles({ roles, matrix }: { roles: Role[]; matrix: MatrixRow[] }) {
     return (
         <SuperShell>
-            <Head title="Role and Permission Management — EPANAW BAGOBO" />
+            <Head title="Role and Permission Management — MANAYUN BAGOBO" />
 
             <div className="mb-6 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">

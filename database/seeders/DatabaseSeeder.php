@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // ---- System settings (editable from Super Admin → Settings) ----
-        \App\Models\Setting::set('site_name', 'EPANAW BAGOBO');
+        \App\Models\Setting::set('site_name', 'MANAYUN BAGOBO');
         \App\Models\Setting::set('tagline', 'Preserve. Revitalize. Inspire.');
         \App\Models\Setting::set('maintenance_mode', '0');
 
@@ -119,7 +119,7 @@ class DatabaseSeeder extends Seeder
         $modules = collect($moduleData)->map(function ($m) use ($learner) {
             $module = LearningModule::create([
                 'title' => $m['title'],
-                'description' => 'A guided lesson in the EPANAW BAGOBO learning path.',
+                'description' => 'A guided lesson in the MANAYUN BAGOBO learning path.',
                 'category' => 'Culture',
                 'module' => $m['module'],
                 'difficulty' => $m['difficulty'],
@@ -252,7 +252,7 @@ class DatabaseSeeder extends Seeder
 
         // ---- Announcements ----
         Announcement::insert([
-            ['title' => 'Welcome to EPANAW BAGOBO!', 'body' => 'Explore, learn, and contribute to preserve our heritage.', 'author' => 'EPANAW Team', 'published_at' => '2025-05-18', 'created_at' => now(), 'updated_at' => now()],
+            ['title' => 'Welcome to MANAYUN BAGOBO!', 'body' => 'Explore, learn, and contribute to preserve our heritage.', 'author' => 'EPANAW Team', 'published_at' => '2025-05-18', 'created_at' => now(), 'updated_at' => now()],
             ['title' => 'Scheduled Maintenance', 'body' => 'The system will undergo maintenance on May 25, 2025 from 12:00 AM to 3:00 AM.', 'author' => 'Super Admin', 'published_at' => '2025-05-20', 'created_at' => now(), 'updated_at' => now()],
         ]);
 

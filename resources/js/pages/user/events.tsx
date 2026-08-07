@@ -16,7 +16,7 @@ interface EventItem {
 export default function Events({ upcoming, past }: { upcoming: EventItem[]; past: EventItem[] }) {
     return (
         <UserShell>
-            <Head title="Events — EPANAW BAGOBO" />
+            <Head title="Events — MANAYUN BAGOBO" />
 
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Cultural Events</h1>

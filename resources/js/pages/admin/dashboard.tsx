@@ -23,7 +23,7 @@ export default function AdminDashboard({ stats, contributions, events, activity 
 
     return (
         <AdminShell>
-            <Head title="Admin Dashboard — EPANAW BAGOBO" />
+            <Head title="Admin Dashboard — MANAYUN BAGOBO" />
             <WelcomeHero
                 greeting="Welcome back, Maria!"
                 subtitle="Curate learning materials, moderate contributions, and support the community."

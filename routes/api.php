@@ -16,7 +16,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'active'])->group(function () {
     // Account
     Route::get('/user', [AuthController::class, 'me']);
     Route::put('/user', [AuthController::class, 'update']);

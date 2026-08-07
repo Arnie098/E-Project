@@ -12,7 +12,7 @@ export default function Page({ items, stats }: Props) {
             title="Community Contributions"
             description="Moderate submitted stories and assets, then move them through the review workflow."
             icon={Users}
-            pageTitle="Community Contributions - EPANAW BAGOBO"
+            pageTitle="Community Contributions - MANAYUN BAGOBO"
             items={items}
             stats={stats}
             createRoute="admin.contributions.store"
@@ -23,6 +23,7 @@ export default function Page({ items, stats }: Props) {
             fields={[
                 { name: 'contributor_name', label: 'Contributor Name', placeholder: 'Ana Reyes' },
                 { name: 'item', label: 'Submission Title', placeholder: 'Bagobo weaving story' },
+                { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Describe the submitted story or asset.' },
                 {
                     name: 'type',
                     label: 'Type',
@@ -34,6 +35,7 @@ export default function Page({ items, stats }: Props) {
                         { label: 'Text', value: 'Text' },
                     ],
                 },
+                { name: 'remarks', label: 'Review Remarks', type: 'textarea', placeholder: 'Explain the approval or rejection decision.' },
                 {
                     name: 'status',
                     label: 'Status',
@@ -46,7 +48,7 @@ export default function Page({ items, stats }: Props) {
                 },
             ]}
             columns={[
-                { key: 'contributorName', label: 'Contributor' },
+                { key: 'contributor_name', label: 'Contributor' },
                 { key: 'item', label: 'Item' },
                 { key: 'type', label: 'Type' },
                 {

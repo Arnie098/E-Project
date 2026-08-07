@@ -12,7 +12,7 @@ export default function Page({ items, stats }: Props) {
             title="Feedback Management"
             description="Track incoming learner feedback, update case status, and keep support conversations organized."
             icon={MessageCircle}
-            pageTitle="Feedback Management - EPANAW BAGOBO"
+            pageTitle="Feedback Management - MANAYUN BAGOBO"
             items={items}
             stats={stats}
             createRoute="admin.feedback.store"

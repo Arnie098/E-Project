@@ -22,4 +22,13 @@ class DashboardTest extends TestCase
         // /dashboard is a convenience redirect to the user's role home.
         $this->get('/dashboard')->assertRedirect('/user');
     }
+
+    public function test_admin_and_super_users_are_redirected_to_their_own_dashboards(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin)->get('/dashboard')->assertRedirect('/admin');
+
+        $super = User::factory()->create(['role' => 'super']);
+        $this->actingAs($super)->get('/dashboard')->assertRedirect('/super');
+    }
 }
